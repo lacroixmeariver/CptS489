@@ -1,0 +1,119 @@
+/* color palette definitions to make them easier to use */
+:root {
+    --burnt-orange-primary: #c55a3a;
+    --cream-primary: #faf3e8;
+    --sage-green-secondary: #7a9b6e;
+    --golden-yellow-secondary: #e8b44a;
+    --charcoal-gray-secondary: #2c2c2c;
+}
+
+/* defining headers and paragraph tags for font scheme */
+h1 {
+    font-family: "Pacifico", cursive;
+}
+
+h2 {
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+}
+
+p {
+    font-family: "Open Sans" sans-serif;
+    font-weight: 500;
+}
+
+body {
+    background-color: var(--cream-primary);
+}
+
+.navbar {
+    background-color: var(--charcoal-gray-secondary);
+    position: sticky;
+    top: 0px;
+    overflow: hidden;
+    z-index: 100; /* z value allows it to go over all other page elements */
+}
+
+#navbar-header-text {
+    font-size: xxl-large; /* compiler says this isn't a real value but it works? */
+    color: var(--cream-primary);
+    margin-top: 10px;
+}
+
+#navbar-logo-img{
+    width: 75px;
+}
+
+.navbar-brand {
+    display: flex;
+    align-content: center;
+    gap: 10px;
+}
+
+.sidebar-container {
+    width: 85px;
+    height: 100vh;
+    padding: 20px 0px 0px 0px;
+    background-color: var(--sage-green-secondary); /* i'm thinking this might not stay green but it is for now */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar-nav{
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+}
+
+.sidebar-nav-link-icon {
+    width: 30px;
+    color: var(--cream-primary);
+    margin: 5px;
+}
+
+.background-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
+    width: 100%;
+    height: 100vh;
+    background-image: url(/assets/family-dinner-img.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+#hero-img-center-box {
+    background-color:  rgba(250, 243, 232, 0.9); /* this color is the same value as cream used throughout but + an alpha value */
+    padding: 30px 40px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 500px;
+}
+
+/* headers + paragraph text within box inside hero image */
+#hero-img-center-box h2 {
+    margin: 15px;
+    color: var(--charcoal-gray-secondary);
+}
+
+#hero-img-center-box p {
+    color: var(--charcoal-gray-secondary);
+    margin: 10px;
+}
+
+#hero-login-button {
+    padding: 5px 15px 5px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--burnt-orange-primary);
+    color: var(--cream-primary);
+    font-family: "Poppins", sans-serif;
+    font-size: large;
+}
+
+#hero-login-button:hover {
+    background-color: var(--golden-yellow-secondary);
+}
