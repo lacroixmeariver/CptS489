@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Operations</title>
+    <!-- these are preconnects + google fonts link they're for the custom fonts  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Pacifico&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <!-- bootstrap and CSS style sheet links -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a href="#" class="navbar-brand">
+                <img id="navbar-logo-img" src="../assets/homeplate-logo-transparent.png" alt="">
+                <h1 id="navbar-header-text">HomePlate</h1>
+            </a>
+        </div>
+    </nav>
+
+    <ul class="nav nav-tabs">
+        <li classs="nav-item" role="presentation">
+            <button class="nav-link active" id="current-orders-tab" data-bs-toggle="tab" data-bs-target="#current-orders", type="button" role="tab" aria-controls="current-orders" aria-selected="true">Current Orders</button>
+        </li>
+        <li classs="nav-item" role="presentation">
+            <button class="nav-link" id="pending-orders-tab" data-bs-toggle="tab" data-bs-target="#pending-orders", type="button" role="tab" aria-controls="pending-orders" aria-selected="false">Pending Orders</button>
+        </li>
+        <li classs="nav-item" role="presentation">
+            <button class="nav-link" id="live-menu-tab" data-bs-toggle="tab" data-bs-target="#live-menu", type="button" role="tab" aria-controls="live-menu" aria-selected="false">Live Menu</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="tabContent">
+        <div class="tab-pane fade show active" id="current-orders" role="tabpanel" aria-labelledby="current-orders-tab">
+            <div class="container">
+                <h2 class="mt-4">Current Orders</h2>
+                <p>Here you can view and manage all current orders.</p>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="pending-orders" role="tabpanel" aria-labelledby="pending-orders-tab">
+            <div class="container">
+                <h2 class="mt-4">Pending Orders</h2>
+                <p>Here you can view and manage all pending orders.</p>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="live-menu" role="tabpanel" aria-labelledby="live-menu-tab">
+            <div class="container">
+                <h2 class="mt-4">Live Menu</h2>
+                <p>Here you can view and manage the live menu.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- script for the tooltips to work -->
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+</body>
+</html>
