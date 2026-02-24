@@ -117,3 +117,92 @@ body {
 #hero-login-button:hover {
     background-color: var(--golden-yellow-secondary);
 }
+
+.order-row
+{
+    padding: 1rem;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    gap: 20px;
+}
+
+.order-row-header
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.order-info
+{
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, 20vw, 8rem);
+}
+
+.button-ready
+{
+    background-color: var(--sage-green-secondary);
+    color: var(--cream-primary);
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.button-details
+{
+    background-color: var(--burnt-orange-primary);
+    color: var(--cream-primary);
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.button-cancel
+{
+    background-color: var(--charcoal-gray-secondary);
+    color: var(--cream-primary);
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.switch-label .label-off {
+  display: none;
+}
+
+.form-check-input:not(:checked) + .switch-label .label-on {
+  display: none;
+}
+
+.form-check-input:not(:checked) + .switch-label .label-off {
+  display: inline;
+}
+
+.form-check-input:checked {
+  background-color:var(--sage-green-secondary);
+  border-color: var(--sage-green-secondary);
+}
+
+.form-check-input:not(:checked) {
+  background-color: var(--cream-primary);
+  border-color: var(--charcoal-gray-secondary);
+}
+
+.sticky-tabs-wrapper {
+  position: sticky;
+  top: 94px; /* sits directly below navbar */
+  z-index: 1030;
+  background: #fff;          /* prevents content showing through */
+  box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+}
+
+#close-store-button {
+    text-decoration: none;
+    margin: auto 20px auto auto;
+}
+
+tab-content{
+   margin: auto 20px auto 20px;
+}

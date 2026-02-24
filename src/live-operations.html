@@ -25,35 +25,118 @@
         </div>
     </nav>
 
-    <ul class="nav nav-tabs">
-        <li classs="nav-item" role="presentation">
-            <button class="nav-link active" id="current-orders-tab" data-bs-toggle="tab" data-bs-target="#current-orders", type="button" role="tab" aria-controls="current-orders" aria-selected="true">Current Orders</button>
-        </li>
-        <li classs="nav-item" role="presentation">
-            <button class="nav-link" id="pending-orders-tab" data-bs-toggle="tab" data-bs-target="#pending-orders", type="button" role="tab" aria-controls="pending-orders" aria-selected="false">Pending Orders</button>
-        </li>
-        <li classs="nav-item" role="presentation">
-            <button class="nav-link" id="live-menu-tab" data-bs-toggle="tab" data-bs-target="#live-menu", type="button" role="tab" aria-controls="live-menu" aria-selected="false">Live Menu</button>
-        </li>
-    </ul>
+    <!--On Page Tab Bar stays below navbar entire time-->
+    <div class="sticky-tabs-wrapper">
+        <ul class="nav nav-tabs">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="current-orders-tab" data-bs-toggle="tab" data-bs-target="#current-orders" type="button" role="tab" aria-controls="current-orders" aria-selected="true">Current Orders</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pending-orders-tab" data-bs-toggle="tab" data-bs-target="#pending-orders" type="button" role="tab" aria-controls="pending-orders" aria-selected="false">Pending Orders</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="live-menu-tab" data-bs-toggle="tab" data-bs-target="#live-menu" type="button" role="tab" aria-controls="live-menu" aria-selected="false">Live Menu</button>
+            </li>
+            <li id="close-store-button">
+                <!--Links to index page right now will evelntually cause the close store function and take user back to merchant dashboard-->
+                <a href="../src/index.html">
+                    <button class="button-cancel" type="button">Close Store</button>
+                </a>
+            </li>
+        </ul>
+    </div>
 
+   
+    <!-- Tab Content -->
     <div class="tab-content" id="tabContent">
+        <!--Content for the Current Orders tab-->
         <div class="tab-pane fade show active" id="current-orders" role="tabpanel" aria-labelledby="current-orders-tab">
-            <div class="container">
+            <div class="container d-flex flex-column" style="min-height:0;">
                 <h2 class="mt-4">Current Orders</h2>
-                <p>Here you can view and manage all current orders.</p>
-            </div>
+                <p>Here you can view and manage all current orders. Below is an example.</p>
+                    <!-- Example Order Row -->
+                    <div class ="order-row">
+                        <div class = "order-row-header">
+                            <div class="order-info">
+                                <span class="fw-bold">Order# 12345</span>
+                                <span>Name: John Doe</span>
+                                <span class="text-muted">Placed: 00:00 PM</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <button class="btn button-details" type="button" data-bs-toggle="collapse" data-bs-target="#orderDetails12345" aria-expanded="false" aria-controls="orderDetails12345">
+                                    Order Details
+                                </button>
+                            </div>
+
+                            <button class="btn button-ready btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark Order as Ready">Order Ready!</button>
+                        </div>
+                        <div class="collapse" id="orderDetails12345">
+                            <p><strong>Items:</strong></p>
+                            <ul>
+                                <li>1x Cheeseburger</li>
+                                <li>2x Fries</li>
+                                <li>1x Soda</li>
+                            </ul>
+                            <p><strong>Total:</strong> $15.00</p>
+                            <button class="btn button-cancel btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancel Order">Cancel Order</button>
+                        </div>
+                    </div>
+                </div>
         </div>
+        <!--Content for the Pending Orders tab-->
         <div class="tab-pane fade" id="pending-orders" role="tabpanel" aria-labelledby="pending-orders-tab">
             <div class="container">
                 <h2 class="mt-4">Pending Orders</h2>
-                <p>Here you can view and manage all pending orders.</p>
+                <p>Here you can view and manage all pending orders.Below is an example.</p>
+                <!-- Example Pending Order Row -->
+                <div class ="order-row">
+                    <div class = "order-row-header">
+                        <div class="order-info">
+                            <span class="fw-bold">Order# 12345</span>
+                            <span class="text-muted">Placed: 00:00 PM</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <button class="btn button-details" type="button" data-bs-toggle="collapse" data-bs-target="#orderDetails12345" aria-expanded="false" aria-controls="orderDetails12345">
+                                Order Details
+                            </button>
+                        </div>
+                        <button class="btn button-ready btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Accept Order">Accept Order!</button>
+                    </div>
+                    <div class="collapse" id="PendingOrderDetails12345">
+                        <p><strong>Items:</strong></p>
+                        <ul>
+                            <li>1x Cheeseburger</li>
+                            <li>2x Fries</li>
+                            <li>1x Soda</li>
+                        </ul>
+                        <p><strong>Total:</strong> $15.00</p>
+                        <button class="btn button-cancel btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Reject Order">Reject Order</button>
+                    </div>
+                </div>
             </div>
         </div>
+        <!--Content for the Live Menu tab-->
         <div class="tab-pane fade" id="live-menu" role="tabpanel" aria-labelledby="live-menu-tab">
             <div class="container">
                 <h2 class="mt-4">Live Menu</h2>
-                <p>Here you can view and manage the live menu.</p>
+                <p>Here you can view and manage the live menu. Example Below.</p>
+                <!-- Example Live Menu Item -->
+                <div class ="order-row">
+                    <div class = "order-row-header">
+                        <div class="order-info">
+                            <span>Item# 12345</span>
+                            <span>Name: Placeholder Item</span>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="itemAvailable12345" checked>
+                                <label class="form-check-label switch-label" for="itemAvailable12345" aria-hidden="true">
+                                    <span class="label-on">Available</span>
+                                    <span class="label-off">Unavailable</span>
+                                </label>
+                            </input>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
