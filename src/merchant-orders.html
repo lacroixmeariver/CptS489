@@ -1,0 +1,122 @@
+﻿<!-- ================================================================
+     merchant-orders.html  —  HTML fragment loaded by merchant-dashboard.html
+     Do NOT open this file directly; it is fetched via JS fetch().
+     ================================================================ -->
+
+<!-- Orders section card -->
+<div class="section-card">
+    <h2 class="section-title">
+        <i class="bi bi-bag-check me-2"></i>Orders
+    </h2>
+
+    <!-- Filter tabs -->
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">
+                Pending
+                <span class="badge ms-1" style="background-color:var(--burnt-orange-primary);">3</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                Accepted
+                <span class="badge ms-1" style="background-color:var(--sage-green-secondary);">2</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                Completed
+                <span class="badge bg-secondary ms-1">127</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Order #1042 -->
+    <div class="order-card">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <div>
+                <span style="font-family:'Poppins',sans-serif;font-weight:600;">Order #1042</span>
+                <span class="badge ms-2" style="background-color:var(--golden-yellow-secondary);color:#333;">Pending</span>
+            </div>
+            <span style="font-size:0.82rem;color:#999;font-family:'Open Sans',sans-serif;">Today, 6:42 PM</span>
+        </div>
+        <div class="order-meta">
+            <i class="bi bi-person me-1"></i><strong>Alex Turner</strong>
+            &nbsp;·&nbsp;
+            <i class="bi bi-clock me-1"></i>Pickup: <strong>7:30 PM</strong>
+            &nbsp;·&nbsp;
+            <i class="bi bi-telephone me-1"></i>(509) 555-0182
+        </div>
+        <ul>
+            <li>Grandma's Lasagna &times; 2</li>
+            <li>Honey Lemon Tart &times; 1</li>
+        </ul>
+        <div class="d-flex justify-content-between align-items-center">
+            <strong style="font-family:'Poppins',sans-serif;color:var(--burnt-orange-primary);">Total: $35.00</strong>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-secondary">Decline</button>
+                <button class="btn btn-sm btn-hp">Accept Order</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order #1041 -->
+    <div class="order-card">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <div>
+                <span style="font-family:'Poppins',sans-serif;font-weight:600;">Order #1041</span>
+                <span class="badge ms-2" style="background-color:var(--golden-yellow-secondary);color:#333;">Pending</span>
+            </div>
+            <span style="font-size:0.82rem;color:#999;font-family:'Open Sans',sans-serif;">Today, 6:15 PM</span>
+        </div>
+        <div class="order-meta">
+            <i class="bi bi-person me-1"></i><strong>Sarah Kim</strong>
+            &nbsp;·&nbsp;
+            <i class="bi bi-clock me-1"></i>Pickup: <strong>7:00 PM</strong>
+            &nbsp;·&nbsp;
+            <i class="bi bi-telephone me-1"></i>(509) 555-0274
+        </div>
+        <ul>
+            <li>Thai Green Curry &times; 1</li>
+        </ul>
+        <div class="d-flex justify-content-between align-items-center">
+            <strong style="font-family:'Poppins',sans-serif;color:var(--burnt-orange-primary);">Total: $12.50</strong>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-secondary">Decline</button>
+                <button class="btn btn-sm btn-hp">Accept Order</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order #1040 -->
+    <div class="order-card">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <div>
+                <span style="font-family:'Poppins',sans-serif;font-weight:600;">Order #1040</span>
+                <span class="badge ms-2" style="background-color:var(--golden-yellow-secondary);color:#333;">Pending</span>
+            </div>
+            <span style="font-size:0.82rem;color:#999;font-family:'Open Sans',sans-serif;">Today, 5:58 PM</span>
+        </div>
+        <div class="order-meta">
+            <i class="bi bi-person me-1"></i><strong>David Nguyen</strong>
+            &nbsp;·&nbsp;
+            <i class="bi bi-clock me-1"></i>Pickup: <strong>6:45 PM</strong>
+            &nbsp;·&nbsp;
+            <i class="bi bi-telephone me-1"></i>(509) 555-0391
+            &nbsp;·&nbsp;
+            <i class="bi bi-chat-dots me-1"></i><em>"No onions please"</em>
+        </div>
+        <ul>
+            <li>Grandma's Lasagna &times; 1</li>
+            <li>Thai Green Curry &times; 2</li>
+        </ul>
+        <div class="d-flex justify-content-between align-items-center">
+            <strong style="font-family:'Poppins',sans-serif;color:var(--burnt-orange-primary);">Total: $39.00</strong>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-secondary">Decline</button>
+                <button class="btn btn-sm btn-hp">Accept Order</button>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /section-card -->
