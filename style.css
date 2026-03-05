@@ -18,7 +18,7 @@ h2 {
 }
 
 p {
-    font-family: "Open Sans" sans-serif;
+    font-family: "Open Sans", sans-serif;
     font-weight: 500;
 }
 
@@ -69,14 +69,16 @@ body {
 
 /* I fixed this because it was changing sizes between pages so it's set at a max width */
 .sidebar-container {
+    position: fixed ;
+  
     display: flex;
-    height: auto;
+    height: 100vh;
     min-height: 100%;
     flex-direction: column;
     align-items: center;
     min-width: 85px;
     max-width: 85px;
-    overflow: hidden;
+    overflow: visible;
     padding: 20px 0px 0px 0px;
     background-color: var(--sage-green-secondary); /* i'm thinking this might not stay green but it is for now */
 
@@ -92,6 +94,20 @@ body {
     width: 30px;
     color: var(--cream-primary);
     margin: 5px;
+}
+
+.sidebar-nav a {
+    position: relative;
+}
+
+.sidebar-nav .badge {
+    position: absolute; 
+    top: 0;
+    right: 0; 
+    width: 12px; 
+    height: 12px; 
+    padding: 0;
+    margin-right: 3px;
 }
 
 .background-container {
@@ -151,7 +167,7 @@ body {
 }
 
 .table-container{
-    margin: 0px 50px 10px 20px; 
+    margin: 0px 10px 10px 105px; 
 }
 
 /* ADMIN DASHBOARD STUFF  -------------------------------------------------------------------------- */
@@ -173,10 +189,6 @@ body {
     color: inherit;
 }
 
-#recent-activity-heading {
-    margin-left: 5px;
-}
-
 .card {
     width: 12rem;
     margin: 20px 20px 20px 20px;
@@ -187,11 +199,6 @@ body {
 
 .card:hover {
     box-shadow: lightgray 5px 5px 10px 1px;
-}
-
-.data-card-icon {
-    width: 15%;
-    margin: 15px 10px 15px 0;
 }
 
 /* --------------------------------------------------------------------------------------------- */
@@ -208,13 +215,7 @@ tbody tr:hover {
 }
 
 .modal-body {
-    text-align: center;
-}
-
-#close-modal-btn {
-    background-color: var(--burnt-orange-primary);
-    color: var(--cream-primary);
-    border: none;
+    text-align: left;
 }
 
 .nav-tabs .nav-link{
@@ -235,7 +236,7 @@ tbody tr:hover {
 }
 
 /* BADGES FOR USER STATUS ------------------------------*/ 
-.user-status-badge {
+.status-badge {
     padding: 5px 10px 5px 10px;
     border-radius: 5px;
     font-size: small;
@@ -256,12 +257,6 @@ tbody tr:hover {
 /* ----------------------------------------- */
 
 /* BADGES FOR APPLICATION STATUS --------------*/ 
-.app-status-badge {
-    padding: 5px 10px 5px 10px;
-    border-radius: 5px;
-    font-size: small;
-    font-family: "Poppins", sans-serif;
-}
 .app-status-approved {
     background-color: var(--sage-green-secondary); 
     color: var(--cream-primary); 
@@ -277,8 +272,73 @@ tbody tr:hover {
 /* ----------------------------------------- */
 
 
-/* just to have something there for the time being */
-.under-construction {
-    width: 100px;
+/* MODAL FOOTER BUTTONS ---------------------------------- */
+
+/* APPLICATIONS --------------------- */
+
+#applicationModalApproveBtn {
+    background-color: var(--sage-green-secondary); 
+    color: var(--cream-primary);
 }
 
+#applicationModalRejectBtn {
+    background-color: var(--burnt-orange-primary); 
+    color: var(--cream-primary);
+}
+
+#applicationModalMoreInfoBtn {
+    background-color: var(--golden-yellow-secondary); 
+    color: var(--charcoal-gray-secondary);
+}
+
+/* USER MGMT --------------------- */
+
+#userModalReinstateBtn {
+    background-color: var(--sage-green-secondary);
+    color: var(--cream-primary);
+}
+
+#userModalSuspendBtn {
+    background-color: var(--golden-yellow-secondary);
+    color: var(--charcoal-gray-secondary);
+}
+
+#userModalBanBtn {
+    background-color: var(--burnt-orange-primary);
+    color: var(--cream-primary);
+}
+
+/* MODERATION --------------------- */
+
+#contentModalDismissBtn {
+    background-color: var(--sage-green-secondary);
+    color: var(--cream-primary);
+}
+
+#contentModalWarnBtn {
+    background-color: var(--golden-yellow-secondary);
+    color: var(--charcoal-gray-secondary);
+}
+
+#contentModalRemoveBtn {
+    background-color: var(--burnt-orange-primary);
+    color: var(--cream-primary);
+}
+
+/* DISPUTES --------------------- */
+
+#orderModalResolveBtn {
+    background-color: var(--sage-green-secondary);
+    color: var(--cream-primary);
+}
+
+#orderModalMoreInfoBtn {
+    background-color: var(--golden-yellow-secondary); 
+    color: var(--charcoal-gray-secondary);
+}
+
+.modal-content .btn:hover {
+    opacity: .90;
+}
+
+/* --------------------------------------------------- */
