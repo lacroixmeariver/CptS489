@@ -55,6 +55,8 @@ const sidenav =
 
 // I prompted an AI to help me write a function to be able to keep all the common elements consistent
 // maybe we can use a templating engine down the road but this is the all-frontend solution for now
+
+// NOTE: This is dependent that you use the main-box class to encase all your content in!! Otherwise it won't work!
 document.addEventListener("DOMContentLoaded", function () {
     document.body.insertAdjacentHTML("afterbegin", navbar);
     const mainBox = document.querySelector(".main-box");
