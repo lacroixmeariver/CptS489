@@ -51,23 +51,19 @@ body {
 }
 
 .sidebar-container {
-    width: 68px;
-    height: calc(100vh - 56px);
-    padding: 20px 0px 0px 0px;
-    background-color: var(--sage-green-secondary); /* i'm thinking this might not stay green but it is for now */
+    position: fixed ;
+  
     display: flex;
+    height: 100vh;
+    min-height: 100%;
     flex-direction: column;
     align-items: center;
-    position: fixed;
-    top: 56px;
-    left: 0;
-    z-index: 50;
-    width: 85px;
-    height: 150vh;
-    overflow: hidden;
+    min-width: 85px;
+    max-width: 85px;
+    overflow: visible;
     padding: 20px 0px 0px 0px;
     background-color: var(--sage-green-secondary); /* i'm thinking this might not stay green but it is for now */
-    
+
 }
 
 .sidebar-nav{
@@ -80,6 +76,20 @@ body {
     width: 30px;
     color: var(--cream-primary);
     margin: 5px;
+}
+
+.sidebar-nav a {
+    position: relative;
+}
+
+.sidebar-nav .badge {
+    position: absolute; 
+    top: 0;
+    right: 0; 
+    width: 12px; 
+    height: 12px; 
+    padding: 0;
+    margin-right: 3px;
 }
 
 .background-container {
@@ -145,16 +155,19 @@ body {
 }
 
 #hero-register-button:hover {
+    background-color: var(--golden-yellow-secondary);
 }
 
 .main-box {
     display: flex;
+    min-height: 100vh;
+    align-items: stretch;
 }
 
 .dashboard-container {
     display: flex;
     justify-content: left;
-    margin: 0px;
+    margin-left: 85px;
     width: 100%;
     height: 100vh;
 
@@ -258,4 +271,87 @@ tbody tr:hover {
 
 .under-construction {
     width: 100px;
+}
+
+.order-row
+{
+    padding: 1rem;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    gap: 20px;
+    border-style: solid;
+    border-color: var(--charcoal-gray-secondary);
+    
+}
+.order-row-header
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.order-info
+{
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, 20vw, 8rem);
+}
+.button-ready
+{
+    background-color: var(--sage-green-secondary);
+    color: var(--cream-primary);
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+.button-details
+{
+    background-color: var(--burnt-orange-primary);
+    color: var(--cream-primary);
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+.button-cancel
+{
+    background-color: var(--charcoal-gray-secondary);
+    color: var(--cream-primary);
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+.switch-label .label-off {
+    display: none;
+}
+.form-check-input:not(:checked) + .switch-label .label-on {
+    display: none;
+}
+.form-check-input:not(:checked) + .switch-label .label-off {
+    display: inline;
+}
+.form-check-input:checked {
+    background-color:var(--sage-green-secondary);
+    border-color: var(--sage-green-secondary);
+}
+.form-check-input:not(:checked) {
+    background-color: var(--cream-primary);
+    border-color: var(--charcoal-gray-secondary);
+}
+.sticky-tabs-wrapper {
+    position: sticky;
+    top: 94px; /* sits directly below navbar */
+    z-index: 1030;
+    background: var(--cream-primary);          /* prevents content showing through */
+    box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    margin-left: 30px;
+}
+
+#close-store-button {
+    text-decoration: none;
+    margin: auto 20px auto auto;
+}
+
+.tab-content
+{
+    margin: auto 20px auto 20px;
 }
