@@ -2,9 +2,9 @@
   "name": "group-project",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/bin/www",
   "scripts": {
-    "start": "node app.js",
+    "start": "node ./src/bin/www",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
