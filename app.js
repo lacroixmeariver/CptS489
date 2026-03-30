@@ -1,11 +1,3 @@
-// const express = require("express");
-// const app = express();
-// const PORT = 3000;
-
-// app.listen(PORT, () => {
-//     console.log(`Server running on http://localhost:${PORT}`); 
-// });
-
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
