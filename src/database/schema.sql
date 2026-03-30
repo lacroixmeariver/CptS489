@@ -1,1 +1,11 @@
 -- SQLite
+
+CREATE TABLE IF NOT EXISTS users (
+    userId INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    salt TEXT NOT NULL,
+    phone_number TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+
+);
