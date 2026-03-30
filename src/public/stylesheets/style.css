@@ -72,7 +72,16 @@ body {
     position: fixed ;
   
     display: flex;
+    position: fixed ;
+  
+    display: flex;
     height: 100vh;
+    min-height: 100%;
+    flex-direction: column;
+    align-items: center;
+    min-width: 85px;
+    max-width: 85px;
+    overflow: visible;
     min-height: 100%;
     flex-direction: column;
     align-items: center;
@@ -81,6 +90,7 @@ body {
     overflow: visible;
     padding: 20px 0px 0px 0px;
     background-color: var(--sage-green-secondary); /* i'm thinking this might not stay green but it is for now */
+
 
 }
 
@@ -94,6 +104,20 @@ body {
     width: 30px;
     color: var(--cream-primary);
     margin: 5px;
+}
+
+.sidebar-nav a {
+    position: relative;
+}
+
+.sidebar-nav .badge {
+    position: absolute; 
+    top: 0;
+    right: 0; 
+    width: 12px; 
+    height: 12px; 
+    padding: 0;
+    margin-right: 3px;
 }
 
 .sidebar-nav a {
@@ -143,6 +167,7 @@ body {
 }
 
 #hero-login-button {
+    display: inline-block;
     padding: 5px 15px 5px 15px;
     margin: 5px;
     border: none;
@@ -151,10 +176,227 @@ body {
     color: var(--cream-primary);
     font-family: "Poppins", sans-serif;
     font-size: large;
+    text-decoration: none;
 }
 
 #hero-login-button:hover {
     background-color: var(--golden-yellow-secondary);
+    text-decoration: none;
+}
+
+#hero-register-button {
+    display: inline-block;
+    padding: 5px 15px;
+    margin: 5px;
+    border: 2px solid var(--burnt-orange-primary);
+    border-radius: 5px;
+    background-color: transparent;
+    color: var(--burnt-orange-primary);
+    font-family: "Poppins", sans-serif;
+    font-size: large;
+    text-decoration: none;
+}
+
+#hero-register-button:hover {
+    background-color: var(--golden-yellow-secondary);
+}
+
+.main-box {
+    display: flex;
+    min-height: 100vh;
+    align-items: stretch;
+}
+
+.dashboard-container {
+    display: flex;
+    justify-content: left;
+    margin-left: 85px;
+    width: 100%;
+    height: 100vh;
+
+}
+
+.analytics-container {
+    padding: 10px;
+    margin: 20px;
+}
+
+.card-container {
+    margin: 10px 0px 10px 0px;
+}
+
+.analytics-container h2 {
+    margin-bottom: 5px;
+}
+
+.analytics-container a {
+    text-decoration: none;
+    color: inherit;
+}
+
+#recent-activity-heading {
+    margin-left: 5px;
+}
+
+.card {
+    width: 12rem;
+    margin: 20px 20px 20px 20px;
+    padding: 0px;
+    border: none;
+    border-radius: 5px;
+}
+
+
+.card:hover {
+    box-shadow: lightgray 5px 5px 10px 1px;
+}
+
+.data-card-icon {
+    width: 15%;
+    margin: 15px 10px 15px 0;
+}
+
+.table-container{
+    margin: 0px 50px 10px 20px; 
+}
+
+
+tbody tr:hover {
+    background-color: var(--golden-yellow-secondary);
+    cursor: pointer;
+}
+
+#userDetailModal {
+    padding: 10px;
+}
+
+.modal-body {
+    text-align: center;
+}
+
+#close-modal-btn {
+    background-color: var(--burnt-orange-primary);
+    color: var(--cream-primary);
+    text-decoration: none;
+    border: none;
+}
+
+.user-status-badge {
+    padding: 5px 10px 5px 10px;
+    border-radius: 5px;
+    font-size: small;
+    font-family: "Poppins", sans-serif;
+}
+
+.status-active {
+    background-color: var(--sage-green-secondary); 
+    color: var(--cream-primary); 
+}
+.status-suspended { 
+    background-color: var(--golden-yellow-secondary); 
+    color: var(--charcoal-gray-secondary); 
+}
+.status-banned { 
+    background-color: var(--burnt-orange-primary); 
+    color: var(--cream-primary); 
+}
+
+
+.nav-tabs .nav-link{
+    color: var(--charcoal-gray-secondary);
+    border: none;
+}
+
+.nav-tabs .nav-link.active{
+    background-color: var(--burnt-orange-primary);
+    color: var(--cream-primary);
+}
+
+.under-construction {
+    width: 100px;
+}
+
+.order-row
+{
+    padding: 1rem;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    gap: 20px;
+    border-style: solid;
+    border-color: var(--charcoal-gray-secondary);
+    
+}
+.order-row-header
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.order-info
+{
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, 20vw, 8rem);
+}
+.button-ready
+{
+    background-color: var(--sage-green-secondary);
+    color: var(--cream-primary);
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+.button-details
+{
+    background-color: var(--burnt-orange-primary);
+    color: var(--cream-primary);
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+.button-cancel
+{
+    background-color: var(--charcoal-gray-secondary);
+    color: var(--cream-primary);
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+.switch-label .label-off {
+    display: none;
+}
+.form-check-input:not(:checked) + .switch-label .label-on {
+    display: none;
+}
+.form-check-input:not(:checked) + .switch-label .label-off {
+    display: inline;
+}
+.form-check-input:checked {
+    background-color:var(--sage-green-secondary);
+    border-color: var(--sage-green-secondary);
+}
+.form-check-input:not(:checked) {
+    background-color: var(--cream-primary);
+    border-color: var(--charcoal-gray-secondary);
+}
+.sticky-tabs-wrapper {
+    position: sticky;
+    top: 94px; /* sits directly below navbar */
+    z-index: 1030;
+    background: var(--cream-primary);          /* prevents content showing through */
+    box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    margin-left: 30px;
+}
+
+#close-store-button {
+    text-decoration: none;
+    margin: auto 20px auto auto;
+}
+
+.tab-content
+{
+    margin: auto 20px auto 20px;
 }
 
 /* ------------------------------------------------------------------------------------------------- */
