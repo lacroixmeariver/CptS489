@@ -15,6 +15,13 @@ Washington State University
 ## How to run
 run `npm install` if you haven't already
 
+### Database Setup
+1. install SQLite Tools if haven't already
+2. run `sqlite3 src/database/database.db` from project root
+### Inside sqlite shell
+1. run  `.read src/database/schema.sql`
+2. run `.exit` to leave SQLite Shell
+
 
 ### Helpful notes/scripts 
 `npm start` - starts the server
