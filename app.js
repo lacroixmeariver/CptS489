@@ -3,10 +3,15 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
-var indexRouter = require('./src/routes/index');
-
+var passport = require('./src/config/passport-config');
+var session = require('express-session');
 var app = express();
+
+
+// routers
+var indexRouter = require('./src/routes/index');
+var authRouter = require('./src/routes/auth/auth');
+var userRouter = require('./src/routes/user/dashboard');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'src/views'));
@@ -17,9 +22,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'src/public')));
-
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false
+}))
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', indexRouter);
+app.use('/', authRouter)
+app.use('/', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -28,6 +41,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+  console.error(err);
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

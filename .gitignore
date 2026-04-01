@@ -1,6 +1,9 @@
 # don't include giant modules file 
 node_modules/
 
+# don't push db 
+*.db
+
 # don't include sensitive info
 .env
 .env.local
