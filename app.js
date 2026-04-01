@@ -7,6 +7,7 @@ var passport = require('./src/config/passport-config');
 var session = require('express-session');
 var app = express();
 
+
 // routers
 var indexRouter = require('./src/routes/index');
 var authRouter = require('./src/routes/auth/auth');
@@ -26,6 +27,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }))
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/', authRouter)
@@ -38,6 +41,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+  console.error(err);
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
