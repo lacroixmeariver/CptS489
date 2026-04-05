@@ -1,71 +1,130 @@
-const navbar = 
-`
-<!-- navbar -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a href="../src/index.html" class="navbar-brand">
-                <img id="navbar-logo-img" src="../assets/homeplate-logo-transparent.png" alt="">
-                <h1 id="navbar-header-text">HomePlate</h1>
-            </a>
 
-            <a class="nav-item nav-link m-2" id="logout-nav-button" href="../src/admin-dashboard.html">
-                Dashboard Demo
-            </a>
-        </div>
+// navbar for consistency among all pages where it's appropriate
+// displays username
+const navbar = (userName) => `
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a href="/" class="navbar-brand">
+            <img id="navbar-logo-img" src="/images/homeplate-logo-transparent.png" alt="">
+            <h1 id="navbar-header-text">HomePlate</h1>
+        </a>
+        ${userName ? `<span class="navbar-greeting">Hello, ${userName}</span>` : ''}
+        <a class="nav-item nav-link m-2" id="logout-nav-button" href="/logout">
+            <i class="bi bi-box-arrow-right"></i> Log Out
+        </a>
+    </div>
+</nav>
+`;
+
+// admin sidebar with appropriate links
+const adminSidenav = `
+<div class="sidebar-container">
+    <nav class="sidebar-nav">
+        <a href="/admin/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
+            <i class="bi bi-house-fill sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/admin/users" data-bs-toggle="tooltip" data-bs-placement="right" title="User Management">
+            <i class="bi bi-people-fill sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/admin/moderate" data-bs-toggle="tooltip" data-bs-placement="right" title="Issues">
+            <i class="bi bi-exclamation-triangle-fill sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/admin/revenue" data-bs-toggle="tooltip" data-bs-placement="right" title="Revenue">
+            <i class="bi bi-graph-up sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/admin/profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
+            <i class="bi bi-person-circle sidebar-nav-link-icon"></i>
+        </a>
     </nav>
+</div>
 `;
 
-const sidenav = 
-`
- <!-- sidebar -->
-        <div class="sidebar-container">
-            <nav class="sidebar-nav">
-                <!-- sidebar links + tooltips -->
-                <a href="../src/admin-dashboard.html">
-                    <img class="sidebar-nav-link-icon" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard Home" src="../assets/home-icon.png" alt="">
-                </a>
-                <a href="../src/vendor-applications.html">
-                    <img class="sidebar-nav-link-icon" data-bs-toggle="tooltip" data-bs-placement="right" title="Vendor Applications" src="../assets/applications-icon.png" alt="">
-                    <span class="badge rounded-pill bg-danger">
-                        <span class="visually-hidden">New alerts</span>
-                    </span>
-                </a>
-                <a href="../src/revenue.html">
-                    <img class="sidebar-nav-link-icon" data-bs-toggle="tooltip" data-bs-placement="right" title="Revenue" src="../assets/revenue-icon.png" alt="">
-                </a>
-                <a href="../src/manage-user.html">
-                    <img class="sidebar-nav-link-icon" data-bs-toggle="tooltip" data-bs-placement="right" title="User Management" src="../assets/users-icon.png" alt="">
-                </a>
-                <a href="../src/moderate-content.html">
-                    <img class="sidebar-nav-link-icon" data-bs-toggle="tooltip" data-bs-placement="right" title="Issues" src="../assets/exclaim-icon.png" alt="">
-                </a>
-                <a href="../src/disputes.html">
-                    <img class="sidebar-nav-link-icon" data-bs-toggle="tooltip" data-bs-placement="right" title="Disputes" src="../assets/handshake-icon.png" alt="">
-                    <span class="badge rounded-pill bg-danger">
-                        <span class="visually-hidden">New alerts</span>
-                    </span>
-                </a>
-                <a href="../src/admin-profile.html">
-                    <img class="sidebar-nav-link-icon" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account" src="../assets/default-user.png" alt="">
-                </a>
-            </nav>
-        </div>
+// vendor sidebar with appropriate links
+const cookSidenav = `
+<div class="sidebar-container">
+    <nav class="sidebar-nav">
+        <a href="/cook/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
+            <i class="bi bi-house-fill sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/cook/menu" data-bs-toggle="tooltip" data-bs-placement="right" title="My Menu">
+            <i class="bi bi-journal-text sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/cook/orders" data-bs-toggle="tooltip" data-bs-placement="right" title="Live Orders">
+            <i class="bi bi-bag-check sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/cook/reports" data-bs-toggle="tooltip" data-bs-placement="right" title="Reports">
+            <i class="bi bi-bar-chart-fill sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/cook/profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
+            <i class="bi bi-person-circle sidebar-nav-link-icon"></i>
+        </a>
+    </nav>
+</div>
 `;
 
+// driver sidebar with appropriate links
+const driverSidenav = `
+<div class="sidebar-container">
+    <nav class="sidebar-nav">
+        <a href="/driver/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
+            <i class="bi bi-house-fill sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/driver/current-order" data-bs-toggle="tooltip" data-bs-placement="right" title="Current Order">
+            <i class="bi bi-bicycle sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/driver/history" data-bs-toggle="tooltip" data-bs-placement="right" title="Order History">
+            <i class="bi bi-receipt sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/driver/earnings" data-bs-toggle="tooltip" data-bs-placement="right" title="Earnings">
+            <i class="bi bi-cash sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/driver/profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
+            <i class="bi bi-person-circle sidebar-nav-link-icon"></i>
+        </a>
+    </nav>
+</div>
+`;
 
-// I prompted an AI to help me write a function to be able to keep all the common elements consistent
-// maybe we can use a templating engine down the road but this is the all-frontend solution for now
+// customer sidebar with appropriate links
+const customerSidenav = `
+<div class="sidebar-container">
+    <nav class="sidebar-nav">
+        <a href="/customer/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
+            <i class="bi bi-house-fill sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/browse" data-bs-toggle="tooltip" data-bs-placement="right" title="Browse">
+            <i class="bi bi-search sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/customer/order-status" data-bs-toggle="tooltip" data-bs-placement="right" title="My Orders">
+            <i class="bi bi-bag sidebar-nav-link-icon"></i>
+        </a>
+        <a href="/customer/profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
+            <i class="bi bi-person-circle sidebar-nav-link-icon"></i>
+        </a>
+    </nav>
+</div>
+`;
 
-// NOTE: This is dependent that you use the main-box class to encase all your content in!! Otherwise it won't work!
+// function to obtain user role 
+function getSidenav(role) {
+    if (role === 'admin')  return adminSidenav;
+    if (role === 'cook')   return cookSidenav;
+    if (role === 'driver') return driverSidenav;
+    return customerSidenav;
+}
+
+// function to insert content
 document.addEventListener("DOMContentLoaded", function () {
-    document.body.insertAdjacentHTML("afterbegin", navbar);
+    const role = document.body.dataset.role;
+    const userName = document.body.dataset.user;
+    console.log('role:', role, 'userName:', userName);
+    document.body.insertAdjacentHTML("afterbegin", navbar(userName));
     const mainBox = document.querySelector(".main-box");
     if (mainBox) {
-        mainBox.insertAdjacentHTML("afterbegin", sidenav);
+        mainBox.insertAdjacentHTML("afterbegin", getSidenav(role));
     }
-
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(function (el) {
         return new bootstrap.Tooltip(el);
     });
-})
+});
