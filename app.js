@@ -10,8 +10,12 @@ var app = express();
 
 // routers
 var indexRouter = require('./src/routes/index');
-var authRouter = require('./src/routes/auth/auth');
-var userRouter = require('./src/routes/user/dashboard');
+var authRouter = require('./src/routes/auth');
+var userRouter = require('./src/routes/user');
+var customerRouter = require('./src/routes/customer');
+var adminRouter = require('./src/routes/admin');
+var driverRouter = require('./src/routes/driver');
+var vendorRouter = require('./src/routes/vendor');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'src/views'));
@@ -33,6 +37,10 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/', authRouter)
 app.use('/', userRouter);
+app.use('/customer', customerRouter);
+app.use('/admin', adminRouter);
+app.use('/driver', driverRouter);
+app.use('/vendor', vendorRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
