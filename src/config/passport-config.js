@@ -5,7 +5,7 @@ const db = require('./db')
 
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, password, cb) { // usernameField lets passport know we're not using username to log in/reg
-  db.get('SELECT * FROM users WHERE email = ?', [ email ], function(err, row) {
+  db.get('SELECT * FROM Users WHERE email = ?', [ email ], function(err, row) {
     if (err) {
       return cb(err); 
     }
@@ -33,11 +33,11 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, passw
 
 passport.serializeUser((user, cb) => {
   //console.log('serializing user:', user); // debug print
-  cb(null, user.userId);
+  cb(null, user.userID);
 });
 
 passport.deserializeUser(function(id, cb) {
-  db.get('SELECT * FROM users WHERE userId = ?', [id], (err, user) => {
+  db.get('SELECT * FROM users WHERE userID = ?', [id], (err, user) => {
     //console.log('deserializing user:', user); // debug print  
     cb(err, user);
   });
