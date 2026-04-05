@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
 
 </head>
-<body>
+<body data-role="<%= user.role %>" data-user="<%= user.first_name %>">
     <!-- box for the main area (the entire visible screen aside from navbar basically) -->
     <div class="main-box">
 
@@ -246,6 +246,5 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./common-elements.js"></script>
-</body>
+    <script src="/javascripts/common-elements.js"></script>
 </html>

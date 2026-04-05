@@ -1,0 +1,29 @@
+
+
+<% if (orders.length === 0) { %>
+    <div class="text-center py-5" style="color:#bbb;font-family:'Poppins',sans-serif;">
+        <i class="bi bi-receipt" style="font-size:2rem;display:block;margin-bottom:8px;"></i>
+        <div>No past orders yet.</div>
+    </div>
+<% } else { %>
+    <% orders.forEach(order => { %>
+    <div style="background:#fff;border-radius:12px;padding:18px 22px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center;">
+        <div>
+            <div style="font-family:'Poppins',sans-serif;font-weight:600;margin-bottom:4px;">
+                <%= order.MerchantName %>
+            </div>
+            <div style="font-family:'Open Sans',sans-serif;font-size:0.83rem;color:#888;">
+                Order #<%= order.OrderID %> &nbsp;·&nbsp; <%= order.TimeOrdered %>
+            </div>
+        </div>
+        <div style="text-align:right;">
+            <div style="font-family:'Poppins',sans-serif;font-weight:700;color:var(--burnt-orange-primary);">
+                $<%= order.TotalAmount.toFixed(2) %>
+            </div>
+            <span class="order-status-badge <%= order.OrderStatus === 'Completed' ? 'status-complete' : 'status-other' %>">
+                <%= order.OrderStatus %>
+            </span>
+        </div>
+    </div>
+    <% }) %>
+<% } %>
