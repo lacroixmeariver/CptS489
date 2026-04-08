@@ -50,7 +50,7 @@ router.get('/user-profile', isAuthenticated, (req, res, next) => {
 
 // get the browse page
 router.get('/browse', isAuthenticated, (req, res, next) => {
-  res.render('browse', { user: req.user });
+  res.render('customer/browse', { user: req.user });
 })
 
 module.exports = router;

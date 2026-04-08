@@ -52,16 +52,16 @@ router.get('/reviews', isAuthenticated, (req, res) => {
 
 
 router.get('/order-history', isAuthenticated, (req, res) => {
-    res.render('order-history', { user: req.user })
+    res.render('customer/customer-order-history', { user: req.user })
 });
 
 router.get('/order-history', isAuthenticated, (req, res) => {
-    res.render('order-history', { user: req.user })
+    res.render('customer/customer-order-history', { user: req.user })
 });
 
 
 router.get('/profile', isAuthenticated, (req, res) => {
-    res.render('profile', { user: req.user })
+    res.render('shared/profile', { user: req.user })
 });
 
 

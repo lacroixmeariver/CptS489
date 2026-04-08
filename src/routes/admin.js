@@ -21,6 +21,6 @@ router.get('/revenue', isAuthenticated, (req, res) => {
 });
 
 router.get('/profile', isAuthenticated, (req, res) => {
-    res.render('profile', { user: req.user })
+    res.render('shared/profile', { user: req.user })
 });
 module.exports = router;
