@@ -5,7 +5,7 @@ const db = require('./db')
 
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, password, cb) { // usernameField lets passport know we're not using username to log in/reg
-  db.get('SELECT * FROM Users WHERE email = ?', [ email ], function(err, row) {
+  db.get('SELECT * FROM Users WHERE Email = ?', [ email ], function(err, row) {
     if (err) {
       return cb(err); 
     }
@@ -13,8 +13,8 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, passw
       return cb(null, false, {message: 'Incorrect email or password.'}); 
     }
 
-    const hashedPassword = Buffer.from(row.password_hash, 'hex');
-    const salt = Buffer.from(row.salt, 'hex');  
+    const hashedPassword = Buffer.from(row.Password_hash, 'hex');
+    const salt = Buffer.from(row.Salt, 'hex');  
 
     crypto.pbkdf2(password, salt, 310000, 32, 'sha256', function(err, supplied) {
       if (err) {
@@ -32,13 +32,13 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, passw
 }));
 
 passport.serializeUser((user, cb) => {
-  //console.log('serializing user:', user); // debug print
-  cb(null, user.userID);
+  // console.log('serializing user:', user); // debug print
+  cb(null, user.UserID);
 });
 
 passport.deserializeUser(function(id, cb) {
-  db.get('SELECT * FROM users WHERE userID = ?', [id], (err, user) => {
-    //console.log('deserializing user:', user); // debug print  
+  db.get('SELECT * FROM Users WHERE UserID = ?', [id], (err, user) => {
+    // console.log('deserializing user:', user); // debug print  
     cb(err, user);
   });
 });
