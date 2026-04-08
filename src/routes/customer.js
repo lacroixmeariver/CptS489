@@ -50,4 +50,39 @@ router.get('/reviews', isAuthenticated, (req, res) => {
     });
 });
 
+
+router.get('/order-history', isAuthenticated, (req, res) => {
+    res.render('order-history', { user: req.user })
+});
+
+router.get('/order-history', isAuthenticated, (req, res) => {
+    res.render('order-history', { user: req.user })
+});
+
+
+router.get('/profile', isAuthenticated, (req, res) => {
+    res.render('profile', { user: req.user })
+});
+
+
+router.get('/cart', isAuthenticated, (req, res) => {
+    res.render('customer/cart', { user: req.user })
+});
+
+router.get('/checkout', isAuthenticated, (req, res) => {
+    res.render('customer/checkout', { user: req.user })
+});
+/*
+    TODO: CUSTOMER ROUTES
+    - BROWSE
+    - MY ORDERS 
+        - ORDER HISTORY PAGE NEEDS STANDALONE
+    - MY ACCOUNT
+    - CURRENT ORDER 
+    - ORDER HISTORY
+    - REVIEWS
+
+
+*/
+
 module.exports = router;
