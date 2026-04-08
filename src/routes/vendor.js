@@ -10,7 +10,7 @@ router.get('/dashboard', isAuthenticated, (req, res) => {
 
 // get the live operations page 
 router.get('/live-operations', isAuthenticated, (req, res) => {
-    res.render('live-operations', { user: req.user })
+    res.render('vendor/live-operations', { user: req.user })
 });
 
 module.exports = router;
