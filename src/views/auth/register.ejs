@@ -22,7 +22,7 @@
 
         <div class="auth-title">Create your account</div>
 
-        <form id="register-form" action="/register" method="post" onsubmit="return validateRegister()" enctype="multipart/form-data">
+        <form id="register-form" action="/register" method="post" onsubmit="return validateRegister()">
 
             <!-- Name row -->
             <div class="row g-3 mb-3">
@@ -109,12 +109,6 @@
                     </div>
                     <div class="check-circle" id="cc-cook"></div>
                 </label>
-                <div class="input-group auth-label mx-1 my-2" id="vendor-img-upload" hidden>
-                    <label for="img-upload" style="display: block;">Upload food-handling documents or certifications
-                        <p class="role-desc">Used for verification and consumer safety (max 5)</p>
-                        <input type="file" name="documents" id="img-upload" class="form-control mb-2" multiple>
-                    </label>
-                </div>
 
                 <label class="role-card" id="card-driver">
                     <input type="radio" name="role" value="driver" onchange="selectRole('card-driver')">
@@ -188,12 +182,8 @@ function selectRole(selectedId) {
     });
     // Check the radio inside the selected card
     document.querySelector('#' + selectedId + ' input[type="radio"]').checked = true;
-
-    // img upload toggle
-    document.getElementById('vendor-img-upload').hidden = selectedId !== 'card-cook';
     
 }
-
 
 function updateStrength(val) {
     let score = 0;
