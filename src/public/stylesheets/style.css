@@ -95,6 +95,20 @@ p {
     text-decoration: none;
 }
 
+#login-nav-button {
+    padding: 7px 15px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--burnt-orange-primary);
+    color: #fff;
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+}
+
 #logout-nav-button:hover {
     background-color: #b04e31;
     color: #fff;
@@ -1240,4 +1254,12 @@ tbody tr:hover {
 .sidebar-profile-foot {
     margin-top: auto;
     padding-bottom: 12px;
+}
+
+#hero-img-center-box {
+    background-color:  white; /* this color is the same value as cream used throughout but + an alpha value */
+    padding: 30px 40px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 500px;
 }
