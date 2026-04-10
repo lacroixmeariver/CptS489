@@ -1,46 +1,45 @@
 var passport = require('passport');
-var LocalStrategy = require('passport-local');
+var LocalStrategy = require('passport-local').Strategy;
 var crypto = require('crypto');
-const db = require('./db')
+var userModel = require('../models/user')
+// const db = require('./db')
 
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, password, cb) { // usernameField lets passport know we're not using username to log in/reg
-  db.get('SELECT * FROM Users WHERE Email = ?', [ email ], function(err, row) {
-    if (err) {
-      return cb(err); 
-    }
-    if (!row) {
-      return cb(null, false, {message: 'Incorrect email or password.'}); 
-    }
+  console.log("EMAIL: ", email);
+  userModel.findUserByEmail(email, (err, user) => {
+    if (err) return cb(err);
 
-    const hashedPassword = Buffer.from(row.Password_hash, 'hex');
-    const salt = Buffer.from(row.Salt, 'hex');  
+    if (!user) {
+      return cb(null, false, { message: 'Incorrect email or password.' });
+    }
+    const hashedPassword = Buffer.from(user.Password_hash, 'hex');
+    const salt = Buffer.from(user.Salt, 'hex');  
 
     crypto.pbkdf2(password, salt, 310000, 32, 'sha256', function(err, supplied) {
       if (err) {
         return cb(err); 
       }
-
-      if (!crypto.timingSafeEqual(hashedPassword, supplied)) {
+      if (hashedPassword.length !== supplied.length || !crypto.timingSafeEqual(hashedPassword, supplied)) {
         return cb(null, false, { message: 'Incorrect email or password.' });
       }
-      
-      return cb(null, row);
-
+      return cb(null, user);
     });
   });
-}));
+}))
 
 passport.serializeUser((user, cb) => {
   // console.log('serializing user:', user); // debug print
   cb(null, user.UserID);
 });
 
-passport.deserializeUser(function(id, cb) {
-  db.get('SELECT * FROM Users WHERE UserID = ?', [id], (err, user) => {
-    // console.log('deserializing user:', user); // debug print  
-    cb(err, user);
-  });
+passport.deserializeUser((id, done) => {
+    userModel.getUserByID(id, (err, user) => {
+        if (err) return done(err);
+        if (!user) return done(null, false);
+        done(null, user);
+    });
 });
+
 
 module.exports = passport;
