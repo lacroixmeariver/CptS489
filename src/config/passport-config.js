@@ -14,9 +14,7 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, passw
       return cb(null, false, { message: 'Incorrect email or password.' });
     }
     const hashedPassword = Buffer.from(user.Password_hash, 'hex');
-    const salt = Buffer.from(user.Salt, 'hex');  
-
-    crypto.pbkdf2(password, salt, 310000, 32, 'sha256', function(err, supplied) {
+    crypto.pbkdf2(password, user.Salt, 310000, 32, 'sha256', function(err, supplied) {
       if (err) {
         return cb(err); 
       }
