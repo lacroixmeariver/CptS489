@@ -1,8 +1,9 @@
 # don't include giant modules file 
 node_modules/
 
-# don't push db 
+# don't push db files
 *.db
+*.sql
 
 # don't add temp user document uploads
 uploads/
