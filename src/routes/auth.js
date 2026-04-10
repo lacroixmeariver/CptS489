@@ -1,21 +1,30 @@
 var express = require('express');
 var passport = require('passport');
 var router = express.Router();
-const db = require('../config/db');
-const crypto = require('crypto');
+const multer  = require('multer')
+const path = require('path');
+const storage = multer.diskStorage({
+  destination: 'uploads/',
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname); 
+    cb(null, req.body.email + '-vendor' + ext); // formatting file name 
+  }
+});
+const upload = multer({ storage });
+const userModel = require('../models/user');
+const createUser = require('../middleware/createUser');
+const redirectByRole = require('../middleware/redirectByRole');
 
 // get the login page 
 // if user already logged in it'll re-route to dashboard
 router.get('/login', function(req, res, next) {
   if (req.user) {
-    if (req.user.role === 'admin')  return res.redirect('/admin/dashboard');
-    if (req.user.role === 'cook')   return res.redirect('/cook/dashboard');
-    if (req.user.role === 'driver') return res.redirect('/driver/dashboard');
-    if (req.user.role === 'vendor') return res.redirect('/vendor/dashboard');
+    redirectByRole.dashRedirect(res, user.role);
     return res.redirect('/customer/dashboard');
   }
-  res.render('login', { title: 'Login'});
+  res.render('auth/login', { title: 'Login'});
 });
+
 
 // post info to login page 
 router.post('/login', function(req, res, next) {
@@ -31,10 +40,7 @@ router.post('/login', function(req, res, next) {
             if (err) {
                 return next(err)
             }
-            if (user.role === 'admin')  return res.redirect('/admin/dashboard');
-            if (user.role === 'cook')   return res.redirect('/cook/dashboard');
-            if (user.role === 'driver') return res.redirect('/driver/dashboard');
-            return res.redirect('/customer/dashboard');
+            redirectByRole.dashRedirect(res, user.role); 
         });
     })(req, res, next);
 });
@@ -43,44 +49,37 @@ router.post('/login', function(req, res, next) {
 // if user already logged in it'll re-route to dashboard
 router.get('/register', function(req, res, next) {
   if (req.user) {
-    if (req.user.role === 'admin')  return res.redirect('/admin/dashboard');
-    if (req.user.role === 'cook')   return res.redirect('/cook/dashboard');
-    if (req.user.role === 'driver') return res.redirect('/driver/dashboard');
-    if (req.user.role === 'vendor') return res.redirect('/vendor/dashboard');
-    return res.redirect('/customer/dashboard');
+    redirectByRole.dashRedirect(res, user.role);
   }
-  res.render('register', { title: 'Register' });
+  res.render('auth/register', { title: 'Register' });
 });
 
-// post info to the register page 
-router.post('/register', (req, res, next) => {
-    const { email, password, firstName, lastName, phoneNumber, role } = req.body;
-    const validRoles = ['customer', 'vendor', 'driver'];
-    const userRole = validRoles.includes(role) ? role : 'customer';
-    const salt = crypto.randomBytes(16);
-    // salting/hashing to put into db
-    crypto.pbkdf2(password, salt, 310000, 32, 'sha256', (err, hashedPassword) => {
+function loginAndRedirect(req, res, next, userId) {
+    userModel.getUserByID(userId, (err, user) => {
+        console.log('getUserByID result:', err, user);
         if (err) return next(err);
-        // inserting into db 
-        db.run(
-            `INSERT INTO Users (email, password_hash, salt, first_name, last_name, role,  status, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, 0)`, // by default user is valid
-            [email, hashedPassword.toString('hex'), salt.toString('hex'), firstName, lastName, role, 0, req.body.phone],
-            (err) => {
-                if (err) {
-                    console.log('Error in registering user!', err.message);
-                    return next(err); 
-                }
-                res.redirect('/user');
-            }
+        if (!user) return next(null, false, { message: 'Incorrect email or password.' });
+        req.login(user, (err) => {
+            if (err) return next(err);
+            res.redirect('/user');
+        })
+    });
 
-        )
-    })
-    
+}
+
+// post info to the register page 
+router.post('/register', upload.array('documents', 5), (req, res, next) => {
+    const { email, password, firstName, lastName, phoneNumber, role } = req.body;
+   createUser.createUser({ email, password, firstName, lastName, phoneNumber, role }, (err, userID) => {
+        if (err) return next(err);
+        loginAndRedirect(req, res, next, userID)
+   })
 })
+
 
 // get forgot password page
 router.get('/forgot-password', (req, res, next) =>{
-    res.render('forgot-password', { title: 'Forgot Password' });
+    res.render('auth/forgot-password', { title: 'Forgot Password' });
 });
 
 // route to deserialize user and end session 
