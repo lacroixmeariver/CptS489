@@ -12,14 +12,14 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="stylesheet" href="/stylesheets/customer-browse.css">
 </head>
-<body data-role="<%= user.role %>" data-user="<%= user.first_name %>">
+<body data-role="<%= user.Role %>" data-user="<%= user.first_name %>">
 
 <div class="main-box">
 <!-- ── Main Content ──────────────────────────── -->
 <div class="browse-page">
 
     <!-- Back link -->
-    <a href="restaurant-detail.html" style="font-family:'Open Sans',sans-serif;font-size:0.85rem;color:#888;text-decoration:none;display:inline-block;margin-bottom:20px;">
+    <a href="##" style="font-family:'Open Sans',sans-serif;font-size:0.85rem;color:#888;text-decoration:none;display:inline-block;margin-bottom:20px;">
         <i class="bi bi-arrow-left me-1"></i>Back to Restaurant
     </a>
 
@@ -157,7 +157,7 @@
                 <div class="order-summary-row"><span style="color:var(--sage-green-secondary);"><i class="bi bi-tag me-1"></i>Promo</span><span style="color:var(--sage-green-secondary);">–$0.00</span></div>
                 <div class="order-summary-row total"><span>Total</span><span>$50.90</span></div>
 
-                <a href="checkout.html" class="btn btn-hp w-100 mt-3" style="padding:12px;">
+                <a href="/customer/checkout" class="btn btn-hp w-100 mt-3" style="padding:12px;">
                     <i class="bi bi-lock me-1"></i>Proceed to Checkout
                 </a>
 

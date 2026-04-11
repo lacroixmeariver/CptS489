@@ -4,10 +4,9 @@ const { isAuthenticated } = require('../middleware/isAuth');
 
 // gets the user page
 // routes according to user type
-router.get('/', isAuthenticated, (req, res, next) => {
-  
-  console.log("User role: " + req.user.role);
-  let role = req.user.role;
+router.get('/user', isAuthenticated, (req, res, next) => {
+
+  let role = req.user.Role;
   if (role === 'admin')
   {
     res.redirect('/admin/dashboard');
@@ -27,9 +26,31 @@ router.get('/', isAuthenticated, (req, res, next) => {
   
 });
 
+router.get('/user-profile', isAuthenticated, (req, res, next) => {
+
+  let role = req.user.Role;
+  if (role === 'admin')
+  {
+    res.redirect('/admin/profile');
+  }
+  else if (role === 'vendor')
+  {
+    res.redirect('/vendor/profile');
+  }
+  else if (role === 'driver')
+  {
+    res.redirect('/driver/profile');
+  }
+  else 
+  {
+    res.redirect('/customer/profile');
+  }
+  
+});
+
 // get the browse page
 router.get('/browse', isAuthenticated, (req, res, next) => {
-  res.render('browse', { user: req.user });
+  res.render('customer/browse', { user: req.user });
 })
 
 module.exports = router;

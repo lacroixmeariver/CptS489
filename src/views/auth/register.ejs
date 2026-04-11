@@ -100,8 +100,8 @@
                     <div class="check-circle" id="cc-customer"></div>
                 </label>
 
-                <label class="role-card" id="card-cook">
-                    <input type="radio" name="role" value="vendor" onchange="selectRole('card-cook')">
+                <label class="role-card" id="card-cook" onclick="selectRole('card-cook')">
+                    <input type="radio" name="role" value="vendor" id="cook-selection" onchange="selectRole('card-cook')">
                     <div class="role-icon role-icon-cook"><i class="bi bi-fire"></i></div>
                     <div>
                         <div class="role-title">Home Cook</div>
@@ -123,7 +123,7 @@
                 </label>
 
                 <label class="role-card" id="card-admin">
-                    <input type="radio" name="role" value="admin" onchange="selectRole('card-admin')">
+                    <input type="radio" name="role" value="admin" onchange="selectRole('card-admin')" >
                     <div class="role-icon role-icon-admin">
                         <i class="bi bi-cup-hot"></i>
                     </div>
@@ -182,7 +182,7 @@ function selectRole(selectedId) {
     });
     // Check the radio inside the selected card
     document.querySelector('#' + selectedId + ' input[type="radio"]').checked = true;
-
+    
 }
 
 function updateStrength(val) {

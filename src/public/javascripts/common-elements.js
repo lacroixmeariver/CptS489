@@ -4,12 +4,15 @@
 const navbar = (userName) => `
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-        <a href="/" class="navbar-brand">
+        <a href="/user" class="navbar-brand">
             <img id="navbar-logo-img" src="/images/homeplate-logo-transparent.png" alt="">
             <h1 id="navbar-header-text">HomePlate</h1>
         </a>
-        ${userName ? `<span class="navbar-greeting">Hello, ${userName}</span>` : ''}
-        <a class="nav-item nav-link m-2" id="logout-nav-button" href="/logout">
+        ${userName ? `<span class="navbar-greeting">Hello, <a href="/user-profile">${userName}</a></span>` : ''}
+        <a class="nav-item nav-link m-2" id="cart-button" href="/customer/cart" hidden>
+            <i class="bi bi-cart3"></i>
+        </a>
+        <a class="m-2" id="logout-nav-button" href="/logout">
             <i class="bi bi-box-arrow-right"></i> Log Out
         </a>
     </div>
@@ -23,10 +26,10 @@ const adminSidenav = `
         <a href="/admin/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
             <i class="bi bi-house-fill sidebar-nav-link-icon"></i>
         </a>
-        <a href="/admin/users" data-bs-toggle="tooltip" data-bs-placement="right" title="User Management">
+        <a href="/admin/manage-users" data-bs-toggle="tooltip" data-bs-placement="right" title="User Management">
             <i class="bi bi-people-fill sidebar-nav-link-icon"></i>
         </a>
-        <a href="/admin/moderate" data-bs-toggle="tooltip" data-bs-placement="right" title="Issues">
+        <a href="/admin/issues" data-bs-toggle="tooltip" data-bs-placement="right" title="Issues">
             <i class="bi bi-exclamation-triangle-fill sidebar-nav-link-icon"></i>
         </a>
         <a href="/admin/revenue" data-bs-toggle="tooltip" data-bs-placement="right" title="Revenue">
@@ -95,7 +98,7 @@ const customerSidenav = `
         <a href="/browse" data-bs-toggle="tooltip" data-bs-placement="right" title="Browse">
             <i class="bi bi-search sidebar-nav-link-icon"></i>
         </a>
-        <a href="/customer/order-status" data-bs-toggle="tooltip" data-bs-placement="right" title="My Orders">
+        <a href="/customer/order-history" data-bs-toggle="tooltip" data-bs-placement="right" title="My Orders">
             <i class="bi bi-bag sidebar-nav-link-icon"></i>
         </a>
         <a href="/customer/profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
@@ -119,6 +122,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const userName = document.body.dataset.user;
     console.log('role:', role, 'userName:', userName);
     document.body.insertAdjacentHTML("afterbegin", navbar(userName));
+    if (role === 'customer'){
+        document.body.querySelector("#cart-button").removeAttribute("hidden");
+    }
     const mainBox = document.querySelector(".main-box");
     if (mainBox) {
         mainBox.insertAdjacentHTML("afterbegin", getSidenav(role));

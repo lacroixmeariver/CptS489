@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
 
 </head>
-<body data-role="<%= user.role %>" data-user="<%= user.first_name %>">
+<body data-role="<%= user.Role %>" data-user="<%= user.first_name %>">
     
     <!-- box for the main area (the entire visible screen aside from navbar basically) -->
     <div class="main-box">
@@ -23,107 +23,64 @@
             <!-- container for all the cards present -->
             <div class="analytics-container">
 
-                <!-- recent activity cards -->
                 <div class="row card-container">
-                    <h2 class="ms-2">Recent Activity</h2>
-
-                    <!-- actual card elements -->
-                    <div class="card"> 
-                        <a href="#">
-                            <img class="card-img-top" src="/images/placeholder-img.png" alt="">
-                            <div class="card-body">
-                                <p class="card-text">Placeholder</p>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="card"> 
-                        <a href="#">
-                            <img class="card-img-top" src="/images/placeholder-img.png" alt="">
-                            <div class="card-body">
-                                <p class="card-text">Placeholder</p>
-                            </div>
-                        </a>
-                    </div>
-
-                   <div class="card"> 
-                        <a href="#">
-                            <img class="card-img-top" src="/images/placeholder-img.png" alt="">
-                            <div class="card-body">
-                                <p class="card-text">Placeholder</p>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="card"> 
-                        <a href="#">
-                            <img class="card-img-top" src="/images/placeholder-img.png" alt="">
-                            <div class="card-body">
-                                <p class="card-text">Placeholder</p>
-                            </div>
-                        </a>
-                    </div>
-
-                   <div class="card"> 
-                        <a href="#">
-                            <img class="card-img-top" src="/images/placeholder-img.png" alt="">
-                            <div class="card-body">
-                                <p class="card-text">Placeholder</p>
-                            </div>
-                        </a>
-                    </div>
+                    <h2 class="ms-2 mt-3 mb-3">Quick View</h2>
                     
-
-                    
-                </div>
-
-                <div class="row card-container">
-                    <h2 class="ms-2">Revenue</h2>
-                    <div class="card"> 
-                        <a href="#">
-                            <img class="card-img-top" src="/images/placeholder-img.png" alt="">
-                            <div class="card-body">
-                                <p class="card-text">Placeholder</p>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a href="#" style="text-decoration: none;">
+                            <div class="admin-stat-card">
+                                <div class="data-stat-icon" style="background:rgba(13, 120, 59, 0.1);color:rgb(22, 102, 0);">
+                                    <i class="bi bi bi-cash-coin"></i>
+                                </div>
+                                <div>
+                                    <div class="admin-stat-label">Daily revenue</div>
+                                    <div class="admin-stat-value">Total revenue for the last 24 hours</div>
+                                </div>
                             </div>
                         </a>
                     </div>
 
-                    <div class="card"> 
-                        <a href="#">
-                            <img class="card-img-top" src="/images/placeholder-img.png" alt="">
-                            <div class="card-body">
-                                <p class="card-text">Placeholder</p>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a href="#" style="text-decoration: none;">
+                            <div class="admin-stat-card">
+                                <div class="data-stat-icon" style="background:rgba(161, 84, 229, 0.1);color:rgb(48, 25, 69);">
+                                    <i class="bi bi-graph-up-arrow"></i>
+                                </div>
+                                <div>
+                                    <div class="admin-stat-label">Monthly revenue</div>
+                                    <div class="admin-stat-value">Total revenue for the last 30 days</div>
+                                </div>
                             </div>
                         </a>
                     </div>
 
-                   <div class="card"> 
-                        <a href="#">
-                            <img class="card-img-top" src="/images/placeholder-img.png" alt="">
-                            <div class="card-body">
-                                <p class="card-text">Placeholder</p>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a href="#" style="text-decoration: none;">
+                            <div class="admin-stat-card">
+                                <div class="data-stat-icon" style="background:rgba(236, 93, 49, 0.1);color:rgb(185, 31, 17);">
+                                    <i class="bi bi-person-plus-fill"></i>
+                                </div>
+                                <div>
+                                    <div class="admin-stat-label">New users</div>
+                                    <div class="admin-stat-value">New users registered in last 30 days</div>
+                                </div>
                             </div>
                         </a>
                     </div>
 
-                    <div class="card"> 
-                        <a href="#">
-                            <img class="card-img-top" src="/images/placeholder-img.png" alt="">
-                            <div class="card-body">
-                                <p class="card-text">Placeholder</p>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a href="#" style="text-decoration: none;">
+                            <div class="admin-stat-card">
+                                <div class="data-stat-icon" style="background:rgba(157, 236, 221, 0.1);color:rgb(10, 146, 146);">
+                                    <i class="bi bi-bag-check"></i>
+                                </div>
+                                <div>
+                                    <div class="admin-stat-label">Daily orders</div>
+                                    <div class="admin-stat-value">All orders gone out today</div>
+                                </div>
                             </div>
                         </a>
                     </div>
-
-                   <div class="card"> 
-                        <a href="#">
-                            <img class="card-img-top" src="/images/placeholder-img.png   " alt="">
-                            <div class="card-body">
-                                <p class="card-text">Placeholder</p>
-                            </div>
-                        </a>
-                    </div>
-                    
                 </div>                
             </div>
         </div>
