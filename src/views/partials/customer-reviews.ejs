@@ -1,0 +1,26 @@
+
+<% if (reviews.length === 0) { %>
+    <div class="text-center py-5" style="color:#bbb;font-family:'Poppins',sans-serif;">
+        <i class="bi bi-star" style="font-size:2rem;display:block;margin-bottom:8px;"></i>
+        <div>You haven't written any reviews yet.</div>
+    </div>
+<% } else { %>
+    <% reviews.forEach(review => { %>
+    <div style="background:#fff;border-radius:12px;padding:18px 22px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="font-family:'Poppins',sans-serif;font-weight:600;"><%= review.MerchantName %></span>
+            <span style="color:var(--golden-yellow-secondary);">
+                <% for(let i = 0; i < review.Rating; i++) { %>★<% } %>
+            </span>
+        </div>
+        <% if (review.Comment) { %>
+            <p style="font-family:'Open Sans',sans-serif;font-size:0.88rem;color:#555;margin:0;">
+                <%= review.Comment %>
+            </p>
+        <% } %>
+        <div style="font-family:'Open Sans',sans-serif;font-size:0.78rem;color:#bbb;margin-top:6px;">
+            <%= review.ReviewDate %> <% if (review.Anonymous) { %> · Posted anonymously<% } %>
+        </div>
+    </div>
+    <% }) %>
+<% } %>

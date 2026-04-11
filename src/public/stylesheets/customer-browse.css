@@ -5,40 +5,33 @@
             checkout.html, order-confirmation.html
    ============================================== */
 
+/* ---- Dashboard layout for browse pages ---- */
+.main-content {
+    flex: 1;
+    padding: 0;
+    margin-left: 85px;
+    overflow-y: auto;
+}
+
+.content-below-hero {
+    margin-right: 55px;
+}
+
 /* ---- Override Bootstrap checkbox/radio accent ---- */
 .form-check-input:checked {
     background-color: var(--burnt-orange-primary);
     border-color: var(--burnt-orange-primary);
 }
 
-/* ---- Shared buttons ---- */
-.btn-hp {
-    background-color: var(--burnt-orange-primary);
-    color: #fff;
-    font-family: "Poppins", sans-serif;
-    font-weight: 600;
-    border: none;
-    border-radius: 24px;
-    transition: background 0.15s;
-}
-.btn-hp:hover { background-color: #b04e31; color: #fff; }
-
-.btn-hp-outline {
-    background-color: transparent;
-    color: var(--burnt-orange-primary);
-    border: 1.5px solid var(--burnt-orange-primary);
-    font-family: "Poppins", sans-serif;
-    font-weight: 600;
-    border-radius: 24px;
-    transition: all 0.15s;
-}
-.btn-hp-outline:hover { background-color: var(--burnt-orange-primary); color: #fff; }
+/* ---- Shared buttons (see style.css) ----
+.btn-hp and .btn-hp-outline defined in style.css */
 
 /* ---- Hero search section ---- */
 .browse-hero {
     background: linear-gradient(135deg, var(--burnt-orange-primary) 0%, #d97040 100%);
     padding: 52px 24px;
     text-align: center;
+    position: relative;
 }
 .browse-hero h2 {
     font-family: "Poppins", sans-serif;
