@@ -2,10 +2,11 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local');
 var crypto = require('crypto');
 const db = require('./db')
+const userModel = require('../models/user')
 
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, password, cb) { // usernameField lets passport know we're not using username to log in/reg
-  db.get('SELECT * FROM Users WHERE Email = ?', [ email ], function(err, row) {
+  userModel.findUserByEmail(email, function(err, row) {
     if (err) return cb(err);
     if (!row) return cb(null, false, {message: 'Incorrect email or password.'}); 
     const hashedPassword = Buffer.from(row.Password_hash, 'hex');
@@ -23,7 +24,7 @@ passport.serializeUser((user, cb) => {
 });
 
 passport.deserializeUser(function(id, cb) {
-  db.get('SELECT * FROM Users WHERE UserID = ?', [id], (err, user) => {
+  userModel.getUserByID(id, (err, user) => {
     //console.log('deserializing user:', user); // debug print  
     cb(err, user);
   });
