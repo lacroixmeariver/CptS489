@@ -6,6 +6,7 @@ var logger = require('morgan');
 var passport = require('./src/config/passport-config');
 var session = require('express-session');
 var app = express();
+const { checkUserStatus } = require('./src/middleware/checkUserStatus');
 
 
 // routers
@@ -33,6 +34,7 @@ app.use(session({
 }))
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(checkUserStatus); // middleware to make sure banned and suspended users are not allowed in
 
 app.use('/', indexRouter);
 app.use('/', authRouter)
