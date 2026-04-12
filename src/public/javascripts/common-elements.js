@@ -32,6 +32,9 @@ const adminSidenav = `
         <a href="/admin/issues" data-bs-toggle="tooltip" data-bs-placement="right" title="Issues">
             <i class="bi bi-exclamation-triangle-fill sidebar-nav-link-icon"></i>
         </a>
+        <a href="/admin/vendor-applications" data-bs-toggle="tooltip" data-bs-placement="right" title="Applications">
+            <i class="bi bi-pencil-square sidebar-nav-link-icon"></i>
+        </a>
         <a href="/admin/revenue" data-bs-toggle="tooltip" data-bs-placement="right" title="Revenue">
             <i class="bi bi-graph-up sidebar-nav-link-icon"></i>
         </a>
@@ -108,19 +111,23 @@ const customerSidenav = `
 </div>
 `;
 
+
 // function to obtain user role 
 function getSidenav(role) {
-    if (role === 'admin')  return adminSidenav;
-    if (role === 'cook')   return cookSidenav;
-    if (role === 'driver') return driverSidenav;
+    if (role.toLowerCase() === 'admin')  return adminSidenav;
+    if (role.toLowerCase() === 'cook')   return cookSidenav;
+    if (role.toLowerCase() === 'driver') return driverSidenav;
     return customerSidenav;
 }
+
+
+
 
 // function to insert content
 document.addEventListener("DOMContentLoaded", function () {
     const role = document.body.dataset.role;
     const userName = document.body.dataset.user;
-    console.log('role:', role, 'userName:', userName);
+    //console.log('role:', role, 'userName:', userName);
     document.body.insertAdjacentHTML("afterbegin", navbar(userName));
     if (role === 'customer'){
         document.body.querySelector("#cart-button").removeAttribute("hidden");

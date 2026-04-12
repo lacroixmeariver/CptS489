@@ -6,7 +6,7 @@ function dashRedirect(res, role) {
         driver: '/driver/dashboard',
         vendor: '/vendor/dashboard'
     }
-    res.redirect(dashboardRoutes[role] || '/customer/dashboard');
+    res.redirect(dashboardRoutes[role.toLowerCase()] || '/customer/dashboard');
 }
 
-module.exports = {dashRedirect} 
+module.exports = { dashRedirect } 
