@@ -8,28 +8,21 @@ router.get('/dashboard', isAuthenticated, (req, res) => {
     res.render('customer/customer-dashboard', { user: req.user });
 });
 
+router.get('/order-history', isAuthenticated, (req, res) => {
+    res.render('customer/customer-order-history', { user: req.user })
+});
 
-// get the partial order status page element
+router.get('/order-history', isAuthenticated, (req, res) => {
+    res.render('customer/customer-order-history', { user: req.user })
+});
+
 router.get('/order-status', isAuthenticated, (req, res) => {
+    res.render('customer/customer-order-status', { user: req.user })
 });
 
-// get the partial order history page element
-router.get('/order-history', isAuthenticated, (req, res) => {
-});
-
-// get the partial reviews page element
 router.get('/reviews', isAuthenticated, (req, res) => {
+    res.render('customer/customer-reviews', { user: req.user })
 });
-
-
-router.get('/order-history', isAuthenticated, (req, res) => {
-    res.render('customer/customer-order-history', { user: req.user })
-});
-
-router.get('/order-history', isAuthenticated, (req, res) => {
-    res.render('customer/customer-order-history', { user: req.user })
-});
-
 
 router.get('/profile', isAuthenticated, (req, res) => {
     res.render('shared/profile', { user: req.user })
