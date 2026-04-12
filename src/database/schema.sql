@@ -8,11 +8,12 @@ CREATE TABLE IF NOT EXISTS Users (
     First_name TEXT NOT NULL,
     Last_name TEXT NOT NULL,
     Role TEXT NOT NULL,
-    Status TEXT NOT NULL,
+    Status TEXT NOT NULL, -- 0 is permitted user, 1 represents banned
     Phone_number TEXT,
     Created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 
 );
+
 CREATE TABLE IF NOT EXISTS Customers(
     CustomerID INTEGER PRIMARY KEY AUTOINCREMENT,
     UserID INTEGER NOT NULL REFERENCES Users(UserID) ON DELETE CASCADE,
@@ -24,8 +25,14 @@ CREATE TABLE IF NOT EXISTS Merchants(
     UserID INTEGER NOT NULL REFERENCES Users(UserID) ON DELETE CASCADE,
     MerchantName TEXT NOT NULL,
     MerchantAddress TEXT,
-    Verified BOOLEAN NOT NULL DEFAULT FALSE,
+    Verified TEXT NOT NULL CHECK (Verified IN ('Pending', 'Approved', 'Rejected')) DEFAULT 'Pending',
     StoreScore REAL NOT NULL DEFAULT 0.0
+);
+
+CREATE TABLE IF NOT EXISTS Drivers(
+    DriverID INTEGER PRIMARY KEY AUTOINCREMENT,
+    LicensePlateNumber TEXT NOT NULL UNIQUE,
+    DriversLicenseNumber TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS Orders(
@@ -64,4 +71,13 @@ CREATE TABLE IF NOT EXISTS Reviews(
     Comment TEXT,
     ReviewDate TEXT NOT NULL,
     Anonymous BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE IF NOT EXISTS Disputes(
+    DisputeID INTEGER PRIMARY KEY AUTOINCREMENT,
+    OrderID INTEGER NOT NULL REFERENCES Orders(OrderID) ON DELETE CASCADE,
+    Description TEXT,
+    Status TEXT NOT NULL CHECK (Status IN ('Pending', 'Resolved', 'Appealed')) DEFAULT 'Pending',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
