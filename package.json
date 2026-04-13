@@ -5,7 +5,7 @@
   "main": "./src/bin/www",
   "scripts": {
     "start": "node ./src/bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +16,8 @@
     "ejs": "^4.0.1",
     "express": "^5.2.1",
     "mysql2": "^3.17.4"
+  },
+  "devDependencies": {
+    "jest": "^30.3.0"
   }
 }

@@ -3,7 +3,7 @@ class Order
     /// <summary>
     /// instantiates a customer's order, including details such as the customer, merchant, order status, timestamps, total amount, and the items in the order.
     /// </summary>
-    constructor(orderId, customerId, merchantId, orderStatus, timeOrdered, timeCompleted=null, totalAmount, orderItems)
+    constructor(orderId, customerId, merchantId, orderStatus, timeOrdered, timeCompleted=null, orderItems)
     {
         this.orderId = orderId;
         this.customerId = customerId;
@@ -11,8 +11,8 @@ class Order
         this.orderStatus = orderStatus;
         this.timeOrdered = timeOrdered;
         this.timeCompleted = timeCompleted;
-        this.totalAmount = totalAmount;
         this.orderItems = orderItems;
+        this.totalAmount = this.calculateTotalAmount();
     }
 
     /// <summary>
@@ -22,6 +22,23 @@ class Order
     {
         this.orderItems.push(orderItem);
         this.totalAmount += orderItem.priceAtPurchase * orderItem.quantity;
+    }
+
+    /// <summary>
+    /// removes an item from the order and updates the total amount accordingly, also checks if the order is finalized before allowing modifications.
+    /// </summary>
+    removeOrderItem(orderItem)
+    {
+        if (this.orderStatus === "completed" || this.orderStatus === "canceled")
+        {
+            throw new Error("Cannot change status of a completed or canceled order.");
+        }
+        if (this.orderStatus === "pending")
+        {
+            this.orderItems = this.orderItems.filter(item => item.orderItemId !== orderItem.orderItemId);
+            this.totalAmount = this.calculateTotalAmount();
+        }
+
     }
 
     /// <summary>    
@@ -47,7 +64,12 @@ class Order
     /// </summary>
     calculateTotalAmount()
     {
-        this.totalAmount = this.orderItems.reduce((total, item) => total + (item.priceAtPurchase * item.quantity), 0);
+        this.totalAmount = 0;
+        for (const element of this.orderItems)
+        {
+            this.totalAmount += element.priceAtPurchase * element.quantity;
+        }
+        return this.totalAmount;
     }
 
     /// <summary>
@@ -58,4 +80,32 @@ class Order
         return this.orderStatus === "completed" || this.orderStatus === "canceled";
     }
 
+    /// <summary>
+    /// updates the quantity of a specific item in the order, allowing for adjustments to the order after items have been added, also checks if the order is finalized before allowing modifications.
+    /// </summary>
+    updateItemQuantity(orderItemId, newQuantity)
+    {
+        if (this.isFinalized())
+        {
+            throw new Error("Cannot change status of a completed or canceled order.");
+        }
+
+        const item = this.orderItems.find(item => item.orderItemId === orderItemId);
+        if (!item)
+        {
+            throw new Error("Order item not found.");
+        }
+
+        const shouldRemove = item.decreaseQuantity(item.quantity - newQuantity);
+        if (shouldRemove)        
+        {
+            this.removeOrderItem(item);
+        }
+        else
+        {
+            this.calculateTotalAmount();
+        }
+    }
 }
+
+module.exports = Order;
