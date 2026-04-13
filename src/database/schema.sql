@@ -1,12 +1,16 @@
 -- SQLite
 
-CREATE TABLE IF NOT EXISTS users (
-    userId INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    salt TEXT NOT NULL,
-    phone_number TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS Users (
+    UserID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Email TEXT NOT NULL UNIQUE,
+    Password_hash TEXT NOT NULL,
+    Salt TEXT NOT NULL,
+    First_name TEXT NOT NULL,
+    Last_name TEXT NOT NULL,
+    Role TEXT NOT NULL,
+    Status TEXT NOT NULL,
+    Phone_number TEXT,
+    Created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 
 );
 CREATE TABLE IF NOT EXISTS Customers(
