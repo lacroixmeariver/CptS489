@@ -29,7 +29,7 @@ router.get('/user', isAuthenticated, (req, res, next) => {
 
 router.get('/user-profile', isAuthenticated, (req, res, next) => {
 
-  let role = req.user.Role;
+  let role = req.user.Role.toLowerCase();
   if (role === 'admin')
   {
     res.redirect('/admin/profile');
