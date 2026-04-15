@@ -16,7 +16,7 @@ body {
 }
 
 h1 {
-    font-family: "Pacifico", cursive;
+    font-family: "Pacifico", regular;
 }
 
 h2 {
@@ -255,6 +255,7 @@ p {
 .admin-stat-card {
     background: #fff;
     border-radius: 10px;
+    margin: 10px 0px;
     padding: 18px 16px;
     display: flex;
     align-items: center;
@@ -291,6 +292,24 @@ p {
 }
 
 
+.admin-stat-num {
+    font-family: "Poppins", sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--charcoal-gray-secondary);
+    line-height: 1.1;
+}
+
+#searchBtnGroup {
+    width: 75%;
+}
+
+.search-bar-info {
+    font-family: "Open Sans", sans-serif;
+    font-size: 0.86rem;
+    color: #888;
+    margin-right: 50px;
+}
 /* ============================================================================
    COMPONENTS: TABLES & TABS
    ========================================================================== */
@@ -312,6 +331,11 @@ tbody tr:hover {
     color: var(--charcoal-gray-secondary);
     border: none;
     background-color: #f0eeea;
+   
+}
+
+.nav-tabs {
+  margin-top: -10px;
 }
 
 .nav-tabs .nav-link.active {
@@ -322,7 +346,9 @@ tbody tr:hover {
 .tab-content {
     background-color: white;
     border-radius: 2px;
+    padding: 10px 25px;
 }
+
 
 .sticky-tabs-wrapper {
     position: sticky;
@@ -343,6 +369,20 @@ tbody tr:hover {
    COMPONENTS: BADGES & STATUS
    ========================================================================== */
 
+.banned-user-status {
+    color:#e74c3c;
+    font-weight:600;
+}
+
+.suspended-user-status {
+    color:#e67e22;
+    font-weight:600;
+}
+
+.active-user-status {
+    color:#7a9b6e;
+    font-weight:600;
+}
 .status-badge {
     padding: 5px 10px 5px 10px;
     border-radius: 5px;
@@ -380,17 +420,17 @@ tbody tr:hover {
     font-family: "Poppins", sans-serif;
 }
 
-.app-status-approved {
+.vendor-status-approved {
     background-color: var(--sage-green-secondary);
     color: var(--cream-primary);
 }
 
-.app-status-rejected {
+.vendor-status-rejected {
     background-color: var(--burnt-orange-primary);
     color: var(--cream-primary);
 }
 
-.app-status-pending {
+.vendor-status-pending {
     background-color: var(--golden-yellow-secondary);
     color: var(--charcoal-gray-secondary);
 }
@@ -550,6 +590,10 @@ tbody tr:hover {
     color: var(--charcoal-gray-secondary);
 }
 
+#orderModalAppealBtn {
+    background-color: var(--golden-yellow-secondary);
+    color: var(--charcoal-gray-secondary);
+}
 
 /* ============================================================================
    PAGE: AUTHENTICATION (LOGIN, REGISTER, FORGOT PASSWORD)
@@ -886,6 +930,12 @@ tbody tr:hover {
     position: relative;
 }
 
+.profile-user-description {
+    font-family:'Open Sans',sans-serif;
+    font-size:0.85rem;
+    color:#999;
+}
+
 .avatar-edit-btn {
     position: absolute;
     bottom: 2px;
@@ -998,6 +1048,20 @@ tbody tr:hover {
     padding: 20px 28px;
 }
 
+.back-link {
+    font-family:'Open Sans',sans-serif;
+    font-size:0.85rem;
+    color:#999;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    margin-bottom:18px;
+}
+
+.back-link:hover {
+    color: var(--burnt-orange-primary);
+}
 
 /* ============================================================================
    COMPONENTS: BUTTONS

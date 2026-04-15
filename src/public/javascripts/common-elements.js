@@ -125,7 +125,7 @@ function getSidenav(role) {
 
 // function to insert content
 document.addEventListener("DOMContentLoaded", function () {
-    const role = document.body.dataset.role;
+    const role = document.body.dataset.role.toLowerCase();
     const userName = document.body.dataset.user;
     //console.log('role:', role, 'userName:', userName);
     document.body.insertAdjacentHTML("afterbegin", navbar(userName));
