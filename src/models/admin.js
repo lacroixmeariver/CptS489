@@ -10,14 +10,6 @@ const db = require('../config/db');
  * resolve disputes 
  */
 
-function getVendorByID(MerchantID) {
-    return new Promise((resolve, reject) => {
-        db.get('SELECT * FROM Merchants WHERE MerchantID = ?', MerchantID, (err, row) => {
-            if (err) reject(err);
-            else resolve(row);
-        });
-    });
-}
 
 function getDriverByID(DriverID) {
     return new Promise((resolve, reject) => {
@@ -77,35 +69,6 @@ function suspendUser(UserID) {
     });
 }
 
-// get all disputes with order and customer/merchant info
-function getAllDisputes() { // pulling info from multiple tables here
-    return new Promise((resolve, reject) => {
-        db.all(`
-            SELECT 
-                dispute_table.DisputeID,
-                dispute_table.OrderID,
-                dispute_table.Description,
-                dispute_table.Status,
-                dispute_table.CreatedAt,
-                order_table.TotalAmount,
-                user_customer_table.First_name AS CustomerFirstName,
-                users_customers.Last_name AS CustomerLastName,
-                users_merchants.First_name AS MerchantFirstName,
-                users_merchants.Last_name AS MerchantLastName
-            FROM Disputes dispute_table
-            JOIN Orders order_table ON dispute_table.OrderID = order_table.OrderID
-            JOIN Customers customersTable ON order_table.CustomerID = customersTable.CustomerID
-            JOIN Users users_customers ON customersTable.UserID = users_customers.UserID
-            JOIN Merchants merchant_table ON order_table.MerchantID = merchant_table.MerchantID
-            JOIN Users users_merchants ON merchant_table.UserID = users_merchants.UserID
-            ORDER BY dispute_table.CreatedAt DESC
-        `, (err, rows) => {
-            if (err) reject(err);
-            else resolve(rows);
-        });
-    });
-}
-
 // update dispute status
 function updateDisputeStatus(DisputeID, newStatus) {
     return new Promise((resolve, reject) => {
@@ -120,4 +83,39 @@ function updateDisputeStatus(DisputeID, newStatus) {
     });
 }
 
-module.exports = { banUser, suspendUser, reinstateUser, approveVendor, rejectVendor, getDriverByID, getVendorByID, getAllDisputes, updateDisputeStatus };
+function deleteUser(userID){
+    return new Promise((resolve, reject) => {
+        db.run(
+            `DELETE FROM Users WHERE UserID = ?`, [userID],
+            function(err) {
+                if (err) reject(err);
+                else resolve();
+            }
+        );
+    })
+}
+
+function getUsersAddedWithin(days = 30){
+    return new Promise((resolve, reject) => {
+        db.all(
+            `SELECT * FROM Users WHERE Created_at >= datetime('now', '-' || ? || ' days')`, [days],
+            function(err, rows) {
+                if (err) reject(err);
+                else resolve(rows);
+            }
+        );
+    })
+}
+
+function getNewUsersSum(days = 30) {
+    return new Promise((resolve, reject) => {
+        db.get(`SELECT count (*) as count FROM Users WHERE Created_at >= datetime('now', '-' || ? || ' days')`, [days], (err, row) => {
+            if (err) reject(row);
+            else resolve(row.count);
+        });
+    });
+}
+
+module.exports = { banUser, suspendUser, reinstateUser, approveVendor, rejectVendor, getDriverByID, getAllDisputes, updateDisputeStatus, deleteUser,
+    getUsersAddedWithin, getNewUsersSum
+ };
