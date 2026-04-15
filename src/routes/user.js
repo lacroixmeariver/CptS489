@@ -1,12 +1,13 @@
 var express = require('express');
 var router = express.Router();
 const { isAuthenticated } = require('../middleware/isAuth');
+const { checkUserStatus } = require('../middleware/checkUserStatus');
 
 // gets the user page
 // routes according to user type
 router.get('/user', isAuthenticated, (req, res, next) => {
 
-  let role = req.user.Role;
+  let role = req.user.Role.toLowerCase();
   if (role === 'admin')
   {
     res.redirect('/admin/dashboard');
@@ -53,4 +54,8 @@ router.get('/browse', isAuthenticated, (req, res, next) => {
   res.render('customer/browse', { user: req.user });
 })
 
+
+router.get('/banned', isAuthenticated, (req, res, next) => {
+  
+})
 module.exports = router;
