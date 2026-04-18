@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS Users (
     First_name TEXT NOT NULL,
     Last_name TEXT NOT NULL,
     Role TEXT NOT NULL,
-    Status TEXT NOT NULL, -- 0 is permitted user, 1 represents banned
+    Status TEXT NOT NULL,
     Phone_number TEXT,
     Created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 
@@ -29,21 +29,32 @@ CREATE TABLE IF NOT EXISTS Merchants(
     StoreScore REAL NOT NULL DEFAULT 0.0
 );
 
+
 CREATE TABLE IF NOT EXISTS Drivers(
     DriverID INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserID INTEGER NOT NULL REFERENCES Users(UserID) ON DELETE CASCADE,
     LicensePlateNumber TEXT NOT NULL UNIQUE,
-    DriversLicenseNumber TEXT NOT NULL UNIQUE
+    DriversLicenseNumber TEXT NOT NULL UNIQUE,
+    CurrentOrderAssigned TEXT REFERENCES Orders(OrderID),
+    BasePay FLOAT NOT NULL DEFAULT 21.61
 );
 
 CREATE TABLE IF NOT EXISTS Orders(
     OrderID INTEGER PRIMARY KEY AUTOINCREMENT,
     CustomerID INTEGER REFERENCES Customers(CustomerID) ON DELETE SET NULL,
     MerchantID INTEGER REFERENCES Merchants(MerchantID) ON DELETE SET NULL,
+    AssignedDriverID INTEGER REFERENCES Drivers(DriverID) ON DELETE SET NULL,
     OrderStatus TEXT NOT NULL CHECK (OrderStatus IN ('Pending', 'Accepted', 'Ready For Pickup', 'Completed', 'Cancelled')) DEFAULT 'Pending',
     TimeOrdered TEXT NOT NULL,
     TimeCompleted TEXT,
     TotalAmount REAL NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS Revenue(
+    OrderID INTEGER PRIMARY KEY NOT NULL REFERENCES Orders(OrderID) ON DELETE CASCADE,
+    DriverTip FLOAT DEFAULT 0.0
+);
+
 
 CREATE TABLE IF NOT EXISTS OrderItems(
     OrderItemID INTEGER PRIMARY KEY AUTOINCREMENT,
