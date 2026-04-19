@@ -3,7 +3,7 @@ class Order
     /// <summary>
     /// instantiates a customer's order, including details such as the customer, merchant, order status, timestamps, total amount, and the items in the order.
     /// </summary>
-    constructor(orderId, customerId, merchantId, orderStatus, timeOrdered, timeCompleted=null, orderItems)
+    constructor(orderId=null, customerId, merchantId, orderStatus, timeOrdered, timeCompleted=null, orderItems)
     {
         this.orderId = orderId;
         this.customerId = customerId;
