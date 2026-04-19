@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS Drivers(
     UserID INTEGER NOT NULL REFERENCES Users(UserID) ON DELETE CASCADE,
     LicensePlateNumber TEXT NOT NULL UNIQUE,
     DriversLicenseNumber TEXT NOT NULL UNIQUE,
-    CurrentOrderAssigned TEXT REFERENCES Orders(OrderID),
-    BasePay FLOAT NOT NULL DEFAULT 21.61
+    CurrentOrderAssigned INTEGER REFERENCES Orders(OrderID),
+    BasePay FLOAT NOT NULL DEFAULT 21.61,
 );
 
 CREATE TABLE IF NOT EXISTS Orders(
