@@ -1,0 +1,39 @@
+const { openDelimiter } = require("ejs");
+const OrderService = require("/src/services/orderService.js");
+const CustomerRepository = require("../middleware/customerRepository")
+
+class CustomerService
+{
+    constructor(customerRepository)
+    {
+        this.customerRepository = customerRepository;
+    }
+
+    async getCustomerById(customerId)
+    {
+        return await this.customerRepository.getById(customerId);
+    }
+
+    async updateCustoemerProfile(customerId, fields)
+    {
+        const customer = await this.customerRepository.getById(customerId);
+
+        customer.updateProfile(fields);
+
+        await this.customerRepository.update(customer);
+        return customer;
+    }
+
+    async getOrder(customerId, orderId)
+    {
+        const order = OrderService.getOrderById(orderId);
+
+
+        if (orderId.customerId !== customerId)
+        {
+            throw new Error("Unauthorized access to order");
+        }
+
+        return order;
+    }
+}
