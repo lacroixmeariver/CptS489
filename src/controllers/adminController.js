@@ -103,7 +103,6 @@ exports.getUserDetail = async (req, res, next) => {
 exports.getProfile = (req, res) =>
   res.render("shared/profile", { user: req.user });
 
-
 // POST operations ------------------------------------------------------------
 
 exports.banUser = async (req, res, next) => {
