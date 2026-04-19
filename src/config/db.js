@@ -7,4 +7,5 @@ const db = new sqlite3.Database('./src/database/database.db', sqlite3.OPEN_READW
     else console.log('Connected to database!');
 });
 
+db.run('PRAGMA foreign_keys = ON'); // so cascade deletes work as expected
 module.exports = db;
