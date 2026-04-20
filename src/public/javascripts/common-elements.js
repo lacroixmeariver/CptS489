@@ -98,7 +98,7 @@ const customerSidenav = `
         <a href="/customer/browse" data-bs-toggle="tooltip" data-bs-placement="right" title="Browse">
             <i class="bi bi-search sidebar-nav-link-icon"></i>
         </a>
-        <a href="/customer/order-history" data-bs-toggle="tooltip" data-bs-placement="right" title="My Orders">
+        <a href="/customer/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="My Orders">
             <i class="bi bi-bag sidebar-nav-link-icon"></i>
         </a>
         <a href="/customer/profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
