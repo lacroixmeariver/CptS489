@@ -46,19 +46,19 @@ const adminSidenav = `
 const cookSidenav = `
 <div class="sidebar-container">
     <nav class="sidebar-nav">
-        <a href="/cook/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
+        <a href="/vendor/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
             <i class="bi bi-house-fill sidebar-nav-link-icon"></i>
         </a>
-        <a href="/cook/menu" data-bs-toggle="tooltip" data-bs-placement="right" title="My Menu">
+        <a href="/vendor/menu" data-bs-toggle="tooltip" data-bs-placement="right" title="My Menu">
             <i class="bi bi-journal-text sidebar-nav-link-icon"></i>
         </a>
-        <a href="/cook/orders" data-bs-toggle="tooltip" data-bs-placement="right" title="Live Orders">
+        <a href="/vendor/live-operations" data-bs-toggle="tooltip" data-bs-placement="right" title="Live Orders">
             <i class="bi bi-bag-check sidebar-nav-link-icon"></i>
         </a>
-        <a href="/cook/reports" data-bs-toggle="tooltip" data-bs-placement="right" title="Reports">
+        <a href="/vendor/reports" data-bs-toggle="tooltip" data-bs-placement="right" title="Reports">
             <i class="bi bi-bar-chart-fill sidebar-nav-link-icon"></i>
         </a>
-        <a href="/cook/profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
+        <a href="/user-profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
             <i class="bi bi-person-circle sidebar-nav-link-icon"></i>
         </a>
     </nav>
@@ -95,7 +95,7 @@ const customerSidenav = `
         <a href="/customer/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
             <i class="bi bi-house-fill sidebar-nav-link-icon"></i>
         </a>
-        <a href="/browse" data-bs-toggle="tooltip" data-bs-placement="right" title="Browse">
+        <a href="/customer/browse" data-bs-toggle="tooltip" data-bs-placement="right" title="Browse">
             <i class="bi bi-search sidebar-nav-link-icon"></i>
         </a>
         <a href="/customer/order-history" data-bs-toggle="tooltip" data-bs-placement="right" title="My Orders">
@@ -111,7 +111,7 @@ const customerSidenav = `
 // function to obtain user role 
 function getSidenav(role) {
     if (role === 'admin')  return adminSidenav;
-    if (role === 'cook')   return cookSidenav;
+    if (role === 'vendor' || role === 'cook') return cookSidenav;
     if (role === 'driver') return driverSidenav;
     return customerSidenav;
 }

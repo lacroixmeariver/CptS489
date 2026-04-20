@@ -1,11 +1,12 @@
 class OrderItem
 {
-    constructor(OrderItemID, itemId, quantity=1, price)
+    constructor(orderItemId, itemId, name, priceAtPurchase, quantity)
     {
-        this.orderItemId = OrderItemID;
+        this.orderItemId = orderItemId;
         this.itemId = itemId;
+        this.name = name;
+        this.priceAtPurchase = priceAtPurchase;
         this.quantity = quantity;
-        this.priceAtPurchase = price;
     }
 
     increaseQuantity(amount=1)

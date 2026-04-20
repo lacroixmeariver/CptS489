@@ -16,12 +16,23 @@ class Merchant
 
     AddMenuItem(menuItem)
     {
+        console.log('Adding menu item to merchant:', this.merchantId);
         this.menuItems.push(menuItem);
     }
 
-    RemoveMenuItem(menuItem)
+    RemoveMenuItem(menuItemID)
     {
-        this.menuItems = this.menuItems.filter(item => item.itemId !== menuItem.itemId);
+        this.menuItems = this.menuItems.filter(item => item.itemId !== menuItemID);
+    }
+
+    EditMenuItem(itemId, updatedFields) {
+        console.log('enter mercchant function', updatedFields);
+        const item = this.menuItems.find(i => i.itemId === itemId);
+        if (!item) return;
+
+        Object.assign(item, updatedFields);
+
+        console.log(this.menuItems);
     }
 
     UpdateStatus(newStatus)

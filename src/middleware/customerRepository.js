@@ -2,14 +2,15 @@ const Customer = require("../backend/models/customer");
 
 class CustomerRepository
 {
-    constructor(db)
+    constructor(dbPromise)
     {
-        this.db = db;
+        this.dbPromise = dbPromise;
     }
 
     async save(customer, userId)
     {
-        const result = await this.db.run(
+        const db = await this.dbPromise;
+        const result = await db.run(
             `INSERT INTO Customers (UserID, Address) Values(?, ?)`,
             [
                 userId,
@@ -23,7 +24,8 @@ class CustomerRepository
 
     async update(customer)
     {
-        await this.db.run(
+        const db = await this.dbPromise;
+        await db.run(
                     `UPDATE Customers
                     SET Address = ?
                     WHERE CustomerID = ?`,
@@ -36,7 +38,8 @@ class CustomerRepository
 
     async getById(customerId)
     {
-        const customerRow = await this.db.get(
+        const db = await this.dbPromise;
+        const customerRow = await db.get(
             `SELECT * FROM Customers WHERE CustomerID = ?`,
             [customerId]
         )
@@ -50,7 +53,8 @@ class CustomerRepository
 
     async getByUserId(userId)
     {
-        const customerRow = await this.db.get(
+        const db = await this.dbPromise;
+        const customerRow = await db.get(
             `SELECT * FROM Customers WHERE UserID = ?`,
             [userId]
         )
@@ -64,3 +68,5 @@ class CustomerRepository
         )
     }
 }
+
+module.exports = CustomerRepository;
