@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/customer-dashboard.css">
+</head>
+
+<body data-role="<%= user.Role %>" data-user="<%= user.First_name %>">
+
+    <div class="main-box">
+        <main class="main-content">
+
+            <!-- back link to head back to manage users -->
+            <a href="/admins/manage-users" class="back-link">
+                <i class="bi bi-arrow-left"></i> Back to User Management
+            </a>
+
+            <!-- avatar + details -->
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="profile-avatar">
+                    <%= targetUser.First_name.charAt(0).toUpperCase() %>
+                        <%= targetUser.Last_name.charAt(0).toUpperCase() %>
+                </div>
+                <div>
+                    <h1
+                        style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:var(--charcoal-gray-secondary);margin:0;">
+                        <%= targetUser.First_name %>
+                            <%= targetUser.Last_name %>
+                    </h1>
+                    <span class="profile-user-description">
+                        Member since <%= targetUser.Created_at %> &nbsp;·&nbsp; <%= targetUser.Role %> account
+                                &nbsp;·&nbsp;
+                                <% if (targetUser.Status==1) { %>
+                                    <span class="banned-user-status"><i
+                                            class="bi bi-slash-circle me-1"></i>Banned</span>
+                                    <% } else if (targetUser.Status==2) { %>
+                                        <span class="suspended-user-status"><i
+                                                class="bi bi-pause-circle me-1"></i>Suspended</span>
+                                        <% } else { %>
+                                            <span class="active-user-status"><i
+                                                    class="bi bi-check-circle me-1"></i>Active</span>
+                                            <% } %>
+                    </span>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Left column: info -->
+                <div class="col-lg-7">
+
+                    <div class="profile-card mb-4">
+                        <div class="profile-section-title">
+                            <i class="bi bi-person"></i> Personal Information
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="profile-field">
+                                    <div class="profile-field-label">First Name</div>
+                                    <div class="profile-field-value">
+                                        <%= targetUser.First_name %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="profile-field">
+                                    <div class="profile-field-label">Last Name</div>
+                                    <div class="profile-field-value">
+                                        <%= targetUser.Last_name %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="profile-field">
+                                    <div class="profile-field-label">Email Address</div>
+                                    <div class="profile-field-value">
+                                        <%= targetUser.Email %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="profile-field">
+                                    <div class="profile-field-label">User ID</div>
+                                    <div class="profile-field-value"
+                                        style="font-family:monospace;font-size:0.85rem;color:#999;">#<%=
+                                            targetUser.UserID %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="profile-field">
+                                    <div class="profile-field-label">Phone Number</div>
+                                    <div class="profile-field-value">
+                                        <%= targetUser.Phone_number || '—' %>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="profile-card">
+                        <div class="profile-section-title">
+                            <i class="bi bi-clock-history"></i> Account Activity
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="profile-field">
+                                    <div class="profile-field-label">Total Orders</div>
+                                    <div class="profile-field-value">
+                                        <%= targetUser.TotalOrders || 0 %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="profile-field">
+                                    <div class="profile-field-label">Total Spent</div>
+                                    <div class="profile-field-value">$<%= targetUser.TotalSpent ?
+                                            targetUser.TotalSpent.toFixed(2) : '0.00' %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="profile-field"> <!-- TODO: last login -->
+                                    <div class="profile-field-label">Last Login</div>
+                                    <div class="profile-field-value">
+                                        <%= targetUser.LastLogin || '—' %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="profile-field">
+                                    <div class="profile-field-label">Open Disputes</div>
+                                    <div class="profile-field-value">
+                                        <%= targetUser.OpenDisputes || 0 %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right column: admin actions -->
+                <div class="col-lg-5 d-flex flex-column gap-4">
+                    <div class="profile-card">
+                        <div class="profile-section-title">
+                            <i class="bi bi-shield-check"></i> Account Status
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 mb-3 p-3 rounded"
+                            style="border:1.5px solid #e8e8e8;">
+                            <% if (targetUser.Status==1) { %>
+                                <i class="bi bi-slash-circle-fill" style="font-size:1.4rem;color:#e74c3c;"></i>
+                                <% } else if (targetUser.Status==2) { %>
+                                    <i class="bi bi-pause-circle-fill" style="font-size:1.4rem;color:#e67e22;"></i>
+                                    <% } else { %>
+                                        <i class="bi bi-check-circle-fill" style="font-size:1.4rem;color:#7a9b6e;"></i>
+                                        <% } %>
+                                            <div>
+                                                <div
+                                                    style="font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--charcoal-gray-secondary);">
+                                                    Current Status
+                                                </div>
+                                                <div
+                                                    style="font-family:'Open Sans',sans-serif;font-size:0.78rem;color:#aaa;">
+                                                    <% if (targetUser.Status==1) { %>Banned<% } else if
+                                                            (targetUser.Status==2) { %>Suspended<% } else { %>Active<% }
+                                                                    %>
+                                                </div>
+                                            </div>
+                                            <span class="ms-auto badge rounded-pill"
+                                                style="background:rgba(122,155,110,.15);color:var(--sage-green-secondary);font-family:'Poppins',sans-serif;font-size:0.72rem;">
+                                                <%= targetUser.Role %>
+                                            </span>
+                        </div>
+
+                        <% if (targetUser.Status !=2 && targetUser.Status !=1) { %>
+                            <button class="btn-hp-outline-edit w-100 mb-2" onclick="toggleSuspendForm()"
+                                style="border-color:#e67e22;color:#e67e22;" id="btn-suspend">
+                                <i class="bi bi-pause-circle me-1"></i>Suspend Account
+                            </button>
+                            <div id="suspend-form"
+                                style="display:none;border:1.5px solid #e8e8e8;border-radius:10px;padding:16px;background:#fafafa;margin-bottom:10px;">
+                                <div
+                                    style="font-family:'Poppins',sans-serif;font-weight:600;font-size:0.9rem;color:var(--charcoal-gray-secondary);margin-bottom:12px;">
+                                    <i class="bi bi-pause-circle me-2"></i>Suspend User
+                                </div>
+                                <div class="mb-3">
+                                    <label class="profile-field-label mb-1" for="suspend-duration">Duration</label>
+                                    <select id="suspend-duration" class="form-control profile-input">
+                                        <option value="1">1 day</option>
+                                        <option value="3">3 days</option>
+                                        <option value="7" selected>7 days</option>
+                                        <option value="14">14 days</option>
+                                        <option value="30">30 days</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="profile-field-label mb-1" for="suspend-reason">Reason</label>
+                                    <textarea id="suspend-reason" class="form-control profile-input" rows="2"
+                                        placeholder="Briefly describe the reason..."></textarea>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <form method="POST" action="/admins/suspend-user/<%= targetUser.UserID %>">
+                                        <button type="submit" class="btn-hp-edit" style="background:#e67e22;">
+                                            <i class="bi bi-check2 me-1"></i>Confirm Suspend
+                                        </button>
+                                    </form>
+                                    <button class="btn-hp-outline-edit" onclick="toggleSuspendForm()">Cancel</button>
+                                </div>
+                            </div>
+                            <% } %>
+
+                                <% if (targetUser.Status==2) { %>
+                                    <form method="POST" action="/admins/reinstate-user/<%= targetUser.UserID %>">
+                                        <button type="submit" class="btn-hp-outline-edit w-100 mb-2"
+                                            style="border-color:#7a9b6e;color:#7a9b6e;">
+                                            <i class="bi bi-arrow-counterclockwise me-1"></i>Reinstate Account
+                                        </button>
+                                    </form>
+                                    <% } %>
+
+                                        <% if (targetUser.Status==1) { %>
+                                            <form method="POST"
+                                                action="/admins/reinstate-user/<%= targetUser.UserID %>">
+                                                <button type="submit" class="btn-hp-outline-edit w-100 mb-2"
+                                                    style="border-color:#7a9b6e;color:#7a9b6e;">
+                                                    <i class="bi bi-arrow-counterclockwise me-1"></i>Unban Account
+                                                </button>
+                                            </form>
+                                            <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <% if (targetUser.Status !=1) { %>
+                <div class="danger-zone mt-4">
+                    <div
+                        style="font-family:'Poppins',sans-serif;font-weight:700;font-size:0.95rem;color:#c94040;margin-bottom:6px;">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Danger Zone
+                        <p
+                            style="font-family:'Open Sans',sans-serif;font-size:0.75rem;color:#c94040;margin-bottom:14px;">
+                            <strong>These actions are permanent.</strong>
+                        </p>
+                    </div>
+                    <p style="font-family:'Open Sans',sans-serif;font-size:0.85rem;color:#888;margin-bottom:8px;">
+                        Permanently ban this user. They will be unable to log in or create a new account with this
+                        email.
+                    </p>
+                    <button class="btn btn-sm"
+                        style="background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-family:'Poppins',sans-serif;font-weight:600;border-radius:8px;padding:7px 18px;font-size:0.85rem;"
+                        onclick="confirmBan()">
+                        <i class="bi bi-slash-circle me-1"></i>Ban User
+                    </button>
+                    <!-- TODO: fix all this formatting  -->
+                    <% } %>
+                        <p
+                            style="font-family:'Open Sans',sans-serif;font-size:0.85rem;color:#888;margin-bottom:8px;margin-top:14px;">
+                            Permanently delete this user. Their account and all associated roles will be deleted.
+                        </p>
+                        <button class="btn btn-sm"
+                            style="background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-family:'Poppins',sans-serif;font-weight:600;border-radius:8px;padding:7px 18px;font-size:0.85rem;"
+                            onclick="confirmDelete()">
+                            <i class="bi bi-person-dash me-1"></i>Delete User
+                        </button>
+                </div>
+
+
+        </main>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-save" id="save-toast">
+        <i class="bi bi-check-circle-fill me-2" style="color:#7a9b6e;"></i>Action applied successfully.
+    </div>
+
+    <!-- Ban modal -->
+    <div class="modal fade" id="banModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:14px;">
+                <div class="modal-header border-0 pb-0">
+                    <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:#c94040;">
+                        <i class="bi bi-slash-circle-fill me-2"></i>Ban User?
+                    </div>
+                </div>
+                <div class="modal-body pt-2">
+                    <p style="font-family:'Open Sans',sans-serif;font-size:0.9rem;color:#666;">
+                        Are you sure you want to ban <strong>
+                            <%= targetUser.First_name %>
+                                <%= targetUser.Last_name %>
+                        </strong>?
+                        This will immediately revoke their access.
+                    </p>
+                    <div class="mb-2">
+                        <label class="profile-field-label mb-1" for="ban-reason">Reason (required)</label>
+                        <textarea id="ban-reason" class="form-control profile-input" rows="2"
+                            placeholder="Describe why this user is being banned."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button class="btn-hp-outline-edit" data-bs-dismiss="modal">Cancel</button>
+                    <form method="POST" action="/admins/ban-user/<%= targetUser.UserID %>" class="d-inline">
+                        <button type="submit" class="btn-hp-edit ms-2" style="background:#e74c3c;">
+                            <i class="bi bi-slash-circle me-1"></i>Yes, Ban User
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- delete modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:14px;">
+                <div class="modal-header border-0 pb-0">
+                    <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:#c94040;">
+                        <i class="bi bi-slash-circle-fill me-2"></i>Delete User?
+                    </div>
+                </div>
+                <div class="modal-body pt-2">
+                    <p style="font-family:'Open Sans',sans-serif;font-size:0.9rem;color:#666;">
+                        Are you sure you want to delete <strong>
+                            <%= targetUser.First_name %>
+                                <%= targetUser.Last_name %>
+                        </strong>?
+                        This will immediately revoke their access.
+                    </p>
+                    <div class="mb-2">
+                        <label class="profile-field-label mb-1" for="ban-reason">Reason (required)</label>
+                        <textarea id="delete-reason" class="form-control profile-input" rows="2"
+                            placeholder="Describe why this user is being deleted."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button class="btn-hp-outline-edit" data-bs-dismiss="modal">Cancel</button>
+                    <form method="POST" action="/admins/delete-user/<%= targetUser.UserID %>" class="d-inline">
+                        <button type="submit" class="btn-hp-edit ms-2" style="background:#e74c3c;">
+                            <i class="bi bi-slash-circle me-1"></i>Yes, Delete User
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/javascripts/common-elements.js"></script>
+    <script>
+        function toggleSuspendForm() {
+            const form = document.getElementById('suspend-form');
+            const btn = document.getElementById('btn-suspend');
+            const open = form.style.display !== 'none';
+            form.style.display = open ? 'none' : 'block';
+            btn.innerHTML = open
+                ? '<i class="bi bi-pause-circle me-1"></i>Suspend Account'
+                : '<i class="bi bi-dash me-1"></i>Cancel';
+        }
+
+        function confirmBan() {
+            new bootstrap.Modal(document.getElementById('banModal')).show();
+        }
+
+        function confirmDelete() {
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+    </script>
+</body>
+
+</html>
