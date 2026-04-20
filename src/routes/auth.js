@@ -14,8 +14,8 @@ const CustomerRepository = require('../middleware/customerRepository');
 // if user already logged in it'll re-route to dashboard
 router.get('/login', function(req, res, next) {
   if (req.user) {
-    redirectByRole.dashRedirect(res, user.Role);
-    return res.redirect('/customer/dashboard');
+    redirectByRole.dashRedirect(res, req.user.Role);
+    return;
   }
   res.render('auth/login', { title: 'Login'});
 });
@@ -26,7 +26,7 @@ router.post('/login', function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
     if (err) return next(err);
     if (!user) return res.redirect('/login');
-    console.log('user.Role:', user.Role);
+
     req.logIn(user, function(err) {
       if (err) return next(err);
       redirectByRole.dashRedirect(res, user.Role); 

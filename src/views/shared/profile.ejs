@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="stylesheet" href="/stylesheets/customer-dashboard.css">
 </head>
-<body data-role="<%= user.Role %>" data-user="<%= user.first_name %>">
+<body data-role="<%= user.Role %>" data-user="<%= user.First_name %>">
 
 <!-- ── Dashboard Body ── -->
 <div class="main-box">
@@ -23,15 +23,15 @@
         <!-- Page header + avatar -->
         <div class="d-flex align-items-center gap-3 mb-4">
             <div class="profile-avatar">
-                UX
+                <%= user.First_name.charAt(0) %><%= user.Last_name.charAt(0) %>
                 <div class="avatar-edit-btn" title="Change photo"><i class="bi bi-camera-fill"></i></div>
             </div>
             <div>
                 <h1 id="header-name" style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:var(--charcoal-gray-secondary);margin:0;">
-                    User X
+                    <%= user.First_name %> <%= user.Last_name %>
                 </h1>
                 <span style="font-family:'Open Sans',sans-serif;font-size:0.85rem;color:#999;">
-                    Member since May 2024 &nbsp;·&nbsp; Customer account
+                    <%= user.Role === 'vendor' ? 'Merchant account' : 'Customer account' %>
                 </span>
             </div>
 
@@ -50,31 +50,33 @@
                         <div class="col-6">
                             <div class="profile-field">
                                 <div class="profile-field-label">First Name</div>
-                                <div class="profile-field-value" id="vw-first">User</div>
+                                <div class="profile-field-value" id="vw-first"><%= user.First_name %></div>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="profile-field">
                                 <div class="profile-field-label">Last Name</div>
-                                <div class="profile-field-value" id="vw-last">X</div>
+                                <div class="profile-field-value" id="vw-last"><%= user.Last_name %></div>
                             </div>
                         </div>
+                        <% if (user.Role === 'vendor') { %>
+                        <div class="col-12">
+                            <div class="profile-field">
+                                <div class="profile-field-label">Store Name</div>
+                                <div class="profile-field-value" id="vw-storename"><%= merchant ? merchant.name : '' %></div>
+                            </div>
+                        </div>
+                        <% } %>
                         <div class="col-12">
                             <div class="profile-field">
                                 <div class="profile-field-label">Email Address</div>
-                                <div class="profile-field-value" id="vw-email">userx@example.com</div>
+                                <div class="profile-field-value" id="vw-email"><%= user.Email %></div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="profile-field">
                                 <div class="profile-field-label">Phone Number</div>
-                                <div class="profile-field-value" id="vw-phone">(509) 555-0147</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="profile-field">
-                                <div class="profile-field-label">Date of Birth</div>
-                                <div class="profile-field-value" id="vw-dob">March 14, 1995</div>
+                                <div class="profile-field-value" id="vw-phone"><%= user.Phone_number || '—' %></div>
                             </div>
                         </div>
                         <div class="col-12 mt-1">
@@ -89,20 +91,18 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="profile-field-label mb-1" for="ed-first">First Name</label>
-                                <input type="text" id="ed-first" class="form-control profile-input" value="User">
+                                <input type="text" id="ed-first" class="form-control profile-input" value="<%= user.First_name %>">
                             </div>
                             <div class="col-md-6">
                                 <label class="profile-field-label mb-1" for="ed-last">Last Name</label>
-                                <input type="text" id="ed-last" class="form-control profile-input" value="X">
+                                <input type="text" id="ed-last" class="form-control profile-input" value="<%= user.Last_name %>">
                             </div>
-                            <div class="col-md-6">
-                                <label class="profile-field-label mb-1" for="ed-phone">Phone Number</label>
-                                <input type="tel" id="ed-phone" class="form-control profile-input" value="(509) 555-0147">
+                            <% if (user.Role === 'vendor') { %>
+                            <div class="col-12">
+                                <label class="profile-field-label mb-1" for="ed-storename">Store Name</label>
+                                <input type="text" id="ed-storename" class="form-control profile-input" value="<%= merchant ? merchant.name : '' %>">
                             </div>
-                            <div class="col-md-6">
-                                <label class="profile-field-label mb-1" for="ed-dob">Date of Birth</label>
-                                <input type="date" id="ed-dob" class="form-control profile-input" value="1995-03-14">
-                            </div>
+                            <% } %>
                         </div>
                         <div class="d-flex gap-2 mt-4">
                             <button class="btn-hp-edit" onclick="saveChanges()">
@@ -113,36 +113,16 @@
                     </div>
                 </div>
 
-                <!-- Delivery Address -->
+                <!-- Address -->
                 <div class="profile-card">
                     <div class="profile-section-title">
-                        <i class="bi bi-geo-alt"></i> Default Delivery Address
+                        <i class="bi bi-geo-alt"></i> <%= user.Role === 'vendor' ? 'Store Address' : 'Default Delivery Address' %>
                     </div>
 
                     <div id="view-addr">
                         <div class="profile-field">
-                            <div class="profile-field-label">Street</div>
-                            <div class="profile-field-value">1234 Orchard Lane, Apt 7</div>
-                        </div>
-                        <div class="row g-3 mt-1">
-                            <div class="col-md-5">
-                                <div class="profile-field">
-                                    <div class="profile-field-label">City</div>
-                                    <div class="profile-field-value">Pullman</div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="profile-field">
-                                    <div class="profile-field-label">State</div>
-                                    <div class="profile-field-value">WA</div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="profile-field">
-                                    <div class="profile-field-label">ZIP</div>
-                                    <div class="profile-field-value">99163</div>
-                                </div>
-                            </div>
+                            <div class="profile-field-label">Address</div>
+                            <div class="profile-field-value" id="vw-addr"><%= (user.Role === 'vendor' ? (merchant && merchant.address) : (customer && customer.address)) || 'Not set' %></div>
                         </div>
                         <button class="btn-hp-outline-edit mt-3" onclick="toggleAddrEdit(true)">
                             <i class="bi bi-pencil me-1"></i>Edit Address
@@ -151,22 +131,9 @@
 
                     <div id="edit-addr" style="display:none;">
                         <div class="mb-3">
-                            <label class="profile-field-label mb-1" for="ed-street">Street Address</label>
-                            <input type="text" id="ed-street" class="form-control profile-input" value="1234 Orchard Lane, Apt 7">
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-md-5">
-                                <label class="profile-field-label mb-1" for="ed-city">City</label>
-                                <input type="text" id="ed-city" class="form-control profile-input" value="Pullman">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="profile-field-label mb-1" for="ed-state">State</label>
-                                <input type="text" id="ed-state" class="form-control profile-input" value="WA" maxlength="2">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="profile-field-label mb-1" for="ed-zip">ZIP</label>
-                                <input type="text" id="ed-zip" class="form-control profile-input" value="99163" maxlength="10">
-                            </div>
+                            <label class="profile-field-label mb-1" for="ed-street">Address</label>
+                            <input type="text" id="ed-street" class="form-control profile-input"
+                                value="<%= (user.Role === 'vendor' ? (merchant && merchant.address) : (customer && customer.address)) || '' %>">
                         </div>
                         <div class="d-flex gap-2 mt-3">
                             <button class="btn-hp-edit" onclick="saveAddr()">
@@ -177,11 +144,44 @@
                     </div>
                 </div>
 
+                <% if (user.Role === 'vendor') { %>
+                <div class="profile-card mt-3">
+                    <div class="profile-section-title">
+                        <i class="bi bi-chat-quote"></i> Store Bio
+                    </div>
+
+                    <div id="view-bio">
+                        <div class="profile-field">
+                            <div class="profile-field-label">Bio</div>
+                            <div class="profile-field-value" id="vw-bio" style="white-space:pre-wrap;"><%= (merchant && merchant.bio) || 'No bio yet.' %></div>
+                        </div>
+                        <button class="btn-hp-outline-edit mt-3" onclick="toggleBioEdit(true)">
+                            <i class="bi bi-pencil me-1"></i>Edit Bio
+                        </button>
+                    </div>
+
+                    <div id="edit-bio" style="display:none;">
+                        <div class="mb-3">
+                            <label class="profile-field-label mb-1" for="ed-bio">Bio</label>
+                            <textarea id="ed-bio" class="form-control profile-input" rows="4" maxlength="400"
+                                style="resize:vertical;"><%= (merchant && merchant.bio) || '' %></textarea>
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn-hp-edit" onclick="saveBio()">
+                                <i class="bi bi-check2 me-1"></i>Save Bio
+                            </button>
+                            <button class="btn-hp-outline-edit" onclick="toggleBioEdit(false)">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+
             </div>
 
             <!-- ─── Right column ─── -->
             <div class="col-lg-5 d-flex flex-column gap-4">
 
+                <% if (user.Role !== 'vendor') { %>
                 <!-- Payment methods -->
                 <div class="profile-card">
                     <div class="profile-section-title">
@@ -248,6 +248,7 @@
                         <i class="bi bi-plus me-1"></i>Add Payment Method
                     </button>
                 </div>
+                <% } %>
 
             </div>
         </div>
@@ -363,8 +364,34 @@ function cancelEdit() {
     document.getElementById('btn-edit').style.display = '';
 }
 function saveChanges() {
-    cancelEdit();
-    showToast();
+    const firstName = document.getElementById('ed-first').value.trim();
+    const lastName  = document.getElementById('ed-last').value.trim();
+    if (!firstName || !lastName) return;
+    const role = '<%= user.Role %>';
+    const url  = role === 'vendor' ? '/vendor/api/profile' : '/customer/api/profile';
+    const payload = { firstName, lastName };
+    if (role === 'vendor') {
+        payload.storeName = document.getElementById('ed-storename').value.trim();
+    }
+    fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            document.getElementById('vw-first').textContent = firstName;
+            document.getElementById('vw-last').textContent  = lastName;
+            document.getElementById('header-name').textContent = firstName + ' ' + lastName;
+            if (role === 'vendor') {
+                document.getElementById('vw-storename').textContent = payload.storeName;
+            }
+            cancelEdit();
+            showToast();
+        }
+    })
+    .catch(() => {});
 }
 
 // ── Address edit ────────────────────────────────────
@@ -373,8 +400,46 @@ function toggleAddrEdit(show) {
     document.getElementById('edit-addr').style.display = show ? 'block' : 'none';
 }
 function saveAddr() {
-    toggleAddrEdit(false);
-    showToast();
+    const address = document.getElementById('ed-street').value.trim();
+    const role = '<%= user.Role %>';
+    const url  = role === 'vendor' ? '/vendor/api/profile' : '/customer/api/profile';
+    fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            document.getElementById('vw-addr').textContent = address || 'Not set';
+            toggleAddrEdit(false);
+            showToast();
+        }
+    })
+    .catch(() => {});
+}
+
+// ── Bio edit ──────────────────────────────────────────
+function toggleBioEdit(show) {
+    document.getElementById('view-bio').style.display = show ? 'none' : '';
+    document.getElementById('edit-bio').style.display = show ? 'block' : 'none';
+}
+function saveBio() {
+    const bio = document.getElementById('ed-bio').value.trim();
+    fetch('/vendor/api/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bio })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            document.getElementById('vw-bio').textContent = bio || 'No bio yet.';
+            toggleBioEdit(false);
+            showToast();
+        }
+    })
+    .catch(() => {});
 }
 
 // ── Password accordion ──────────────────────────────

@@ -27,7 +27,6 @@ class OrderRepository
 
         for (const item of order.orderItems)
         {
-            console.log("Items", item);
             await db.run('INSERT INTO OrderItems (OrderID, ItemID, PriceAtPurchase, Quantity) VALUES(?, ?, ?, ?)',
                 [
                     orderId,
@@ -108,8 +107,6 @@ class OrderRepository
             [orderId]
         );
 
-        console.log(itemRows);
-
         const items = itemRows.map(row =>
             new OrderItem(
                 row.OrderItemID,
@@ -119,8 +116,6 @@ class OrderRepository
                 row.Quantity
             )
         );
-
-        console.log("Items", items);
 
         const newOrder = new Order(
             orderRow.OrderID,
@@ -133,7 +128,6 @@ class OrderRepository
         );
 
         newOrder.customerName = orderRow.CustomerName || null;
-        console.log("NewOrder", newOrder);
         return newOrder;
     }
 
@@ -170,7 +164,6 @@ class OrderRepository
 
             for (const element of orders) {
                 const fullOrder = await this.getById(element.OrderID);
-                console.log("FullOder", fullOrder);
                 orderList.push(fullOrder);
             }
 
@@ -199,6 +192,50 @@ class OrderRepository
             orderList.push(fullOrder);
         }
         return orderList;
+    }
+
+    async getReportData(merchantId, period, type)
+    {
+        const db = await this.dbPromise;
+
+        let dateFilter;
+        let groupFormat;
+        if (period === 'daily') {
+            dateFilter = `datetime(TimeOrdered/1000, 'unixepoch') >= datetime('now', '-30 days')`;
+            groupFormat = `strftime('%Y-%m-%d', TimeOrdered/1000, 'unixepoch')`;
+        } else if (period === 'monthly') {
+            dateFilter = `datetime(TimeOrdered/1000, 'unixepoch') >= datetime('now', '-12 months')`;
+            groupFormat = `strftime('%Y-%m', TimeOrdered/1000, 'unixepoch')`;
+        } else {
+            dateFilter = `1=1`;
+            groupFormat = `strftime('%Y', TimeOrdered/1000, 'unixepoch')`;
+        }
+
+        if (type === 'income') {
+            return await db.all(
+                `SELECT ${groupFormat} AS period_label,
+                        COUNT(*) AS order_count,
+                        ROUND(SUM(TotalAmount), 2) AS total_revenue
+                 FROM Orders
+                 WHERE MerchantID = ? AND OrderStatus = 'Completed' AND ${dateFilter}
+                 GROUP BY period_label
+                 ORDER BY period_label ASC`,
+                [merchantId]
+            );
+        } else {
+            return await db.all(
+                `SELECT mi.ItemName,
+                        SUM(oi.Quantity) AS total_qty,
+                        ROUND(SUM(oi.PriceAtPurchase * oi.Quantity), 2) AS total_revenue
+                 FROM OrderItems oi
+                 JOIN Orders o ON oi.OrderID = o.OrderID
+                 JOIN MenuItems mi ON oi.ItemID = mi.ItemID
+                 WHERE o.MerchantID = ? AND o.OrderStatus = 'Completed' AND ${dateFilter}
+                 GROUP BY mi.ItemName
+                 ORDER BY total_qty DESC`,
+                [merchantId]
+            );
+        }
     }
 
 }

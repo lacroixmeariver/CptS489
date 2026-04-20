@@ -15,8 +15,6 @@ class OrderService
 
         order.calculateTotalAmount();
 
-        console.log("Order Service", order);
-
         const orderID = await this.orderRepository.save(order);
         order.orderId = orderID
 
@@ -93,6 +91,11 @@ class OrderService
     async getCurrentOrdersForMerchant(merchantId)
     {
         return await this.orderRepository.findCurrentOrdersByMerchantId(merchantId);
+    }
+
+    async getReportData(merchantId, period, type)
+    {
+        return await this.orderRepository.getReportData(merchantId, period, type);
     }
 }
 

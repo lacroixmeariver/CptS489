@@ -36,6 +36,23 @@ class CustomerRepository
                 );
     }
 
+    async updateProfile(userId, customerId, { firstName, lastName, address })
+    {
+        const db = await this.dbPromise;
+        if (firstName !== undefined || lastName !== undefined) {
+            await db.run(
+                `UPDATE Users SET First_name = ?, Last_name = ? WHERE UserID = ?`,
+                [firstName, lastName, userId]
+            );
+        }
+        if (address !== undefined) {
+            await db.run(
+                `UPDATE Customers SET Address = ? WHERE CustomerID = ?`,
+                [address, customerId]
+            );
+        }
+    }
+
     async getById(customerId)
     {
         const db = await this.dbPromise;

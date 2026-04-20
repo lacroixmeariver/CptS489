@@ -6,23 +6,30 @@ const MerchantRepository = require("../middleware/merchantRepository");
 const MerchantService = require("../services/merhcantService");
 const OrderService = require("../services/orderService");
 const OrderRepository = require("../middleware/orderRepository");
+const ReviewRepository = require("../middleware/reviewRepository");
+const ReviewService = require("../services/reviewService");
 
 const merchantRepo = new MerchantRepository(dbPromise);
 const merchantService = new MerchantService(merchantRepo);
 const orderRepo = new OrderRepository(dbPromise);
 const orderService = new OrderService(orderRepo);
+const reviewRepo = new ReviewRepository(dbPromise);
+const reviewService = new ReviewService(reviewRepo);
 
-// gets the vendor dashboard page
 router.get('/dashboard', isAuthenticated, async (req, res) => {
-    console.log('User in dashboard:', req.user);
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
     res.render('vendor/merchant-dashboard', { user: req.user, merchant: merchant });
+});
+
+router.get('/reviews', isAuthenticated, async (req, res) => {
+    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    const reviews = await reviewService.getReviewsByMerchantId(merchant.merchantId);
+    res.json(reviews);
 });
 
 router.get('/open-store', isAuthenticated, async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
     await merchantService.openStore(merchant.merchantId);
-    console.log('store open');
     res.redirect('/vendor/live-operations');
 });
 
@@ -30,7 +37,6 @@ router.get('/close-store', isAuthenticated, async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
     await orderService.cancelPendingOrdersForMerchant(merchant.merchantId);
     await merchantService.closeStore(merchant.merchantId);
-    console.log('store closed');
     res.redirect('/vendor/dashboard');
 });
 
@@ -58,14 +64,12 @@ router.post('/cancel-order/:orderId', isAuthenticated, async (req, res) => {
 router.get("/api/pending-orders", isAuthenticated, async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
     const pendingOrders = await orderService.getPendingOrdersForMerchant(merchant.merchantId);
-    console.log(pendingOrders);
     res.json(pendingOrders);
 });
 
 router.get("/api/current-orders", isAuthenticated, async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
     const currentOrders = await orderService.getCurrentOrdersForMerchant(merchant.merchantId);
-    console.log(currentOrders);
     res.json(currentOrders);
 });
 
@@ -106,17 +110,9 @@ router.get('/live-operations', isAuthenticated, async (req, res) => {
     res.render('vendor/live-operations', { user: req.user, merchant: merchant });
 });
 
-router.get('/my-menu',isAuthenticated, async (req, res) => {
+router.get('/my-menu', isAuthenticated, async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
     res.render('vendor/my-menu', { user: req.user, merchant: merchant });
-});
-
-router.post('/menu/delete/:itemId', isAuthenticated, async (req, res) => {
-    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    const itemId = req.params.itemId;
-
-    await merchantService.removeMenuItem(merchant.merchantId, itemId);
-    res.redirect('/vendor/my-menu');
 });
 
 router.post('/menu/edit/:itemId', isAuthenticated, async (req, res) => {
@@ -133,16 +129,13 @@ router.post('/menu/edit/:itemId', isAuthenticated, async (req, res) => {
     };
 
     await merchantService.editMenuItem(merchant.merchantId, itemId, updatedFields);
-
     res.redirect('/vendor/my-menu');
 });
 
 router.post('/menu/toggle-availability/:itemId', isAuthenticated, async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
     const itemId = req.params.itemId;
-    console.log('availability', merchant.menuItems.find(item => item.itemId === itemId).available);
     merchantService.toggleMenuItemAvailability(merchant.merchantId, itemId);
-    console.log('availability', merchant.menuItems.find(item => item.itemId === itemId).available);
     res.redirect('/vendor/my-menu');
 });
 
@@ -159,6 +152,40 @@ router.post('/menu/add', isAuthenticated, async (req, res) => {
 
     await merchantService.addMenuItem(merchant.merchantId, newItem);
     res.redirect('/vendor/my-menu');
+});
+
+router.get('/profile', isAuthenticated, async (req, res) => {
+    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    res.render('shared/profile', { user: req.user, merchant, customer: null });
+});
+
+router.post('/api/profile', isAuthenticated, async (req, res) => {
+    const { firstName, lastName, address, bio, storeName } = req.body;
+    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    if (!merchant) return res.status(400).json({ error: 'Merchant not found' });
+    await merchantService.updateProfile(req.user.UserID, merchant.merchantId, { firstName, lastName, address, bio, storeName });
+    res.json({ ok: true });
+});
+
+router.get('/reports', isAuthenticated, async (req, res) => {
+    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    res.render('vendor/merchant-reports', { user: req.user, merchant: merchant });
+});
+
+router.get('/api/reports', isAuthenticated, async (req, res) => {
+    const { period, type } = req.query;
+    const validPeriods = ['daily', 'monthly', 'yearly'];
+    const validTypes = ['income', 'items'];
+    if (!validPeriods.includes(period) || !validTypes.includes(type)) {
+        return res.status(400).json({ error: 'Invalid period or type parameter.' });
+    }
+    try {
+        const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+        const data = await orderService.getReportData(merchant.merchantId, period, type);
+        res.json({ ok: true, data });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to generate report. Please try again.' });
+    }
 });
 
 

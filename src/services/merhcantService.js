@@ -40,7 +40,6 @@ class MerchantService
 
     async addMenuItem(merchantId, menuItem)
     {
-        console.log('Adding menu item to merchant:', merchantId, menuItem);
         const merchant = await this.merchantRepository.getById(merchantId);
 
         merchant.AddMenuItem(menuItem)
@@ -63,8 +62,6 @@ class MerchantService
     async editMenuItem(merchantId, itemId, updatedFields)
     {
         const merchant = await this.merchantRepository.getById(merchantId);
-
-        console.log('Before update:', updatedFields);
 
         await this.merchantRepository.updateItems(merchantId, itemId, updatedFields);
         return merchant;
@@ -90,6 +87,11 @@ class MerchantService
     async getAllMerchantsWithStats()
     {
         return await this.merchantRepository.getAllWithStats();
+    }
+
+    async updateProfile(userId, merchantId, fields)
+    {
+        return await this.merchantRepository.updateProfile(userId, merchantId, fields);
     }
 
     async getReviews(merchantId)
