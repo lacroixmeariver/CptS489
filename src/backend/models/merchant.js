@@ -3,7 +3,7 @@ class Merchant
     /// <summary>
     /// instantiates a merchant with details such as the merchant's unique identifier, name, address, verification status, and store score.
     /// </summary>
-    constructor(merchantId, name, adress, verified=false, storeScore=0, menuItems=[], status="closed")
+    constructor(merchantId, name, adress, verified=false, storeScore=0, menuItems=[], status='closed', bio=null)
     {
         this.merchantId = merchantId;
         this.name = name;
@@ -12,11 +12,11 @@ class Merchant
         this.storeScore = storeScore;
         this.menuItems = menuItems;
         this.status = status;
+        this.bio = bio;
     }
 
     AddMenuItem(menuItem)
     {
-        console.log('Adding menu item to merchant:', this.merchantId);
         this.menuItems.push(menuItem);
     }
 
@@ -26,13 +26,9 @@ class Merchant
     }
 
     EditMenuItem(itemId, updatedFields) {
-        console.log('enter mercchant function', updatedFields);
         const item = this.menuItems.find(i => i.itemId === itemId);
         if (!item) return;
-
         Object.assign(item, updatedFields);
-
-        console.log(this.menuItems);
     }
 
     UpdateStatus(newStatus)

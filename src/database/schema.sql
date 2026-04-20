@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS Merchants(
     MerchantAddress TEXT,
     Verified BOOLEAN NOT NULL DEFAULT FALSE,
     StoreScore REAL NOT NULL DEFAULT 0.0,
-    Status TEXT NOT NULL CHECK (Status IN ('open', 'closed')) DEFAULT 'closed'
+    Status TEXT NOT NULL CHECK (Status IN ('open', 'closed')) DEFAULT 'closed',
+    Bio TEXT
 );
 
 CREATE TABLE IF NOT EXISTS Orders(

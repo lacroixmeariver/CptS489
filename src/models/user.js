@@ -2,7 +2,6 @@ const {db, dbPromise} = require('../config/db');
 
 // queries the db for user row using email
 function findUserByEmail(email, cb) {
-    console.log("FIND USER BY EMAIL FUNCTION CALLED!")
     db
     .get('SELECT * FROM Users WHERE Email = ?',
         email, (err, row) => {
@@ -12,7 +11,6 @@ function findUserByEmail(email, cb) {
 }
 
 function getUserByID(ID, cb) {
-    console.log("GET USER BY ID FUNCTION CALLED!")
     db
     .get('SELECT * FROM Users WHERE UserID = ?',
         ID, (err, row) => {

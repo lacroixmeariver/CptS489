@@ -49,7 +49,7 @@ const cookSidenav = `
         <a href="/vendor/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
             <i class="bi bi-house-fill sidebar-nav-link-icon"></i>
         </a>
-        <a href="/vendor/menu" data-bs-toggle="tooltip" data-bs-placement="right" title="My Menu">
+        <a href="/vendor/my-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="My Menu">
             <i class="bi bi-journal-text sidebar-nav-link-icon"></i>
         </a>
         <a href="/vendor/live-operations" data-bs-toggle="tooltip" data-bs-placement="right" title="Live Orders">
@@ -120,7 +120,7 @@ function getSidenav(role) {
 document.addEventListener("DOMContentLoaded", function () {
     const role = document.body.dataset.role;
     const userName = document.body.dataset.user;
-    console.log('role:', role, 'userName:', userName);
+
     document.body.insertAdjacentHTML("afterbegin", navbar(userName));
     if (role === 'customer'){
         document.body.querySelector("#cart-button").removeAttribute("hidden");

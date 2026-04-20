@@ -45,9 +45,11 @@
         </div>
 
         <!-- Bio -->
+        <% if (merchant.bio) { %>
         <p style="font-family:'Open Sans',sans-serif;font-size:0.86rem;color:rgba(255,255,255,.75);margin:16px 0 0;max-width:700px;line-height:1.6;">
-            Merchant bio coming soon! Get Ready To Meet <%= merchant.name %> and enjoy some delicious home-cooked meals!
+            <%= merchant.bio %>
         </p>
+        <% } %>
     </div>
 </div>
 
@@ -79,7 +81,12 @@
         <% } %>
     </div>
 
-    <h3 class="mt-4" style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.25rem;">Reviews</h3>
+    <div class="d-flex align-items-center justify-content-between mt-4 mb-2">
+        <h3 style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.25rem; margin: 0;">Reviews</h3>
+        <button class="btn btn-hp btn-sm" data-bs-toggle="modal" data-bs-target="#reviewModal">
+            <i class="bi bi-star me-1"></i>Write a Review
+        </button>
+    </div>
     <% if (reviews.length === 0) { %>
         <div class="text-center py-5" style="color:#bbb;font-family:'Poppins',sans-serif;">
             <i class="bi bi-star" style="font-size:2rem;display:block;margin-bottom:8px;"></i>
@@ -94,7 +101,7 @@
                     <span class="review-date"><%= review.ReviewDate %></span>
                 </div>
                 <div class="review-content">
-                    <p><%= review.ReviewText %></p>
+                    <p><%= review.Comment %></p>
                 </div>
             </div>
         <% }); %>
@@ -130,6 +137,41 @@
         </div><!-- /cart sidebar -->
     </div><!-- /row -->
 </div><!-- /main content -->
+
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:16px;">
+            <div class="modal-header" style="border-bottom:1px solid #f0e8d8;">
+                <h5 class="modal-title" id="reviewModalLabel" style="font-family:'Poppins',sans-serif;font-weight:600;">
+                    Review <%= merchant.name %>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="review-form">
+            <div class="modal-body" style="padding:24px;">
+                <div class="mb-3">
+                    <label style="font-family:'Poppins',sans-serif;font-weight:500;font-size:0.9rem;margin-bottom:8px;display:block;">Rating</label>
+                    <div id="star-row" style="display:flex;gap:6px;font-size:1.8rem;cursor:pointer;">
+                        <% for (let s = 1; s <= 5; s++) { %>
+                        <span class="star" data-val="<%= s %>" style="color:#ddd;">&#9733;</span>
+                        <% } %>
+                    </div>
+                    <input type="hidden" id="rating-input" name="rating" value="0">
+                </div>
+                <div class="mb-1">
+                    <label for="review-comment" style="font-family:'Poppins',sans-serif;font-weight:500;font-size:0.9rem;margin-bottom:6px;display:block;">Comment <span style="color:#aaa;font-weight:400;">(optional)</span></label>
+                    <textarea id="review-comment" name="comment" rows="3" class="form-control" placeholder="Share your experience…" style="border-radius:10px;resize:none;"></textarea>
+                </div>
+                <div id="review-error" style="color:#e06b6b;font-size:0.82rem;margin-top:8px;display:none;">Please select a star rating.</div>
+            </div>
+            <div class="modal-footer" style="border-top:1px solid #f0e8d8;">
+                <button type="button" class="btn btn-hp-outline" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-hp">Submit Review</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 </div><!-- /main-box -->
 
@@ -244,6 +286,55 @@ function toggleCart() {
 }
 
 renderCart();
+</script>
+
+<script>
+
+const stars = document.querySelectorAll('#star-row .star');
+let selectedRating = 0;
+
+stars.forEach(star => {
+    star.addEventListener('mouseover', () => {
+        stars.forEach(s => s.style.color = s.dataset.val <= star.dataset.val ? 'var(--golden-yellow-secondary)' : '#ddd');
+    });
+    star.addEventListener('mouseout', () => {
+        stars.forEach(s => s.style.color = s.dataset.val <= selectedRating ? 'var(--golden-yellow-secondary)' : '#ddd');
+    });
+    star.addEventListener('click', () => {
+        selectedRating = parseInt(star.dataset.val);
+        document.getElementById('rating-input').value = selectedRating;
+        stars.forEach(s => s.style.color = s.dataset.val <= selectedRating ? 'var(--golden-yellow-secondary)' : '#ddd');
+        document.getElementById('review-error').style.display = 'none';
+    });
+});
+
+
+document.getElementById('reviewModal').addEventListener('hidden.bs.modal', () => {
+    selectedRating = 0;
+    document.getElementById('rating-input').value = 0;
+    document.getElementById('review-comment').value = '';
+    stars.forEach(s => s.style.color = '#ddd');
+    document.getElementById('review-error').style.display = 'none';
+});
+
+// Submit
+document.getElementById('review-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (selectedRating === 0) {
+        document.getElementById('review-error').style.display = 'block';
+        return;
+    }
+    const comment = document.getElementById('review-comment').value.trim();
+    const res = await fetch('/customer/merchant/<%= merchant.merchantId %>/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating: selectedRating, comment })
+    });
+    if (res.ok) {
+        bootstrap.Modal.getInstance(document.getElementById('reviewModal')).hide();
+        window.location.reload();
+    }
+});
 </script>
 <script src="/javascripts/common-elements.js"></script>
 </body>

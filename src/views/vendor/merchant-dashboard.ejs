@@ -26,17 +26,13 @@
             <!-- container for all the cards present -->
             <div class="analytics-container">
 
-                <!-- recent activity cards -->
-                <div class="row card-container">
-                    <h2 id="recent-activity-heading" >Recent Activity</h2>
-                    <p> Will be the same style as below based on what you last did</p>      
-                </div>
-
                 <div class="row card-container">
                     <h2 id="recent-activity-heading">What to do next</h2>
                     <div class="card"> 
                         <a href="/vendor/open-store">
-                            <img class="card-img-top" src="../assets/placeholder-img.png" alt="">
+                            <div class="card-img-top d-flex align-items-center justify-content-center" style="height:100px;background:var(--sage-green-secondary);">
+                                <i class="bi bi-house-fill" style="font-size:2.5rem;color:#fff;"></i>
+                            </div>
                             <div class="card-body">
                                 <p class="card-text">Open Store</p>
                             </div>
@@ -45,35 +41,98 @@
 
                     <div class="card"> 
                         <a href="/vendor/my-menu">
-                            <img class="card-img-top" src="../assets/placeholder-img.png" alt="">
+                            <div class="card-img-top d-flex align-items-center justify-content-center" style="height:100px;background:var(--sage-green-secondary);">
+                                <i class="bi bi-journal-text" style="font-size:2.5rem;color:#fff;"></i>
+                            </div>
                             <div class="card-body">
                                 <p class="card-text">My Menu</p>
                             </div>
                         </a>
                     </div>
                    <div class="card"> 
-                        <a href="/vendor/merchant-reports">
-                            <img class="card-img-top" src="../assets/placeholder-img.png" alt="">
+                        <a href="/vendor/reports">
+                            <div class="card-img-top d-flex align-items-center justify-content-center" style="height:100px;background:var(--sage-green-secondary);">
+                                <i class="bi bi-bar-chart-fill" style="font-size:2.5rem;color:#fff;"></i>
+                            </div>
                             <div class="card-body">
                                 <p class="card-text">Reports</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#reviewsModal">
+                            <div class="card-img-top d-flex align-items-center justify-content-center" style="height:100px;background:var(--sage-green-secondary);">
+                                <i class="bi bi-star-fill" style="font-size:2.5rem;color:#fff;"></i>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">My Reviews</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card">
+                        <a href="/vendor/profile">
+                            <div class="card-img-top d-flex align-items-center justify-content-center" style="height:100px;background:var(--sage-green-secondary);">
+                                <i class="bi bi-person-circle" style="font-size:2.5rem;color:#fff;"></i>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">My Profile</p>
                             </div>
                         </a>
                     </div>
                     
                 </div>
             </div>
-
-
         </div>
     </div>
+
+<div class="modal fade" id="reviewsModal" tabindex="-1" aria-labelledby="reviewsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius:16px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewsModalLabel" style="font-family:'Poppins',sans-serif;font-weight:600;">
+                    <i class="bi bi-star-fill me-2" style="color:var(--golden-yellow-secondary);"></i>My Reviews
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="reviews-modal-body" style="padding:24px;max-height:60vh;overflow-y:auto;">
+                <div class="text-center py-4" style="color:#bbb;">
+                    <div class="spinner-border spinner-border-sm me-2"></div> Loading…
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     
-    <script>
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.getElementById('reviewsModal').addEventListener('show.bs.modal', () => {
+    const body = document.getElementById('reviews-modal-body');
+    body.innerHTML = '<div class="text-center py-4" style="color:#bbb;"><div class="spinner-border spinner-border-sm me-2"></div> Loading…</div>';
+    fetch('/vendor/reviews')
+        .then(r => r.json())
+        .then(reviews => {
+            if (reviews.length === 0) {
+                body.innerHTML = '<div class="text-center py-4" style="color:#bbb;font-family:\'Poppins\',sans-serif;"><i class="bi bi-star" style="font-size:2rem;display:block;margin-bottom:8px;"></i>No reviews yet.</div>';
+                return;
+            }
+            body.innerHTML = reviews.map(r => `
+                <div style="background:var(--sage-green-secondary);border-radius:12px;padding:14px 18px;margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                        <span style="font-family:'Poppins',sans-serif;font-weight:600;font-size:0.9rem;">${r.CustomerName}</span>
+                        <span style="font-size:0.82rem;color:#888;">${r.ReviewDate}</span>
+                    </div>
+                    <div style="margin-bottom:6px;">⭐ ${r.Rating}</div>
+                    <div style="font-family:'Open Sans',sans-serif;font-size:0.88rem;color:#555;">${r.Comment || '<em style="color:#bbb;">No comment</em>'}</div>
+                </div>
+            `).join('');
         })
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
-    <script src="/javascripts/common-elements.js"></script>
+        .catch(() => {
+            body.innerHTML = '<div class="alert alert-danger">Could not load reviews.</div>';
+        });
+});
+</script>
+<script src="/javascripts/common-elements.js"></script>
 </body>
 </html>
