@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS Users (
     Created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 
 );
+
 CREATE TABLE IF NOT EXISTS Customers(
     CustomerID INTEGER PRIMARY KEY AUTOINCREMENT,
     UserID INTEGER NOT NULL REFERENCES Users(UserID) ON DELETE CASCADE,
@@ -24,19 +25,40 @@ CREATE TABLE IF NOT EXISTS Merchants(
     UserID INTEGER NOT NULL REFERENCES Users(UserID) ON DELETE CASCADE,
     MerchantName TEXT NOT NULL,
     MerchantAddress TEXT,
-    Verified BOOLEAN NOT NULL DEFAULT FALSE,
-    StoreScore REAL NOT NULL DEFAULT 0.0
+    Verified TEXT NOT NULL CHECK (Verified IN ('Pending', 'Approved', 'Rejected')) DEFAULT 'Pending',
+    StoreScore REAL NOT NULL DEFAULT 0.0,
+    Status TEXT NOT NULL CHECK (Status IN ('open', 'closed')) DEFAULT 'closed'
+);
+
+
+CREATE TABLE IF NOT EXISTS Drivers(
+    DriverID INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserID INTEGER NOT NULL REFERENCES Users(UserID) ON DELETE CASCADE,
+    LicensePlateNumber TEXT NOT NULL UNIQUE,
+    VehicleMake TEXT NOT NULL,
+    VehicleModel TEXT NOT NULL,
+    VehicleColor TEXT NOT NULL,
+    DriversLicenseNumber TEXT NOT NULL UNIQUE,
+    CurrentOrderAssigned INTEGER REFERENCES Orders(OrderID),
+    BasePay FLOAT NOT NULL DEFAULT 21.61
 );
 
 CREATE TABLE IF NOT EXISTS Orders(
     OrderID INTEGER PRIMARY KEY AUTOINCREMENT,
     CustomerID INTEGER REFERENCES Customers(CustomerID) ON DELETE SET NULL,
     MerchantID INTEGER REFERENCES Merchants(MerchantID) ON DELETE SET NULL,
+    AssignedDriverID INTEGER REFERENCES Drivers(DriverID) ON DELETE SET NULL,
     OrderStatus TEXT NOT NULL CHECK (OrderStatus IN ('Pending', 'Accepted', 'Ready For Pickup', 'Completed', 'Cancelled')) DEFAULT 'Pending',
     TimeOrdered TEXT NOT NULL,
     TimeCompleted TEXT,
     TotalAmount REAL NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS Revenue(
+    OrderID INTEGER PRIMARY KEY NOT NULL REFERENCES Orders(OrderID) ON DELETE CASCADE,
+    DriverTip FLOAT DEFAULT 0.0
+);
+
 
 CREATE TABLE IF NOT EXISTS OrderItems(
     OrderItemID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,7 +75,8 @@ CREATE TABLE IF NOT EXISTS MenuItems(
     Calories INTEGER NOT NULL CHECK (Calories >= 0),
     Price REAL NOT NULL,
     Description TEXT NOT NULL,
-    Recipe TEXT
+    Recipe TEXT,
+    Available BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS Reviews(
@@ -62,6 +85,14 @@ CREATE TABLE IF NOT EXISTS Reviews(
     MerchantID INTEGER NOT NULL REFERENCES Merchants(MerchantID),
     Rating INTEGER NOT NULL CHECK (Rating >= 1 AND Rating <= 5),
     Comment TEXT,
-    ReviewDate TEXT NOT NULL,
-    Anonymous BOOLEAN NOT NULL DEFAULT FALSE
+    ReviewDate TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Disputes(
+    DisputeID INTEGER PRIMARY KEY AUTOINCREMENT,
+    OrderID INTEGER NOT NULL REFERENCES Orders(OrderID) ON DELETE CASCADE,
+    Description TEXT,
+    Status TEXT NOT NULL CHECK (Status IN ('Pending', 'Resolved', 'Appealed')) DEFAULT 'Pending',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );

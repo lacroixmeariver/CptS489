@@ -5,7 +5,7 @@
   "main": "./src/bin/www",
   "scripts": {
     "start": "node ./src/bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +22,11 @@
     "mysql2": "^3.17.4",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
+    "sqlite": "^5.1.1",
     "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.3",
+    "jest": "^30.3.0"
   }
 }

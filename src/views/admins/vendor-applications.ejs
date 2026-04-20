@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Merchant Applications</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Pacifico&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+
+</head>
+
+<body data-role="<%= user.Role %>" data-user="<%= user.First_name %>">
+    <!-- box for the main area (the entire visible screen aside from navbar basically) -->
+    <div class="main-box">
+
+        <!-- container for main dashboard content -->
+        <div class="container-fluid p-5 table-container">
+            <div class="d-flex align-items-center mb-2">
+
+                <h2>Applications</h2>
+
+                <form class="d-flex ms-auto align-items-center" id="search-form" action="/admins/vendor-applications"
+                    method="GET">
+                    <label for="userSearch"></label>
+                    <input type="hidden" name="searchBy" id="searchBy" value="vendorID">
+                    <input type="text" class="form-control mx-4" name="targetVendor" placeholder="Search for a user">
+                    <div class="btn-group" id="searchBtnGroup">
+                        <button class="btn btn-primary btn-sm" id="searchBtn" type="submit">Search by vendor ID</button>
+                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="visually-hidden">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="setSearchBy('vendorID', 'vendor ID')">Vendor
+                                    ID</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setSearchBy('username', 'username')">User
+                                    Name</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setSearchBy('email', 'email')">Email</a></li>
+                        </ul>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <!-- tab headings for types of applications by status -->
+            <ul class="nav nav-tabs" id="appTypeTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#pendingApps">Pending</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#approvedApps">Approved</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#rejectedApps">Rejected</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#allApps" class="nav-link" data-bs-toggle="tab" aria-current="page">All Applications</a>
+                </li>
+
+            </ul>
+            <% const statusMap={ Approved: { label: 'Approved' , class: 'vendor-status-approved' }, Rejected: {
+                label: 'Rejected' , class: 'vendor-status-rejected' }, Pending: { label: 'Pending' ,
+                class: 'vendor-status-pending' }, Unknown: { label: 'Unknown' , class: '' } }; %>
+                <!-- content/tables for each tab -->
+                <div class="tab-content p-2">
+                    <div class="tab-pane fade" id="allApps">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Vendor ID</th>
+                                    <th scope="col">User ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Verification Status</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bs-toggle="modal" data-bs-target="#applicationModal">
+
+                                <% vendors.forEach(vendor=>{ %>
+                                    <tr data-bs-toggle="modal" data-bs-target="#applicationModal"
+                                        data-vendorid="<%= vendor.MerchantID %>" data-userid="<%= vendor.UserID %>"
+                                        data-name="<%= vendor.MerchantName %>"
+                                        data-address="<%= vendor.MerchantAddress %>"
+                                        data-status="<%= statusMap[vendor.Verified].label %>"
+                                        onclick="populateApplicationModal(this)" style="cursor: pointer;">
+                                        <td>
+                                            <%= vendor.MerchantID %>
+                                        </td>
+                                        <td>
+                                            <%= vendor.UserID %>
+                                        </td>
+                                        <td>
+                                            <%= vendor.MerchantName %>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="status-badge <%= statusMap[vendor.Verified].class ?? 'Unknown' %>">
+                                                <%= statusMap[vendor.Verified].label ?? 'Unknown' %>
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tab-pane fade show active" id="pendingApps">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Vendor ID</th>
+                                    <th scope="col">User ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Verification Status</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bs-toggle="modal" data-bs-target="#applicationModal">
+                                <% vendors.forEach(vendor=>{ %>
+                                    <% if (vendor.Verified==='Pending' ) { %>
+                                        <tr data-bs-toggle="modal" data-bs-target="#applicationModal"
+                                            data-vendorid="<%= vendor.MerchantID %>" data-userid="<%= vendor.UserID %>"
+                                            data-name="<%= vendor.MerchantName %>"
+                                            data-address="<%= vendor.MerchantAddress %>"
+                                            data-status="<%= statusMap[vendor.Verified].label %>"
+                                            onclick="populateApplicationModal(this)" style="cursor: pointer;">
+                                            <td>
+                                                <%= vendor.MerchantID %>
+                                            </td>
+                                            <td>
+                                                <%= vendor.UserID %>
+                                            </td>
+                                            <td>
+                                                <%= vendor.MerchantName %>
+                                            </td>
+                                            <td>
+                                                <span
+                                                    class="status-badge <%= statusMap[vendor.Verified].class ?? 'Unknown' %>">
+                                                    <%= statusMap[vendor.Verified].label ?? 'Unknown' %>
+                                                </span>
+                                            </td>
+
+                                        </tr>
+                                        <% } %>
+                                            <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tab-pane fade" id="approvedApps">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Vendor ID</th>
+                                    <th scope="col">User ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Verification Status</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bs-toggle="modal" data-bs-target="#applicationModal">
+                                <% vendors.forEach(vendor=>{ %>
+                                    <% if (vendor.Verified==='Approved' ) { %>
+                                        <tr data-bs-toggle="modal" data-bs-target="#applicationModal"
+                                            data-vendorid="<%= vendor.MerchantID %>" data-userid="<%= vendor.UserID %>"
+                                            data-name="<%= vendor.MerchantName %>"
+                                            data-address="<%= vendor.MerchantAddress %>"
+                                            data-status="<%= statusMap[vendor.Verified].label %>"
+                                            onclick="populateApplicationModal(this)" style="cursor: pointer;">
+                                            <td>
+                                                <%= vendor.MerchantID %>
+                                            </td>
+                                            <td>
+                                                <%= vendor.UserID %>
+                                            </td>
+                                            <td>
+                                                <%= vendor.MerchantName %>
+                                            </td>
+                                            <td>
+                                                <span
+                                                    class="status-badge <%= statusMap[vendor.Verified].class ?? 'Unknown' %>">
+                                                    <%= statusMap[vendor.Verified].label ?? 'Unknown' %>
+                                                </span>
+                                            </td>
+
+                                        </tr>
+                                        <% } %>
+                                            <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tab-pane fade" id="rejectedApps">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Vendor ID</th>
+                                    <th scope="col">User ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Verification Status</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bs-toggle="modal" data-bs-target="#applicationModal">
+                                <% vendors.forEach(vendor=>{ %>
+                                    <% if (vendor.Verified==='Rejected' ) { %>
+                                        <tr data-bs-toggle="modal" data-bs-target="#applicationModal"
+                                            data-vendorid="<%= vendor.MerchantID %>" data-userid="<%= vendor.UserID %>"
+                                            data-name="<%= vendor.MerchantName %>"
+                                            data-address="<%= vendor.MerchantAddress %>"
+                                            data-status="<%= statusMap[vendor.Verified].label %>"
+                                            onclick="populateApplicationModal(this)" style="cursor: pointer;">
+                                            <td>
+                                                <%= vendor.MerchantID %>
+                                            </td>
+                                            <td>
+                                                <%= vendor.UserID %>
+                                            </td>
+                                            <td>
+                                                <%= vendor.MerchantName %>
+                                            </td>
+                                            <td>
+                                                <span
+                                                    class="status-badge <%= statusMap[vendor.Verified].class ?? 'Unknown' %>">
+                                                    <%= statusMap[vendor.Verified].label ?? 'Unknown' %>
+                                                </span>
+                                            </td>
+
+                                        </tr>
+                                        <% } %>
+
+                                            <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <% if (locals.reason==='self-ban' ) { %>
+                        <div class="alert alert-danger">You can't ban your own account! </div>
+                        <% } %>
+
+                </div>
+
+        </div>
+
+        <!-- modal that pops up with further user info -->
+        <div class="modal fade" id="applicationModal" tabindex="-1" aria-labelledby="applicationModal"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg  modal-dialog-centered">
+                <div class="modal-content" id="applicationModalContent">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="applicationModal">Application Info</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="applicationModalBody">
+                        <p><strong>Name:</strong> <span data-field="name"></span></p>
+                        <p><strong>Vendor ID:</strong> <span data-field="vendorid"></span></p>
+                        <p><strong>User ID:</strong> <span data-field="userid"></span></p>
+                        <p><strong>Address:</strong> <span data-field="address"></span> </p>
+                        <p><strong>Status:</strong> <span data-field="status"></span> </p>
+                        <!-- TODO: add more detail in here when more present in db -->
+
+                        <hr> <!-- break -->
+                        <!-- TODO add link to vendor page  -->
+                    </div>
+                    <div class="modal-footer">
+                        <div class="d-flex gap-2">
+                            <form id="approveAppForm" method="POST"><button type="submit" class="btn"
+                                    id="applicationModalApproveBtn">Approve</button></form>
+                            <form id="moreInfoAppForm" method="POST"><button type="submit" class="btn"
+                                    id="applicationModalMoreInfoBtn">Request More Info</button></form>
+                            <form id="rejectAppForm" method="POST"><button type="submit" class="btn"
+                                    id="applicationModalRejectBtn">Reject</button></form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/javascripts/common-elements.js"></script>
+    <script src="/javascripts/populatePageElements.js"></script>
+</body>
+
+</html>

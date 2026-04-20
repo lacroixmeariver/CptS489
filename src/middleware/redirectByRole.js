@@ -1,12 +1,11 @@
-
-function dashRedirect(res, role) {
+module.exports = {
+  dashRedirect: (res, role) => {
     const dashboardRoutes = {
-        admin: '/admin/dashboard',
-        cook: '/cook/dashboard',
-        driver: '/driver/dashboard',
-        vendor: '/vendor/dashboard'
-    }
-    res.redirect(dashboardRoutes[role] || '/customer/dashboard');
-}
-
-module.exports = {dashRedirect} 
+      admin: "/admins/dashboard",
+      vendor: "/vendors/dashboard",
+      driver: "/drivers/dashboard",
+      customer: "/customers/dashboard"
+    };
+    res.redirect(dashboardRoutes[role.toLowerCase()]);
+  },
+};

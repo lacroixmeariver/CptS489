@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HomePlate — Your Cart</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/customer-browse.css">
+</head>
+<body data-role="<%= user.Role %>" data-user="<%= user.First_name %>">
+
+<div class="main-box">
+<!-- ── Main Content ──────────────────────────── -->
+<div class="browse-page">
+
+    <!-- Back link -->
+    <a id="cart-back-link" href="#" style="font-family:'Open Sans',sans-serif;font-size:0.85rem;color:#888;text-decoration:none;display:inline-block;margin-bottom:20px;">
+        <i class="bi bi-arrow-left me-1"></i>Back to Restaurant
+    </a>
+
+    <!-- Page title -->
+    <div class="mb-4">
+        <h1 style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.5rem;color:var(--charcoal-gray-secondary);margin:0 0 4px;">
+            Your Cart
+        </h1>
+        <div id="cart-merchant-name" style="font-family:'Open Sans',sans-serif;font-size:0.85rem;color:#888;">
+            <i class="bi bi-house-heart me-1"></i>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- ── Cart Items Column ─────────────────── -->
+        <div class="col-lg-7">
+            <div style="background:#fff;border-radius:12px;padding:22px 24px;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+
+                <!-- Item 1 -->
+                <div id="cart-items-page"></div>
+
+                <div id="cart-empty-page" style="display:none;text-align:center;padding:20px 0;color:#bbb;">
+                    <i class="bi bi-bag" style="font-size:32px;display:block;margin-bottom:8px;"></i>
+                    <div>Your cart is empty.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Order Summary ──────────────────────── -->
+        <div class="col-lg-5">
+            <div class="order-summary-box">
+                <div class="order-summary-title"><i class="bi bi-receipt me-1"></i>Order Summary</div>
+
+                <!-- Restaurant -->
+                <div id="summary-merchant" style="font-family:'Poppins',sans-serif;font-size:0.85rem;font-weight:600;color:var(--charcoal-gray-secondary);margin-bottom:12px;">
+                    <i class="bi bi-house-heart me-1" style="color:var(--burnt-orange-primary);"></i>
+                </div>
+
+                <!-- Items summary -->
+                <div id="order-summary-items" style="font-family:'Open Sans',sans-serif;font-size:0.83rem;color:#555;margin-bottom:14px;"></div>
+
+                <hr style="border-color:#f0e8d8;">
+
+                <!-- Promo code -->
+                <div class="d-flex gap-2 mb-3">
+                    <input type="text" class="form-control form-control-sm" placeholder="Promo code"
+                        style="font-family:'Open Sans',sans-serif;font-size:0.85rem;border-color:#ddd;">
+                    <button class="btn btn-sm btn-hp-outline" style="white-space:nowrap;font-size:0.82rem;padding:6px 14px;">Apply</button>
+                </div>
+
+                <div class="order-summary-row"><span>Subtotal</span><span id="summary-subtotal">$0.00</span></div>
+                <div class="order-summary-row"><span>Delivery fee</span><span id="summary-delivery">$0.00</span></div>
+                <div class="order-summary-row"><span>Tax (8.9%)</span><span id="summary-tax">$0.00</span></div>
+                <div class="order-summary-row total"><span>Total</span><span id="summary-total">$0.00</span></div>
+
+                <a href="/customer/checkout" class="btn btn-hp w-100 mt-3" style="padding:12px;">
+                    <i class="bi bi-lock me-1"></i>Proceed to Checkout
+                </a>
+
+                <div style="text-align:center;font-family:'Open Sans',sans-serif;font-size:0.76rem;color:#aaa;margin-top:10px;">
+                    <i class="bi bi-shield-check me-1"></i>Secure checkout · No surprise fees
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /row -->
+</div><!-- /browse-page -->
+
+</div><!-- /main-box -->
+<script>
+function loadCart() {
+    const saved = localStorage.getItem("cart");
+    return saved ? JSON.parse(saved) : null;
+}
+
+let cart = loadCart();
+
+function saveCart() {
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function renderCartPage() {
+    const emptyState = document.getElementById("cart-empty-page");
+    const itemsContainer = document.getElementById("cart-items-page");
+    const summaryContainer = document.getElementById("order-summary-items");
+    const merchantNameEl = document.getElementById("cart-merchant-name");
+    const summaryMerchantEl = document.getElementById("summary-merchant");
+    const backLink = document.getElementById("cart-back-link");
+
+    if (!cart || cart.items.length === 0) {
+        emptyState.style.display = "block";
+        itemsContainer.style.display = "none";
+        summaryContainer.innerHTML = "";
+        return;
+    }
+
+    merchantNameEl.innerHTML = `<i class="bi bi-house-heart me-1"></i>${cart.merchantName}`;
+    summaryMerchantEl.innerHTML = `<i class="bi bi-house-heart me-1" style="color:var(--burnt-orange-primary);"></i>${cart.merchantName}`;
+    backLink.href = `/customer/restaurant/${cart.merchantId}`;
+
+    itemsContainer.style.display = "block";
+    itemsContainer.innerHTML = cart.items.map(item => `
+        <div class="cart-page-item">
+            <div class="cart-page-item-img" style="background:#f5ede0;"></div>
+            <div class="flex-grow-1">
+                <div style="font-family:'Poppins',sans-serif;font-weight:600;font-size:0.92rem;">${item.name}</div>
+                <div style="font-family:'Open Sans',sans-serif;font-size:0.78rem;color:#888;margin-top:2px;">Item ID: ${item.itemId}</div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="decreaseQty('${item.itemId}')">−</button>
+                    <span class="qty-num">${item.quantity}</span>
+                    <button class="qty-btn" onclick="increaseQty('${item.itemId}')">+</button>
+                </div>
+                <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:0.92rem;color:var(--burnt-orange-primary);min-width:52px;text-align:right;">
+                    $${(item.price * item.quantity).toFixed(2)}
+                </div>
+                <button class="btn btn-sm" onclick="removeFromCart('${item.itemId}')" style="color:#ccc;border:none;background:none;">
+                    <i class="bi bi-trash3"></i>
+                </button>
+            </div>
+        </div>
+    `).join("");
+
+    let subtotal = cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    let tax = subtotal * 0.089;
+    let delivery = 2.99;
+    let total = subtotal + tax + delivery;
+
+    summaryContainer.innerHTML = cart.items.map(item => `
+        <div class="d-flex justify-content-between mb-1">
+            <span>${item.name} ×${item.quantity}</span>
+            <span>$${(item.price * item.quantity).toFixed(2)}</span>
+        </div>
+    `).join("");
+
+    document.getElementById("summary-subtotal").textContent = `$${subtotal.toFixed(2)}`;
+    document.getElementById("summary-tax").textContent = `$${tax.toFixed(2)}`;
+    document.getElementById("summary-delivery").textContent = `$${delivery.toFixed(2)}`;
+    document.getElementById("summary-total").textContent = `$${total.toFixed(2)}`;
+}
+
+function increaseQty(id) {
+    const item = cart.items.find(i => i.itemId === id);
+    if (item) {
+        item.quantity++;
+        saveCart();
+        renderCartPage();
+    }
+}
+
+function decreaseQty(id) {
+    const item = cart.items.find(i => i.itemId === id);
+    if (!item) return;
+    if (item.quantity > 1) {
+        item.quantity--;
+    } else {
+        removeFromCart(id);
+        return;
+    }
+    saveCart();
+    renderCartPage();
+}
+
+function removeFromCart(id) {
+    cart.items = cart.items.filter(i => i.itemId !== id);
+    saveCart();
+    renderCartPage();
+}
+
+renderCartPage();
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/javascripts/common-elements.js"></script>
+</body>
+</html>
