@@ -1,0 +1,141 @@
+
+<%
+const activeOrders    = orders.filter(o => o.OrderStatus !== 'Completed' && o.OrderStatus !== 'Cancelled');
+
+function statusBadgeStyle(status) {
+    if (status === 'Pending')          return 'background:rgba(197,90,58,.1);color:var(--burnt-orange-primary);';
+    if (status === 'Accepted')         return 'background:rgba(122,155,110,.1);color:var(--sage-green-secondary);';
+    if (status === 'Ready For Pickup') return 'background:rgba(232,180,74,.15);color:var(--golden-yellow-secondary);';
+    if (status === 'Completed')        return 'background:rgba(122,155,110,.1);color:var(--sage-green-secondary);';
+    if (status === 'Cancelled')        return 'background:rgba(224,107,107,.15);color:#e06b6b;';
+    return '';
+}
+
+function statusLabel(status) {
+    if (status === 'Accepted') return 'Preparing';
+    return status;
+}
+%>
+
+<!-- ── Active Orders ─────────────────────── -->
+<% if (activeOrders.length === 0) { %>
+    <div class="text-center py-4" style="color:#bbb;font-family:'Poppins',sans-serif;">
+        <i class="bi bi-bag" style="font-size:2rem;display:block;margin-bottom:8px;"></i>
+        <div>No active orders right now.</div>
+        <a href="/customer/browse" style="color:var(--burnt-orange-primary);font-size:0.88rem;">Browse cooks →</a>
+    </div>
+<% } else { %>
+    <% activeOrders.forEach(order => { %>
+    <div class="order-row" id="order-<%= order.OrderID %>">
+        <div class="order-row-header">
+            <div class="order-info">
+                <span class="fw-bold">Order #<%= order.OrderID %></span>
+                <span><i class="bi bi-shop me-1"></i><%= order.MerchantName || '' %></span>
+                <span class="text-muted"><i class="bi bi-clock me-1"></i><%= new Date(parseFloat(order.TimeOrdered)).toLocaleTimeString() %></span>
+                <span><strong>$<%= order.TotalAmount.toFixed(2) %></strong></span>
+            </div>
+            <span class="status-badge" id="badge-<%= order.OrderID %>"
+                style="font-size:0.8rem;padding:3px 12px;border-radius:20px;font-family:'Poppins',sans-serif;white-space:nowrap;<%= statusBadgeStyle(order.OrderStatus) %>">
+                <%= statusLabel(order.OrderStatus) %>
+            </span>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+            <button id="cancel-btn-<%= order.OrderID %>" onclick="cancelOrder(<%= order.OrderID %>)"
+                class="btn btn-sm button-cancel"
+                style="display:<%= order.OrderStatus === 'Pending' ? 'inline-block' : 'none' %>;">
+                Cancel Order
+            </button>
+            <button id="pickup-btn-<%= order.OrderID %>" onclick="pickupOrder(<%= order.OrderID %>)"
+                class="btn btn-sm button-ready"
+                style="display:<%= order.OrderStatus === 'Ready For Pickup' ? 'inline-block' : 'none' %>;">
+                <i class="bi bi-bag-check me-1"></i>I Picked It Up
+            </button>
+        </div>
+    </div>
+    <% }) %>
+<% } %>
+
+<script>
+(function() {
+    const activeIds = <%- JSON.stringify(activeOrders.map(o => o.OrderID)) %>;
+
+    const statusConfig = {
+        pending:          { text: 'Pending',          bg: 'rgba(197,90,58,.1)',    color: 'var(--burnt-orange-primary)',    cancel: true,  pickup: false },
+        current:          { text: 'Preparing',         bg: 'rgba(122,155,110,.1)', color: 'var(--sage-green-secondary)',    cancel: false, pickup: false },
+        ready_for_pickup: { text: 'Ready for Pickup',  bg: 'rgba(232,180,74,.15)', color: 'var(--golden-yellow-secondary)', cancel: false, pickup: true  },
+        completed:        { text: 'Completed',         bg: 'rgba(122,155,110,.1)', color: 'var(--sage-green-secondary)',    cancel: false, pickup: false },
+        cancelled:        { text: 'Cancelled',         bg: 'rgba(224,107,107,.15)',color: '#e06b6b',                        cancel: false, pickup: false },
+    };
+
+    function updateOrder(orderId) {
+        fetch(`/customer/api/order-status/${orderId}`)
+            .then(r => r.json())
+            .then(data => {
+                const cfg = statusConfig[data.status];
+                if (!cfg) return;
+                const badge     = document.getElementById(`badge-${orderId}`);
+                const cancelBtn = document.getElementById(`cancel-btn-${orderId}`);
+                const pickupBtn = document.getElementById(`pickup-btn-${orderId}`);
+                if (badge) {
+                    badge.textContent      = cfg.text;
+                    badge.style.background = cfg.bg;
+                    badge.style.color      = cfg.color;
+                }
+                if (cancelBtn) cancelBtn.style.display = cfg.cancel ? 'inline-block' : 'none';
+                if (pickupBtn) pickupBtn.style.display = cfg.pickup ? 'inline-block' : 'none';
+
+                if (data.status === 'completed' || data.status === 'cancelled') {
+                    moveToCompleted(orderId, cfg);
+                }
+            });
+    }
+
+    function moveToCompleted(orderId, cfg) {
+        const card = document.getElementById(`order-${orderId}`);
+        if (!card) return;
+
+        let heading = document.getElementById('past-orders-heading');
+        if (!heading) {
+            heading = document.createElement('h6');
+            heading.id = 'past-orders-heading';
+            heading.style.cssText = "font-family:'Poppins',sans-serif;font-weight:600;color:#888;margin:24px 0 10px;";
+            heading.textContent = 'Past Orders';
+            card.parentNode.appendChild(heading);
+        }
+
+        const badge = document.getElementById(`badge-${orderId}`);
+        if (badge) {
+            badge.textContent      = cfg.text;
+            badge.style.background = cfg.bg;
+            badge.style.color      = cfg.color;
+        }
+        const cancelBtn = document.getElementById(`cancel-btn-${orderId}`);
+        const pickupBtn = document.getElementById(`pickup-btn-${orderId}`);
+        if (cancelBtn) cancelBtn.remove();
+        if (pickupBtn) pickupBtn.remove();
+
+        heading.insertAdjacentElement('afterend', card);
+    }
+
+    function cancelOrder(orderId) {
+        fetch(`/customer/api/cancel-order/${orderId}`, { method: 'POST' })
+            .then(() => updateOrder(orderId));
+    }
+
+    function pickupOrder(orderId) {
+        fetch(`/customer/api/pickup-order/${orderId}`, { method: 'POST' })
+            .then(() => updateOrder(orderId));
+    }
+
+    window.cancelOrder  = cancelOrder;
+    window.pickupOrder  = pickupOrder;
+
+    if (activeIds.length > 0) {
+        if (window.orderStatusInterval) clearInterval(window.orderStatusInterval);
+        window.orderStatusInterval = setInterval(() => {
+            activeIds.forEach(id => updateOrder(id));
+        }, 3000);
+        activeIds.forEach(id => updateOrder(id));
+    }
+})();
+</script>

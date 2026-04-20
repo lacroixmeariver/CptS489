@@ -1,0 +1,27 @@
+
+
+<% if (orders.length === 0) { %>
+    <div class="text-center py-5" style="color:#bbb;font-family:'Poppins',sans-serif;">
+        <i class="bi bi-receipt" style="font-size:2rem;display:block;margin-bottom:8px;"></i>
+        <div>No past orders yet.</div>
+    </div>
+<% } else { %>
+    <% orders.forEach(order => { %>
+    <div class="order-row">
+        <div class="order-row-header">
+            <div class="order-info">
+                <span class="fw-bold">Order #<%= order.OrderID %></span>
+                <span><i class="bi bi-shop me-1"></i><%= order.MerchantName || '' %></span>
+                <span class="text-muted"><i class="bi bi-clock me-1"></i><%= new Date(parseFloat(order.TimeOrdered)).toLocaleString() %></span>
+                <span><strong>$<%= order.TotalAmount.toFixed(2) %></strong></span>
+            </div>
+            <span style="font-size:0.8rem;padding:3px 12px;border-radius:20px;font-family:'Poppins',sans-serif;white-space:nowrap;
+                <%= order.OrderStatus === 'Completed'
+                    ? 'background:rgba(122,155,110,.1);color:var(--sage-green-secondary);'
+                    : 'background:rgba(224,107,107,.15);color:#e06b6b;' %>">
+                <%= order.OrderStatus %>
+            </span>
+        </div>
+    </div>
+    <% }) %>
+<% } %>
