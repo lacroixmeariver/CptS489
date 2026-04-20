@@ -163,6 +163,7 @@ class OrderRepository
         );
 
             for (const element of orders) {
+                const fullOrder = await this.getById(element.OrderID);
                 orderList.push(fullOrder);
             }
 

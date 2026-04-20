@@ -43,9 +43,11 @@ app.use("/", indexRouter);
 app.use("/", authRouter);
 app.use("/", usersRouter);
 app.use("/customers", customersRouter);
+app.use("/customer", customersRouter);
 app.use("/admins", adminRouter);
 app.use("/drivers", driverRouter);
 app.use("/vendors", vendorsRouter);
+app.use("/vendor", vendorsRouter);
 app.use("/", profileRouter);
 
 // catch 404 and forward to error handler
@@ -62,7 +64,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("shared/error");
+  res.render("error");
 });
 
 module.exports = app;

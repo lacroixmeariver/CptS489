@@ -10,6 +10,8 @@ const CustomerRepository = require("../middleware/customerRepository");
 const CustomerService = require("../services/customerService");
 const OrderService = require("../services/orderService");
 const OrderRepository = require("../middleware/orderRepository");
+const ReviewRepository = require('../middleware/reviewRepository');
+const ReviewService = require('../services/reviewService');
 
 const customerRepository = new CustomerRepository(db.dbPromise);
 const customerService = new CustomerService(customerRepository);
@@ -17,6 +19,8 @@ const orderRepository = new OrderRepository(db.dbPromise);
 const orderService = new OrderService(orderRepository);
 const merchantRepository = new MerchantRepository(db.dbPromise);
 const merchantService = new MerchantService(merchantRepository);
+const reviewRepository = new ReviewRepository(db.dbPromise);
+const reviewService = new ReviewService(reviewRepository);
 
 router.get('/dashboard', isAuthenticated, async (req, res) => {
     const customer = await customerService.getCustomerByUserId(req.user.UserID);
@@ -67,7 +71,11 @@ router.get('/order-history', isAuthenticated, async (req, res) => {
     res.render('partials/order-history', { user: req.user, orders });
 });
 
-router.get('/reviews', isAuthenticated, (req, res) => {});
+router.get('/reviews', isAuthenticated, async (req, res) => {
+    const customer = await customerService.getCustomerByUserId(req.user.UserID);
+    const reviews = customer ? await reviewService.getReviewsByCustomerId(customer.customerId) : [];
+    res.render('partials/customer-reviews', { user: req.user, reviews });
+});
 
 
 
@@ -145,6 +153,19 @@ router.get('/order-confirmation', isAuthenticated, async (req, res) => {
         order,
         merchant
     });
+});
+
+router.post('/api/profile', isAuthenticated, async (req, res) => {
+    try {
+        const { firstName, lastName, address } = req.body;
+        const customer = await customerService.getCustomerByUserId(req.user.UserID);
+        if (!customer) return res.status(400).json({ error: 'Customer not found' });
+        await customerService.updateProfile(req.user.UserID, customer.customerId, { firstName, lastName, address });
+        res.json({ ok: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to save profile' });
+    }
 });
 
 module.exports = router;

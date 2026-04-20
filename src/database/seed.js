@@ -23,7 +23,7 @@ db.serialize(() => {
   db.run(
     `INSERT INTO Users (Email, Password_hash, Salt, First_name, Last_name, Role, Status, Phone_number)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    ['test@store.com', merchantCreds.hash, merchantCreds.salt, 'Test', 'Store', 'vendor', 1, '555-100-0001'],
+    ['test@store.com', merchantCreds.hash, merchantCreds.salt, 'Test', 'Store', 'vendor', 0, '555-100-0001'],
     function (err) {
       if (err) return console.error('Merchant user error:', err.message);
       const merchantUserID = this.lastID;
@@ -33,7 +33,7 @@ db.serialize(() => {
       db.run(
         `INSERT INTO Merchants (UserID, MerchantName, MerchantAddress, Verified, StoreScore, Status, Bio)
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [merchantUserID, 'Test Store', '123 Test Ave, Pullman WA 99163', 1, 4.5, 'open', 'A great test store for all your needs.'],
+        [merchantUserID, 'Test Store', '123 Test Ave, Pullman WA 99163', 'Approved', 4.5, 'open', 'A great test store for all your needs.'],
         function (err) {
           if (err) return console.error('Merchant record error:', err.message);
           const merchantID = this.lastID;
@@ -61,7 +61,7 @@ db.serialize(() => {
                   db.run(
                     `INSERT INTO Users (Email, Password_hash, Salt, First_name, Last_name, Role, Status, Phone_number)
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                    ['test@customer.com', customerCreds.hash, customerCreds.salt, 'Test', 'Customer', 'customer', 1, '555-200-0002'],
+                    ['test@customer.com', customerCreds.hash, customerCreds.salt, 'Test', 'Customer', 'customer', 0, '555-200-0002'],
                     function (err) {
                       if (err) return console.error('Customer user error:', err.message);
                       const customerUserID = this.lastID;

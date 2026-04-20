@@ -21,14 +21,6 @@
     <div class="main-box">
         <main class="main-content">
 
-<<<<<<< HEAD
-            <!-- ── Page header ── -->
-            <div class="d-flex align-items-center gap-3 mb-4">
-                <div class="profile-avatar">
-                    <%= user.First_name[0].toUpperCase() %>
-                        <%= user.Last_name[0].toUpperCase() %>
-                            <div class="avatar-edit-btn" title="Change photo"><i class="bi bi-camera-fill"></i></div>
-=======
         <!-- Page header + avatar -->
         <div class="d-flex align-items-center gap-3 mb-4">
             <div class="profile-avatar">
@@ -72,7 +64,7 @@
                         <div class="col-12">
                             <div class="profile-field">
                                 <div class="profile-field-label">Store Name</div>
-                                <div class="profile-field-value" id="vw-storename"><%= merchant ? merchant.name : '' %></div>
+                                <div class="profile-field-value" id="vw-storename"><%= extra?.MerchantName || '' %></div>
                             </div>
                         </div>
                         <% } %>
@@ -109,7 +101,7 @@
                             <% if (user.Role === 'vendor') { %>
                             <div class="col-12">
                                 <label class="profile-field-label mb-1" for="ed-storename">Store Name</label>
-                                <input type="text" id="ed-storename" class="form-control profile-input" value="<%= merchant ? merchant.name : '' %>">
+                                <input type="text" id="ed-storename" class="form-control profile-input" value="<%= extra?.MerchantName || '' %>">
                             </div>
                             <% } %>
                         </div>
@@ -120,361 +112,7 @@
                             <button class="btn-hp-outline-edit" onclick="cancelEdit()">Cancel</button>
                         </div>
                     </div>
->>>>>>> reviews
                 </div>
-                <div>
-                    <h1
-                        style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:var(--charcoal-gray-secondary);margin:0;">
-                        <%= user.First_name %>
-                            <%= user.Last_name %>
-                    </h1>
-                    <span style="font-family:'Open Sans',sans-serif;font-size:0.85rem;color:#999;">
-                        Member since <%= user.Created_at.slice(0, 10) %> &nbsp;·&nbsp; <%= user.Role %> account
-                    </span>
-                </div>
-            </div>
-
-            <!-- ── Saved confirmation (shown on redirect with ?saved=1) ── -->
-            <% if (locals.savedMsg) { %>
-                <div class="alert alert-success py-2 mb-3 d-flex align-items-center gap-2"
-                    style="font-family:'Open Sans',sans-serif;font-size:0.88rem;border-radius:10px;">
-                    <i class="bi bi-check-circle-fill" style="color:#7a9b6e;"></i> Changes saved successfully.
-                </div>
-                <% } %>
-
-                    <!-- ── Personal info form ── -->
-                    <form method="POST" action="profile/update">
-                        <div class="row g-4">
-
-                            <!-- Left column -->
-                            <div class="col-lg-7">
-                                <div class="profile-card mb-4">
-                                    <div class="profile-section-title">
-                                        <i class="bi bi-person"></i> Personal Information
-                                    </div>
-
-                                    <!-- View mode -->
-                                    <div class="row g-3" id="view-mode">
-                                        <div class="col-6">
-                                            <div class="profile-field">
-                                                <div class="profile-field-label">First Name</div>
-                                                <div class="profile-field-value">
-                                                    <%= user.First_name %>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="profile-field">
-                                                <div class="profile-field-label">Last Name</div>
-                                                <div class="profile-field-value">
-                                                    <%= user.Last_name %>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="profile-field">
-                                                <div class="profile-field-label">Email Address</div>
-                                                <div class="profile-field-value">
-                                                    <%= user.Email %>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="profile-field">
-                                                <div class="profile-field-label">Phone Number</div>
-                                                <div class="profile-field-value">
-                                                    <%= user.Phone_number || '—' %>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 mt-1">
-                                            <button type="button" class="btn-hp-outline-edit" id="btn-edit"
-                                                onclick="enterEditMode()">
-                                                <i class="bi bi-pencil me-1"></i>Edit Profile
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <!-- Edit mode (hidden by default) -->
-                                    <div id="edit-mode" style="display:none;">
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <label class="profile-field-label mb-1" for="ed-first">First
-                                                    Name</label>
-                                                <input type="text" id="ed-first" name="firstName"
-                                                    class="form-control profile-input" value="<%= user.First_name %>">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="profile-field-label mb-1" for="ed-last">Last Name</label>
-                                                <input type="text" id="ed-last" name="lastName"
-                                                    class="form-control profile-input" value="<%= user.Last_name %>">
-                                            </div>
-                                            <div class="col-12">
-                                                <label class="profile-field-label mb-1">Email Address</label>
-                                                <!-- Email is the login identifier — read only -->
-                                                <input type="email" class="form-control profile-input"
-                                                    value="<%= user.Email %>" disabled>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="profile-field-label mb-1" for="ed-phone">Phone
-                                                    Number</label>
-                                                <input type="tel" id="ed-phone" name="phoneNumber"
-                                                    class="form-control profile-input"
-                                                    value="<%= user.Phone_number || '' %>">
-                                            </div>
-                                        </div>
-                                        <div class="d-flex gap-2 mt-4">
-                                            <button type="submit" class="btn-hp-edit">
-                                                <i class="bi bi-check2 me-1"></i>Save Changes
-                                            </button>
-                                            <button type="button" class="btn-hp-outline-edit"
-                                                onclick="cancelEdit()">Cancel</button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Customer: delivery address -->
-                                <% if (user.Role.toLowerCase()==='customer' ) { %>
-                                    <div class="profile-card">
-                                        <div class="profile-section-title">
-                                            <i class="bi bi-geo-alt"></i> Default Delivery Address
-                                        </div>
-
-                                        <div id="view-addr">
-                                            <div class="profile-field">
-                                                <div class="profile-field-label">Address</div>
-                                                <div class="profile-field-value">
-                                                    <%= extra?.Address || 'No address saved' %>
-                                                </div>
-                                            </div>
-                                            <button type="button" class="btn-hp-outline-edit mt-3"
-                                                onclick="toggleAddrEdit(true)">
-                                                <i class="bi bi-pencil me-1"></i>Edit Address
-                                            </button>
-                                        </div>
-
-                                        <div id="edit-addr" style="display:none;">
-                                            <div class="mb-3">
-                                                <label class="profile-field-label mb-1" for="ed-address">Address</label>
-                                                <input type="text" id="ed-address" name="address"
-                                                    class="form-control profile-input"
-                                                    value="<%= extra?.Address || '' %>"
-                                                    placeholder="Enter your delivery address">
-                                            </div>
-                                            <div class="d-flex gap-2 mt-3">
-                                                <button type="submit" class="btn-hp-edit">
-                                                    <i class="bi bi-check2 me-1"></i>Save Address
-                                                </button>
-                                                <button type="button" class="btn-hp-outline-edit"
-                                                    onclick="toggleAddrEdit(false)">Cancel</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <% } %>
-
-                                        <!-- Vendor: store info -->
-                                        <% if (user.Role.toLowerCase()==='vendor' ) { %>
-                                            <div class="profile-card">
-                                                <div class="profile-section-title">
-                                                    <i class="bi bi-shop"></i> Store Information
-                                                </div>
-
-                                                <div id="view-store">
-                                                    <div class="row g-3">
-                                                        <div class="col-12">
-                                                            <div class="profile-field">
-                                                                <div class="profile-field-label">Store Name</div>
-                                                                <div class="profile-field-value">
-                                                                    <%= extra?.MerchantName || '—' %>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <div class="profile-field">
-                                                                <div class="profile-field-label">Store Address</div>
-                                                                <div class="profile-field-value">
-                                                                    <%= extra?.MerchantAddress || '—' %>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <button type="button" class="btn-hp-outline-edit mt-3"
-                                                        onclick="toggleStoreEdit(true)">
-                                                        <i class="bi bi-pencil me-1"></i>Edit Store Info
-                                                    </button>
-                                                </div>
-
-                                                <div id="edit-store" style="display:none;">
-                                                    <div class="row g-3">
-                                                        <div class="col-12">
-                                                            <label class="profile-field-label mb-1">Store Name</label>
-                                                            <input type="text" name="merchantName"
-                                                                class="form-control profile-input"
-                                                                value="<%= extra?.MerchantName || '' %>">
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <label class="profile-field-label mb-1">Store
-                                                                Address</label>
-                                                            <input type="text" name="merchantAddress"
-                                                                class="form-control profile-input"
-                                                                value="<%= extra?.MerchantAddress || '' %>">
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex gap-2 mt-3">
-                                                        <button type="submit" class="btn-hp-edit">
-                                                            <i class="bi bi-check2 me-1"></i>Save Store Info
-                                                        </button>
-                                                        <button type="button" class="btn-hp-outline-edit"
-                                                            onclick="toggleStoreEdit(false)">Cancel</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <% } %>
-
-                                                <% if (user.Role.toLowerCase()==='driver' ) { %>
-                                                    <div class="profile-card">
-                                                        <div class="profile-section-title">
-                                                            <i class="bi bi-car-front"></i> Vehicle Information
-                                                        </div>
-                                                        <div id="view-driver">
-                                                            <div class="row g-3">
-                                                                <div class="col-12">
-                                                                    <div class="profile-field">
-                                                                        <div class="profile-field-label">Vehicle Make
-                                                                        </div>
-                                                                        <div class="profile-field-value">
-                                                                            <%= extra?.VehicleMake || '—' %>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    <div class="profile-field">
-                                                                        <div class="profile-field-label">Vehicle Model
-                                                                        </div>
-                                                                        <div class="profile-field-value">
-                                                                            <%= extra?.VehicleModel || '—' %>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    <div class="profile-field">
-                                                                        <div class="profile-field-label">Vehicle Color
-                                                                        </div>
-                                                                        <div class="profile-field-value">
-                                                                            <%= extra?.VehicleColor || '—' %>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <button type="button" class="btn-hp-outline-edit mt-3"
-                                                                onclick="toggleDriverEdit(true)">
-                                                                <i class="bi bi-pencil me-1"></i>Edit Vehicle Info
-                                                            </button>
-                                                        </div>
-
-                                                        <div id="edit-driver" style="display:none;">
-                                                            <div class="row g-3">
-                                                                <div class="col-12">
-                                                                    <label class="profile-field-label mb-1">Vehicle
-                                                                        Make</label>
-                                                                    <input type="text" name="vehicleMake"
-                                                                        class="form-control profile-input"
-                                                                        value="<%= extra?.VehicleMake || '' %>">
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    <label class="profile-field-label mb-1">Vehicle
-                                                                        Address</label>
-                                                                    <input type="text" name="vehicleModel"
-                                                                        class="form-control profile-input"
-                                                                        value="<%= extra?.VehicleModel || '' %>">
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    <label class="profile-field-label mb-1">Vehicle
-                                                                        Color</label>
-                                                                    <input type="text" name="vehicleColor"
-                                                                        class="form-control profile-input"
-                                                                        value="<%= extra?.VehicleModel || '' %>">
-                                                                </div>
-                                                            </div>
-                                                            <div class="d-flex gap-2 mt-3">
-                                                                <button type="submit" class="btn-hp-edit">
-                                                                    <i class="bi bi-check2 me-1"></i>Save Vehicle Info
-                                                                </button>
-                                                                <button type="button" class="btn-hp-outline-edit"
-                                                                    onclick="toggleDriverEdit(false)">Cancel</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <% } %>
-
-                            </div><!-- /col-lg-7 -->
-
-                            <!-- Right column -->
-                            <div class="col-lg-5 d-flex flex-column gap-4">
-
-                                <!-- Account info -->
-                                <div class="profile-card">
-                                    <div class="profile-section-title">
-                                        <i class="bi bi-shield-check"></i> Account
-                                    </div>
-                                    <div class="mb-3">
-                                        <div class="profile-field-label mb-1">Role</div>
-                                        <span class="badge rounded-pill"
-                                            style="background:rgba(197,90,58,.12);color:var(--burnt-orange-primary);font-family:'Poppins',sans-serif;font-size:0.82rem;padding:5px 14px;">
-                                            <%= user.Role %>
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <div class="profile-field-label mb-1">Status</div>
-                                        <% if (user.Status==='0' ) { %>
-                                            <span class="badge rounded-pill"
-                                                style="background:rgba(122,155,110,.12);color:var(--sage-green-secondary);font-family:'Poppins',sans-serif;font-size:0.82rem;padding:5px 14px;">
-                                                Active
-                                            </span>
-                                            <% } else if (user.Status==='1' ) { %>
-                                                <span class="badge rounded-pill"
-                                                    style="background:rgba(197,90,58,.12);color:var(--burnt-orange-primary);font-family:'Poppins',sans-serif;font-size:0.82rem;padding:5px 14px;">
-                                                    Banned
-                                                </span>
-                                                <% } else { %>
-                                                    <span class="badge rounded-pill"
-                                                        style="background:rgba(232,180,74,.12);color:#8a6000;font-family:'Poppins',sans-serif;font-size:0.82rem;padding:5px 14px;">
-                                                        Suspended
-                                                    </span>
-                                                    <% } %>
-                                    </div>
-                                </div>
-
-                                <!-- Vendor: verification status -->
-                                <% if (user.Role.toLowerCase()==='vendor' && extra) { %>
-                                    <div class="profile-card">
-                                        <div class="profile-section-title">
-                                            <i class="bi bi-patch-check"></i> Verification
-                                        </div>
-                                        <div class="profile-field-label mb-1">Verification Status</div>
-                                        <% if (extra.Verified==='Approved' ) { %>
-                                            <span class="badge rounded-pill"
-                                                style="background:rgba(122,155,110,.12);color:var(--sage-green-secondary);font-family:'Poppins',sans-serif;font-size:0.82rem;padding:5px 14px;">
-                                                <i class="bi bi-check-circle me-1"></i>Approved
-                                            </span>
-                                            <% } else if (extra.Verified==='Rejected' ) { %>
-                                                <span class="badge rounded-pill"
-                                                    style="background:rgba(197,90,58,.12);color:var(--burnt-orange-primary);font-family:'Poppins',sans-serif;font-size:0.82rem;padding:5px 14px;">
-                                                    <i class="bi bi-x-circle me-1"></i>Rejected
-                                                </span>
-                                                <% } else { %>
-                                                    <span class="badge rounded-pill"
-                                                        style="background:rgba(232,180,74,.12);color:#8a6000;font-family:'Poppins',sans-serif;font-size:0.82rem;padding:5px 14px;">
-                                                        <i class="bi bi-hourglass-split me-1"></i>Pending Review
-                                                    </span>
-                                                    <% } %>
-                                    </div>
-                                    <% } %>
-
-                            </div><!-- /col-lg-5 -->
-
-                        </div>
-                    </form><!-- /personal info form -->
 
                     <!-- ── Change Password ── -->
                     <div class="pwd-section mt-4" id="pwd-accordion">
@@ -526,52 +164,9 @@
                                         </div>
                                     </form>
                         </div>
-
-
-<<<<<<< HEAD
                     </div>
 
-                    <!-- ── Danger Zone ── -->
-                    <div class="danger-zone mt-4">
-                        <div
-                            style="font-family:'Poppins',sans-serif;font-weight:700;font-size:0.95rem;color:#c94040;margin-bottom:6px;">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>Danger Zone
-                        </div>
-                        <p style="font-family:'Open Sans',sans-serif;font-size:0.85rem;color:#888;margin-bottom:14px;">
-                            Permanently delete your account and all associated data. This action cannot be undone.
-                        </p>
-                        <button class="btn btn-sm"
-                            style="background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-family:'Poppins',sans-serif;font-weight:600;border-radius:8px;padding:7px 18px;font-size:0.85rem;"
-                            onclick="confirmDelete()">
-                            <i class="bi bi-trash me-1"></i>Delete My Account
-                        </button>
-                    </div>
 
-        </main>
-    </div>
-
-    <!-- Delete confirmation modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius:14px;">
-                <div class="modal-header border-0 pb-0">
-                    <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.1rem;color:#c94040;">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Delete Account?
-                    </div>
-                </div>
-                <div class="modal-body pt-2">
-                    <p style="font-family:'Open Sans',sans-serif;font-size:0.9rem;color:#666;">
-                        Are you absolutely sure? All your orders, reviews, and saved data will be permanently removed.
-                    </p>
-                </div>
-                <div class="modal-footer border-0">
-                    <button class="btn-hp-outline-edit" data-bs-dismiss="modal">Cancel</button>
-                    <form method="POST" action="profile/delete" class="d-inline">
-                        <button type="submit" class="btn-hp-edit ms-2" style="background:#e74c3c;">
-                            Yes, Delete Account
-                        </button>
-                    </form>
-=======
                 <!-- Address -->
                 <div class="profile-card">
                     <div class="profile-section-title">
@@ -581,7 +176,7 @@
                     <div id="view-addr">
                         <div class="profile-field">
                             <div class="profile-field-label">Address</div>
-                            <div class="profile-field-value" id="vw-addr"><%= (user.Role === 'vendor' ? (merchant && merchant.address) : (customer && customer.address)) || 'Not set' %></div>
+                            <div class="profile-field-value" id="vw-addr"><%= extra?.MerchantAddress || extra?.Address || 'Not set' %></div>
                         </div>
                         <button class="btn-hp-outline-edit mt-3" onclick="toggleAddrEdit(true)">
                             <i class="bi bi-pencil me-1"></i>Edit Address
@@ -592,7 +187,7 @@
                         <div class="mb-3">
                             <label class="profile-field-label mb-1" for="ed-street">Address</label>
                             <input type="text" id="ed-street" class="form-control profile-input"
-                                value="<%= (user.Role === 'vendor' ? (merchant && merchant.address) : (customer && customer.address)) || '' %>">
+                                value="<%= extra?.MerchantAddress || extra?.Address || '' %>">
                         </div>
                         <div class="d-flex gap-2 mt-3">
                             <button class="btn-hp-edit" onclick="saveAddr()">
@@ -612,7 +207,7 @@
                     <div id="view-bio">
                         <div class="profile-field">
                             <div class="profile-field-label">Bio</div>
-                            <div class="profile-field-value" id="vw-bio" style="white-space:pre-wrap;"><%= (merchant && merchant.bio) || 'No bio yet.' %></div>
+                            <div class="profile-field-value" id="vw-bio" style="white-space:pre-wrap;"><%= extra?.Bio || 'No bio yet.' %></div>
                         </div>
                         <button class="btn-hp-outline-edit mt-3" onclick="toggleBioEdit(true)">
                             <i class="bi bi-pencil me-1"></i>Edit Bio
@@ -623,7 +218,7 @@
                         <div class="mb-3">
                             <label class="profile-field-label mb-1" for="ed-bio">Bio</label>
                             <textarea id="ed-bio" class="form-control profile-input" rows="4" maxlength="400"
-                                style="resize:vertical;"><%= (merchant && merchant.bio) || '' %></textarea>
+                                style="resize:vertical;"><%= extra?.Bio || '' %></textarea>
                         </div>
                         <div class="d-flex gap-2 mt-3">
                             <button class="btn-hp-edit" onclick="saveBio()">
@@ -640,7 +235,7 @@
             <!-- ─── Right column ─── -->
             <div class="col-lg-5 d-flex flex-column gap-4">
 
-                <% if (user.Role !== 'vendor') { %>
+                <% if (user.Role === 'customer') { %>
                 <!-- Payment methods -->
                 <div class="profile-card">
                     <div class="profile-section-title">
@@ -712,15 +307,6 @@
             </div>
         </div>
 
-        <!-- ── Change Password ── -->
-        <div class="pwd-section mt-4" id="pwd-accordion">
-            <div class="pwd-toggle-header" onclick="togglePwd()">
-                <div class="profile-section-title mb-0">
-                    <i class="bi bi-lock"></i> Change Password
->>>>>>> reviews
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -736,19 +322,6 @@
             document.getElementById('btn-edit').style.display = '';
         }
 
-<<<<<<< HEAD
-        // ── Address edit (customers only) ───────────────────
-        function toggleAddrEdit(show) {
-            document.getElementById('view-addr').style.display = show ? 'none' : '';
-            document.getElementById('edit-addr').style.display = show ? 'block' : 'none';
-        }
-
-        // ── Store edit (vendors only) ───────────────────────
-        function toggleStoreEdit(show) {
-            document.getElementById('view-store').style.display = show ? 'none' : '';
-            document.getElementById('edit-store').style.display = show ? 'block' : 'none';
-        }
-=======
 // ── Edit / view toggle ──────────────────────────────
 function enterEditMode() {
     document.getElementById('view-mode').style.display = 'none';
@@ -838,8 +411,21 @@ function saveBio() {
     })
     .catch(() => {});
 }
->>>>>>> reviews
 
+
+        // ── Toast notification ──────────────────────────────
+        function showToast() {
+            let toast = document.getElementById('save-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'save-toast';
+                toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#7a9b6e;color:#fff;font-family:Poppins,sans-serif;font-size:0.88rem;padding:10px 20px;border-radius:10px;z-index:9999;opacity:0;transition:opacity .3s;';
+                toast.textContent = '✓ Changes saved';
+                document.body.appendChild(toast);
+            }
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 2500);
+        }
         function toggleDriverEdit(show) {
             document.getElementById('view-driver').style.display = show ? 'none' : '';
             document.getElementById('edit-driver').style.display = show ? 'block' : 'none';

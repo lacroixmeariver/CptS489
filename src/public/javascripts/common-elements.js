@@ -60,7 +60,7 @@ const cookSidenav = `
         <a href="/vendor/reports" data-bs-toggle="tooltip" data-bs-placement="right" title="Reports">
             <i class="bi bi-bar-chart-fill sidebar-nav-link-icon"></i>
         </a>
-        <a href="/user-profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
+        <a href="/profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
             <i class="bi bi-person-circle sidebar-nav-link-icon"></i>
         </a>
     </nav>

@@ -87,7 +87,6 @@ CREATE TABLE IF NOT EXISTS Reviews(
     Rating INTEGER NOT NULL CHECK (Rating >= 1 AND Rating <= 5),
     Comment TEXT,
     ReviewDate TEXT NOT NULL
-<<<<<<< HEAD
 );
 
 CREATE TABLE IF NOT EXISTS Disputes(

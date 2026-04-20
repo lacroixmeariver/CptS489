@@ -45,9 +45,11 @@
         </div>
 
         <!-- Bio -->
+        <% if (merchant.bio) { %>
         <p style="font-family:'Open Sans',sans-serif;font-size:0.86rem;color:rgba(255,255,255,.75);margin:16px 0 0;max-width:700px;line-height:1.6;">
-            Merchant bio coming soon! Get Ready To Meet <%= merchant.name %> and enjoy some delicious home-cooked meals!
+            <%= merchant.bio %>
         </p>
+        <% } %>
     </div>
 </div>
 
@@ -91,15 +93,42 @@
                 <div class="review-header">
                     <span class="review-rating">⭐ <%= review.Rating %></span>
                     <span class="reviewer-name"><%= review.CustomerName %></span>
-                    <span class="review-date"><%= review.ReviewDate %></span>
+                    <span class="review-date"><%= review.ReviewDate ? new Date(review.ReviewDate).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}) : '' %></span>
                 </div>
                 <div class="review-content">
-                    <p><%= review.ReviewText %></p>
+                    <p><%= review.Comment || '' %></p>
                 </div>
             </div>
         <% }); %>
     <% } %>
 
+    <!-- ── Write a Review ──────────────────────── -->
+    <div class="mt-4">
+        <button class="btn btn-sm" id="btn-open-review"
+            style="font-family:'Poppins',sans-serif;font-size:0.85rem;background:var(--burnt-orange-primary);color:#fff;border:none;border-radius:8px;padding:7px 18px;"
+            onclick="document.getElementById('review-form-box').style.display='block';this.style.display='none';">
+            <i class="bi bi-star me-1"></i>Write a Review
+        </button>
+        <div id="review-form-box" style="display:none;background:#fff;border-radius:12px;padding:20px 22px;margin-top:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);max-width:520px;">
+            <div style="font-family:'Poppins',sans-serif;font-weight:600;font-size:0.95rem;margin-bottom:12px;">Your Review</div>
+            <div class="mb-3">
+                <label style="font-family:'Open Sans',sans-serif;font-size:0.82rem;color:#777;display:block;margin-bottom:4px;">Rating</label>
+                <div id="star-picker" style="font-size:1.5rem;cursor:pointer;color:#ccc;user-select:none;">
+                    <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+                </div>
+                <input type="hidden" id="review-rating" value="0">
+            </div>
+            <div class="mb-3">
+                <label style="font-family:'Open Sans',sans-serif;font-size:0.82rem;color:#777;display:block;margin-bottom:4px;">Comment <span style="color:#bbb;">(optional)</span></label>
+                <textarea id="review-comment" rows="3" class="form-control" style="font-family:'Open Sans',sans-serif;font-size:0.88rem;border-radius:8px;border:1.5px solid #e8e8e8;resize:vertical;"></textarea>
+            </div>
+            <div id="review-error" style="font-size:0.82rem;color:#dc3545;margin-bottom:8px;display:none;"></div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm" style="background:var(--burnt-orange-primary);color:#fff;border:none;border-radius:8px;padding:6px 16px;font-family:'Poppins',sans-serif;font-size:0.85rem;" onclick="submitReview(<%= merchant.merchantId %>)">Submit</button>
+                <button class="btn btn-sm" style="border:1.5px solid #ddd;background:transparent;border-radius:8px;padding:6px 14px;font-family:'Poppins',sans-serif;font-size:0.85rem;" onclick="document.getElementById('review-form-box').style.display='none';document.getElementById('btn-open-review').style.display=''">Cancel</button>
+            </div>
+        </div>
+    </div>
 
         <!-- ── Cart Widget Sidebar ──────────────── -->
         <div class="col-lg-4">
@@ -135,6 +164,39 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// ── Star picker ──────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    const stars = document.querySelectorAll('#star-picker span');
+    const ratingInput = document.getElementById('review-rating');
+    if (!stars.length) return;
+    const paint = (n) => stars.forEach(s => s.style.color = parseInt(s.dataset.v) <= n ? 'var(--golden-yellow-secondary, #f5a623)' : '#ccc');
+    stars.forEach(s => {
+        s.addEventListener('mouseover', () => paint(parseInt(s.dataset.v)));
+        s.addEventListener('mouseleave', () => paint(parseInt(ratingInput.value)));
+        s.addEventListener('click', () => { ratingInput.value = s.dataset.v; paint(parseInt(s.dataset.v)); });
+    });
+});
+
+function submitReview(merchantId) {
+    const rating = parseInt(document.getElementById('review-rating').value);
+    const comment = document.getElementById('review-comment').value.trim();
+    const errEl = document.getElementById('review-error');
+    errEl.style.display = 'none';
+    if (!rating) { errEl.textContent = 'Please select a star rating.'; errEl.style.display = 'block'; return; }
+    fetch(`/customer/merchant/${merchantId}/review`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating, comment })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) { location.reload(); }
+        else { errEl.textContent = data.error || 'Failed to submit review.'; errEl.style.display = 'block'; }
+    })
+    .catch(() => { errEl.textContent = 'Network error. Please try again.'; errEl.style.display = 'block'; });
+}
+
+// ── Cart ─────────────────────────────────────────────────────
 let cart = loadCart();
 
 function loadCart()

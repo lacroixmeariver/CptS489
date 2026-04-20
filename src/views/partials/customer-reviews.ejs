@@ -24,7 +24,7 @@
             </p>
         <% } %>
         <div style="font-family:'Open Sans',sans-serif;font-size:0.78rem;color:#bbb;margin-top:6px;">
-            <%= review.ReviewDate %>
+            <%= review.ReviewDate ? new Date(review.ReviewDate).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}) : '' %>
         </div>
     </div>
     <% }) %>

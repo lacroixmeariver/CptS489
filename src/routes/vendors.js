@@ -6,11 +6,15 @@ const MerchantRepository = require("../middleware/merchantRepository");
 const MerchantService = require("../services/merhcantService");
 const OrderService = require("../services/orderService");
 const OrderRepository = require("../middleware/orderRepository");
+const ReviewRepository = require("../middleware/reviewRepository");
+const ReviewService = require("../services/reviewService");
 
 const merchantRepo = new MerchantRepository(dbPromise);
 const merchantService = new MerchantService(merchantRepo);
 const orderRepo = new OrderRepository(dbPromise);
 const orderService = new OrderService(orderRepo);
+const reviewRepo = new ReviewRepository(dbPromise);
+const reviewService = new ReviewService(reviewRepo);
 
 // gets the vendor dashboard page
 router.get('/dashboard', isAuthenticated, async (req, res) => {
@@ -165,6 +169,45 @@ router.post('/menu/add', isAuthenticated, async (req, res) => {
 
     await merchantService.addMenuItem(merchant.merchantId, newItem);
     res.redirect('/vendors/my-menu');
+});
+
+router.post('/api/profile', isAuthenticated, async (req, res) => {
+    try {
+        const { firstName, lastName, address, bio, storeName } = req.body;
+        const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+        if (!merchant) return res.status(400).json({ error: 'Merchant not found' });
+        await merchantService.updateProfile(req.user.UserID, merchant.merchantId, { firstName, lastName, address, bio, storeName });
+        res.json({ ok: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to save profile' });
+    }
+});
+
+router.get('/reviews', isAuthenticated, async (req, res) => {
+    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    const reviews = await reviewService.getReviewsByMerchantId(merchant.merchantId);
+    res.json(reviews);
+});
+
+router.get('/api/reports', isAuthenticated, async (req, res) => {
+    const { period, type } = req.query;
+    const validPeriods = ['daily', 'monthly', 'yearly'];
+    const validTypes = ['income', 'items'];
+    if (!validPeriods.includes(period) || !validTypes.includes(type)) {
+        return res.status(400).json({ error: 'Invalid period or type parameter.' });
+    }
+    try {
+        const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+        const data = await orderService.getReportData(merchant.merchantId, period, type);
+        res.json({ ok: true, data });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to generate report. Please try again.' });
+    }
+});
+
+router.get('/profile', isAuthenticated, async (req, res) => {
+    res.redirect('/profile');
 });
 
 
