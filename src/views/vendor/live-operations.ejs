@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Operations</title>
+    <!-- these are preconnects + google fonts link they're for the custom fonts  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Pacifico&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <!-- bootstrap and CSS style sheet links -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body data-role="<%= user.Role %>" data-user="<%= user.first_name %>">
+    <div class="main-box">
+       
+        <div class="container mt-4">
+            <!--On Page Tab Bar stays below navbar entire time-->
+            <div class="sticky-tabs-wrapper">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="current-orders-tab" data-bs-toggle="tab" data-bs-target="#current-orders" type="button" role="tab" aria-controls="current-orders" aria-selected="true">Current Orders</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pending-orders-tab" data-bs-toggle="tab" data-bs-target="#pending-orders" type="button" role="tab" aria-controls="pending-orders" aria-selected="false">Pending Orders</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="live-menu-tab" data-bs-toggle="tab" data-bs-target="#live-menu" type="button" role="tab" aria-controls="live-menu" aria-selected="false">Live Menu</button>
+                    </li>
+                    <li id="close-store-button">
+                        <!--Links to index page right now will eventually cause the close store function and take user back to merchant dashboard-->
+                        <a href="/vendor/close-store">
+                            <button class="button-cancel" type="button">Close Store</button>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        
+            <!-- Tab Content -->
+            <div class="tab-content" id="tabContent" style="background-color: var(--cream-primary); position: relative; z-index: 1;">
+                <!--Content for the Current Orders tab-->
+                <div class="tab-pane fade show active" id="current-orders" role="tabpanel" aria-labelledby="current-orders-tab">
+                    <div class="container" style="min-height:0;">
+                        <h2 class="mt-4">Current Orders</h2>
+                        <div id="current-orders-container"></div>
+                    </div>
+                </div>
+                <!--Content for the Pending Orders tab-->
+                <div class="tab-pane fade" id="pending-orders" role="tabpanel" aria-labelledby="pending-orders-tab">
+                    <div class="container">
+                        <h2 class="mt-4">Pending Orders</h2>
+                        <div id="pending-orders-container"></div>
+                    </div>
+                </div>
+                <!--Content for the Live Menu tab-->
+                <div class="tab-pane fade" id="live-menu" role="tabpanel" aria-labelledby="live-menu-tab">
+                    <div class="container">
+                        <h2 class="mt-4">Live Menu</h2>
+                        <div id="live-menu-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+        function loadCurrentOrders() {
+            fetch("/vendor/api/current-orders")
+                .then(res => res.json())
+                .then(orders => {
+                    const container = document.getElementById("current-orders-container");
+                    container.innerHTML = "";
+                    orders.forEach(order => {
+                        let time = order.timeOrdered ? new Date(parseFloat(order.timeOrdered)) : null;
+                        let timeString = (time && !isNaN(time.getTime())) ? time.toLocaleTimeString() : "N/A";
+                        container.innerHTML += `
+                            <div class="order-row">
+                                <div class="order-row-header">
+                                    <div class="order-info">
+                                        <span class="fw-bold">Order# ${order.orderId}</span>
+                                        <span>Name: ${order.customerName ? order.customerName : ''}</span>
+                                        <span class="text-muted">Placed: ${timeString}</span>
+                                    </div>
+                                    <button class="btn button-details" type="button" data-bs-toggle="collapse" data-bs-target="#orderDetails${order.orderId}" aria-expanded="false" aria-controls="orderDetails${order.orderId}">Order Details</button>
+                                    <button class="btn button-ready btn-sm" onclick="confirmOrder(${order.orderId})">Order Ready!</button>
+                                </div>
+                                <div class="collapse" id="orderDetails${order.orderId}">
+                                    <p><strong>Items:</strong></p>
+                                    <ul>
+                                        ${(order.orderItems || []).map(item => `<li>${item.quantity}x ${item.name || '(unknown item)'}</li>`).join("")}
+                                    </ul>
+                                    <p><strong>Total:</strong> $${typeof order.totalAmount === 'number' ? order.totalAmount.toFixed(2) : '0.00'}</p>
+                                    <button class="btn button-cancel btn-sm" onclick="cancelOrder(${order.orderId})">Cancel Order</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                });
+        }
+
+        function loadPendingOrders() {
+            fetch("/vendor/api/pending-orders")
+                .then(res => res.json())
+                .then(orders => {
+                    const container = document.getElementById("pending-orders-container");
+                    container.innerHTML = "";
+                    if (!Array.isArray(orders) || orders.length === 0) {
+                        container.innerHTML = '<div style="color:#888;padding:1em;">No pending orders.</div>';
+                        return;
+                    }
+                    orders.forEach(order => {
+                        let time = order.timeOrdered ? new Date(parseFloat(order.timeOrdered)) : null;
+                        let timeString = (time && !isNaN(time.getTime())) ? time.toLocaleTimeString() : "N/A";
+                        container.innerHTML += `
+                            <div class="order-row">
+                                <div class="order-row-header">
+                                    <div class="order-info">
+                                        <span class="fw-bold">Order# ${order.orderId}</span>
+                                        <span class="text-muted">Placed: ${timeString}</span>
+                                    </div>
+                                    <button class="btn button-details" type="button" data-bs-toggle="collapse" data-bs-target="#pendingOrderDetails${order.orderId}" aria-expanded="false" aria-controls="pendingOrderDetails${order.orderId}">Order Details</button>
+                                    <button class="btn button-ready btn-sm" onclick="acceptOrder(${order.orderId})">Accept Order!</button>
+                                </div>
+                                <div class="collapse" id="pendingOrderDetails${order.orderId}">
+                                    <p><strong>Items:</strong></p>
+                                    <ul>
+                                        ${(order.orderItems || []).map(item => `<li>${item.quantity}x ${item.name || '(unknown item)'}</li>`).join("")}
+                                    </ul>
+                                    <p><strong>Total:</strong> $${typeof order.totalAmount === 'number' ? order.totalAmount.toFixed(2) : '0.00'}</p>
+                                    <button class="btn button-cancel btn-sm" onclick="cancelOrder(${order.orderId})">Reject Order</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                });
+        }
+
+        function loadLiveMenu() {
+            fetch("/vendor/api/live-menu")
+                .then(res => res.json())
+                .then(items => {
+                    const container = document.getElementById("live-menu-container");
+                    container.innerHTML = "";
+                    items.forEach(item => {
+                        container.innerHTML += `
+                            <div class="order-row">
+                                <div class="order-row-header">
+                                    <div class="order-info">
+                                        <span>Item# ${item.itemId}</span>
+                                        <span>Name: ${item.name}</span>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="itemAvailable${item.itemId}" ${item.available ? "checked" : ""} onchange="toggleItemAvailability(${item.itemId}, this.checked)">
+                                        <label class="form-check-label switch-label" for="itemAvailable${item.itemId}" aria-hidden="true">
+                                            <span class="label-on">Available</span>
+                                            <span class="label-off">Unavailable</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                });
+        }
+
+        window.acceptOrder = function(orderId) {
+            fetch(`/vendor/accept-order/${orderId}`, { method: "POST" })
+                .then(() => {
+                    loadCurrentOrders();
+                    loadPendingOrders();
+                });
+        };
+
+        window.confirmOrder = function(orderId) {
+            fetch(`/vendor/confirm-order/${orderId}`, { method: "POST" })
+                .then(() => {
+                    loadCurrentOrders();
+                    loadPendingOrders();
+                });
+        };
+
+        window.cancelOrder = function(orderId) {
+            fetch(`/vendor/cancel-order/${orderId}`, { method: "POST" })
+                .then(() => {
+                    loadCurrentOrders();
+                    loadPendingOrders();
+                });
+        };
+
+        window.completeOrder = function(orderId) {
+            fetch(`/vendor/api/complete-order?orderId=${orderId}`, { method: "GET" })
+                .then(() => {
+                    loadCurrentOrders();
+                });
+        };
+
+        window.toggleItemAvailability = function(itemId, available) {
+            fetch(`/vendor/api/toggle-menu-item?itemId=${itemId}&available=${available}`)
+                .then(() => {
+                    loadLiveMenu();
+                });
+        };
+
+        setInterval(() => {
+            loadCurrentOrders();
+            loadPendingOrders();
+            loadLiveMenu();
+        }, 3000);
+
+        loadCurrentOrders();
+        loadPendingOrders();
+        loadLiveMenu();
+    });
+</script>
+
+    <script src="/javascripts/common-elements.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+</body>
+</html>

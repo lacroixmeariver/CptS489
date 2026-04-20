@@ -51,7 +51,8 @@ class MerchantRepository
                 MerchantAddress = ?,
                 Verified= ?,
                 StoreScore = ?,
-                Status = ?
+                Status = ?,
+                Bio = ?
             WHERE MerchantID = ?`,
             [
                 merchant.name,
@@ -59,6 +60,7 @@ class MerchantRepository
                 merchant.verified,
                 merchant.storeScore,
                 merchant.status,
+                merchant.bio,
                 merchant.merchantId
             ]
         );
@@ -98,14 +100,15 @@ class MerchantRepository
                     new MenuItem(row.ItemID, row.ItemName, row.Calories, row.Price, row.Description, row.Recipe, row.Available)
                 );
         
-                return new Merchant(
+        return new Merchant(
                     merchantRow.MerchantID,
                     merchantRow.MerchantName,
                     merchantRow.MerchantAddress,
                     merchantRow.Verified,
                     merchantRow.StoreScore,
                     items,
-                    merchantRow.Status
+                    merchantRow.Status,
+                    merchantRow.Bio
                 );
     }
 
@@ -136,7 +139,8 @@ class MerchantRepository
                     merchantRow.Verified,
                     merchantRow.StoreScore,
                     items,
-                    merchantRow.Status
+                    merchantRow.Status,
+                    merchantRow.Bio
                 );
     }
 
@@ -177,7 +181,6 @@ class MerchantRepository
 
     async getAllWithStats()
     {
-        console.log('Fetching all merchants with stats');
         const db = await this.dbPromise;
         const merchantRows = await db.all(
             `SELECT
@@ -186,14 +189,44 @@ class MerchantRepository
                 m.MerchantAddress,
                 m.StoreScore,
                 ROUND(AVG(mi.Price), 2) AS AvgPrice,
-                Count(r.ReviewID) AS ReviewCount
-                FROM Merchants m
-                JOIN MenuItems mi ON m.MerchantID = mi.MerchantID
-                LEFT JOIN Reviews r ON m.MerchantID = r.MerchantID
-                WHERE m.Status = 'open'
-                GROUP BY m.MerchantID`);
-        console.log('Fetched merchants with stats:', merchantRows);
+                COUNT(DISTINCT r.ReviewID) AS ReviewCount,
+                COUNT(DISTINCT o.OrderID) AS OrderCount
+            FROM Merchants m
+            JOIN MenuItems mi ON m.MerchantID = mi.MerchantID
+            LEFT JOIN Reviews r ON m.MerchantID = r.MerchantID
+            LEFT JOIN Orders o ON m.MerchantID = o.MerchantID
+            WHERE m.Status = 'open'
+            GROUP BY m.MerchantID`);
         return merchantRows;
+    }
+
+    async updateProfile(userId, merchantId, { firstName, lastName, address, bio, storeName })
+    {
+        const db = await this.dbPromise;
+        if (firstName !== undefined || lastName !== undefined) {
+            await db.run(
+                `UPDATE Users SET First_name = ?, Last_name = ? WHERE UserID = ?`,
+                [firstName, lastName, userId]
+            );
+        }
+        if (storeName !== undefined) {
+            await db.run(
+                `UPDATE Merchants SET MerchantName = ? WHERE MerchantID = ?`,
+                [storeName, merchantId]
+            );
+        }
+        if (address !== undefined) {
+            await db.run(
+                `UPDATE Merchants SET MerchantAddress = ? WHERE MerchantID = ?`,
+                [address, merchantId]
+            );
+        }
+        if (bio !== undefined) {
+            await db.run(
+                `UPDATE Merchants SET Bio = ? WHERE MerchantID = ?`,
+                [bio, merchantId]
+            );
+        }
     }
 
     async getReviews(merchantId)

@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS Merchants(
     MerchantAddress TEXT,
     Verified TEXT NOT NULL CHECK (Verified IN ('Pending', 'Approved', 'Rejected')) DEFAULT 'Pending',
     StoreScore REAL NOT NULL DEFAULT 0.0,
-    Status TEXT NOT NULL CHECK (Status IN ('open', 'closed')) DEFAULT 'closed'
+    Status TEXT NOT NULL CHECK (Status IN ('open', 'closed')) DEFAULT 'closed',
+    Bio TEXT
 );
 
 
@@ -86,6 +87,7 @@ CREATE TABLE IF NOT EXISTS Reviews(
     Rating INTEGER NOT NULL CHECK (Rating >= 1 AND Rating <= 5),
     Comment TEXT,
     ReviewDate TEXT NOT NULL
+<<<<<<< HEAD
 );
 
 CREATE TABLE IF NOT EXISTS Disputes(

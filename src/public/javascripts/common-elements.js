@@ -48,19 +48,19 @@ const adminSidenav = `
 const cookSidenav = `
 <div class="sidebar-container">
     <nav class="sidebar-nav">
-        <a href="/vendors/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
+        <a href="/vendor/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
             <i class="bi bi-house-fill sidebar-nav-link-icon"></i>
         </a>
-        <a href="/vendors/my-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="My Menu">
+        <a href="/vendor/my-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="My Menu">
             <i class="bi bi-journal-text sidebar-nav-link-icon"></i>
         </a>
-        <a href="/vendors/live-operations" data-bs-toggle="tooltip" data-bs-placement="right" title="Live Orders">
+        <a href="/vendor/live-operations" data-bs-toggle="tooltip" data-bs-placement="right" title="Live Orders">
             <i class="bi bi-bag-check sidebar-nav-link-icon"></i>
         </a>
-        <a href="/vendors/reports" data-bs-toggle="tooltip" data-bs-placement="right" title="Reports">
+        <a href="/vendor/reports" data-bs-toggle="tooltip" data-bs-placement="right" title="Reports">
             <i class="bi bi-bar-chart-fill sidebar-nav-link-icon"></i>
         </a>
-        <a href="/profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
+        <a href="/user-profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
             <i class="bi bi-person-circle sidebar-nav-link-icon"></i>
         </a>
     </nav>
@@ -89,10 +89,10 @@ const customerSidenav = `
         <a href="/customers/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
             <i class="bi bi-house-fill sidebar-nav-link-icon"></i>
         </a>
-        <a href="/customers/browse" data-bs-toggle="tooltip" data-bs-placement="right" title="Browse">
+        <a href="/customer/browse" data-bs-toggle="tooltip" data-bs-placement="right" title="Browse">
             <i class="bi bi-search sidebar-nav-link-icon"></i>
         </a>
-        <a href="/customers/order-history" data-bs-toggle="tooltip" data-bs-placement="right" title="My Orders">
+        <a href="/customer/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="My Orders">
             <i class="bi bi-bag sidebar-nav-link-icon"></i>
         </a>
         <a href="/profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
@@ -104,30 +104,27 @@ const customerSidenav = `
 
 // function to obtain user role
 function getSidenav(role) {
-  if (role.toLowerCase() === "admin") return adminSidenav;
-  if (role.toLowerCase() === "vendor" || role.toLowerCase() === "cook") return cookSidenav;
-  if (role.toLowerCase() === "driver") return driverSidenav;
-  if (role.toLowerCase() === "customer") return customerSidenav;
-  return customerSidenav;
+    if (role === 'admin')  return adminSidenav;
+    if (role === 'vendor' || role === 'cook') return cookSidenav;
+    if (role === 'driver') return driverSidenav;
+    return customerSidenav;
 }
 
 // function to insert content
 document.addEventListener("DOMContentLoaded", function () {
-  const role = document.body.dataset.role.toLowerCase();
-  const userName = document.body.dataset.user;
-  console.log("role:", role, "userName:", userName);
-  document.body.insertAdjacentHTML("afterbegin", navbar(userName));
-  if (role === "customer") {
-    document.body.querySelector("#cart-button").removeAttribute("hidden");
-  }
-  const mainBox = document.querySelector(".main-box");
-  if (mainBox) {
-    mainBox.insertAdjacentHTML("afterbegin", getSidenav(role));
-  }
-  var tooltipTriggerList = [].slice.call(
-    document.querySelectorAll('[data-bs-toggle="tooltip"]'),
-  );
-  tooltipTriggerList.map(function (el) {
-    return new bootstrap.Tooltip(el);
-  });
+    const role = document.body.dataset.role;
+    const userName = document.body.dataset.user;
+
+    document.body.insertAdjacentHTML("afterbegin", navbar(userName));
+    if (role === 'customer'){
+        document.body.querySelector("#cart-button").removeAttribute("hidden");
+    }
+    const mainBox = document.querySelector(".main-box");
+    if (mainBox) {
+        mainBox.insertAdjacentHTML("afterbegin", getSidenav(role));
+    }
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (el) {
+        return new bootstrap.Tooltip(el);
+    });
 });

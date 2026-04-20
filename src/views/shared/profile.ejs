@@ -21,12 +21,106 @@
     <div class="main-box">
         <main class="main-content">
 
+<<<<<<< HEAD
             <!-- ── Page header ── -->
             <div class="d-flex align-items-center gap-3 mb-4">
                 <div class="profile-avatar">
                     <%= user.First_name[0].toUpperCase() %>
                         <%= user.Last_name[0].toUpperCase() %>
                             <div class="avatar-edit-btn" title="Change photo"><i class="bi bi-camera-fill"></i></div>
+=======
+        <!-- Page header + avatar -->
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="profile-avatar">
+                <%= user.First_name.charAt(0) %><%= user.Last_name.charAt(0) %>
+                <div class="avatar-edit-btn" title="Change photo"><i class="bi bi-camera-fill"></i></div>
+            </div>
+            <div>
+                <h1 id="header-name" style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:var(--charcoal-gray-secondary);margin:0;">
+                    <%= user.First_name %> <%= user.Last_name %>
+                </h1>
+                <span style="font-family:'Open Sans',sans-serif;font-size:0.85rem;color:#999;">
+                    <%= user.Role === 'vendor' ? 'Merchant account' : 'Customer account' %>
+                </span>
+            </div>
+
+        </div>
+
+        <div class="row g-4">
+            <!-- ─── Left column: personal info ─── -->
+            <div class="col-lg-7">
+
+                <div class="profile-card mb-4">
+                    <div class="profile-section-title">
+                        <i class="bi bi-person"></i> Personal Information
+                    </div>
+
+                    <div class="row g-3" id="view-mode">
+                        <div class="col-6">
+                            <div class="profile-field">
+                                <div class="profile-field-label">First Name</div>
+                                <div class="profile-field-value" id="vw-first"><%= user.First_name %></div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="profile-field">
+                                <div class="profile-field-label">Last Name</div>
+                                <div class="profile-field-value" id="vw-last"><%= user.Last_name %></div>
+                            </div>
+                        </div>
+                        <% if (user.Role === 'vendor') { %>
+                        <div class="col-12">
+                            <div class="profile-field">
+                                <div class="profile-field-label">Store Name</div>
+                                <div class="profile-field-value" id="vw-storename"><%= merchant ? merchant.name : '' %></div>
+                            </div>
+                        </div>
+                        <% } %>
+                        <div class="col-12">
+                            <div class="profile-field">
+                                <div class="profile-field-label">Email Address</div>
+                                <div class="profile-field-value" id="vw-email"><%= user.Email %></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="profile-field">
+                                <div class="profile-field-label">Phone Number</div>
+                                <div class="profile-field-value" id="vw-phone"><%= user.Phone_number || '—' %></div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-1">
+                            <button class="btn-hp-outline-edit" id="btn-edit" onclick="enterEditMode()">
+                                <i class="bi bi-pencil me-1"></i>Edit Profile
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Edit mode (hidden by default) -->
+                    <div id="edit-mode" style="display:none;">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="profile-field-label mb-1" for="ed-first">First Name</label>
+                                <input type="text" id="ed-first" class="form-control profile-input" value="<%= user.First_name %>">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="profile-field-label mb-1" for="ed-last">Last Name</label>
+                                <input type="text" id="ed-last" class="form-control profile-input" value="<%= user.Last_name %>">
+                            </div>
+                            <% if (user.Role === 'vendor') { %>
+                            <div class="col-12">
+                                <label class="profile-field-label mb-1" for="ed-storename">Store Name</label>
+                                <input type="text" id="ed-storename" class="form-control profile-input" value="<%= merchant ? merchant.name : '' %>">
+                            </div>
+                            <% } %>
+                        </div>
+                        <div class="d-flex gap-2 mt-4">
+                            <button class="btn-hp-edit" onclick="saveChanges()">
+                                <i class="bi bi-check2 me-1"></i>Save Changes
+                            </button>
+                            <button class="btn-hp-outline-edit" onclick="cancelEdit()">Cancel</button>
+                        </div>
+                    </div>
+>>>>>>> reviews
                 </div>
                 <div>
                     <h1
@@ -434,6 +528,7 @@
                         </div>
 
 
+<<<<<<< HEAD
                     </div>
 
                     <!-- ── Danger Zone ── -->
@@ -476,6 +571,153 @@
                             Yes, Delete Account
                         </button>
                     </form>
+=======
+                <!-- Address -->
+                <div class="profile-card">
+                    <div class="profile-section-title">
+                        <i class="bi bi-geo-alt"></i> <%= user.Role === 'vendor' ? 'Store Address' : 'Default Delivery Address' %>
+                    </div>
+
+                    <div id="view-addr">
+                        <div class="profile-field">
+                            <div class="profile-field-label">Address</div>
+                            <div class="profile-field-value" id="vw-addr"><%= (user.Role === 'vendor' ? (merchant && merchant.address) : (customer && customer.address)) || 'Not set' %></div>
+                        </div>
+                        <button class="btn-hp-outline-edit mt-3" onclick="toggleAddrEdit(true)">
+                            <i class="bi bi-pencil me-1"></i>Edit Address
+                        </button>
+                    </div>
+
+                    <div id="edit-addr" style="display:none;">
+                        <div class="mb-3">
+                            <label class="profile-field-label mb-1" for="ed-street">Address</label>
+                            <input type="text" id="ed-street" class="form-control profile-input"
+                                value="<%= (user.Role === 'vendor' ? (merchant && merchant.address) : (customer && customer.address)) || '' %>">
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn-hp-edit" onclick="saveAddr()">
+                                <i class="bi bi-check2 me-1"></i>Save Address
+                            </button>
+                            <button class="btn-hp-outline-edit" onclick="toggleAddrEdit(false)">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <% if (user.Role === 'vendor') { %>
+                <div class="profile-card mt-3">
+                    <div class="profile-section-title">
+                        <i class="bi bi-chat-quote"></i> Store Bio
+                    </div>
+
+                    <div id="view-bio">
+                        <div class="profile-field">
+                            <div class="profile-field-label">Bio</div>
+                            <div class="profile-field-value" id="vw-bio" style="white-space:pre-wrap;"><%= (merchant && merchant.bio) || 'No bio yet.' %></div>
+                        </div>
+                        <button class="btn-hp-outline-edit mt-3" onclick="toggleBioEdit(true)">
+                            <i class="bi bi-pencil me-1"></i>Edit Bio
+                        </button>
+                    </div>
+
+                    <div id="edit-bio" style="display:none;">
+                        <div class="mb-3">
+                            <label class="profile-field-label mb-1" for="ed-bio">Bio</label>
+                            <textarea id="ed-bio" class="form-control profile-input" rows="4" maxlength="400"
+                                style="resize:vertical;"><%= (merchant && merchant.bio) || '' %></textarea>
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn-hp-edit" onclick="saveBio()">
+                                <i class="bi bi-check2 me-1"></i>Save Bio
+                            </button>
+                            <button class="btn-hp-outline-edit" onclick="toggleBioEdit(false)">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+
+            </div>
+
+            <!-- ─── Right column ─── -->
+            <div class="col-lg-5 d-flex flex-column gap-4">
+
+                <% if (user.Role !== 'vendor') { %>
+                <!-- Payment methods -->
+                <div class="profile-card">
+                    <div class="profile-section-title">
+                        <i class="bi bi-credit-card"></i> Payment Methods
+                    </div>
+                    <div class="d-flex align-items-center gap-3 mb-2 p-3 rounded"
+                         style="border:1.5px solid #e8e8e8;">
+                        <i class="bi bi-credit-card-2-front-fill" style="font-size:1.4rem;color:#555;"></i>
+                        <div>
+                            <div style="font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;color:var(--charcoal-gray-secondary);">
+                                Visa ending in 4242
+                            </div>
+                            <div style="font-family:'Open Sans',sans-serif;font-size:0.78rem;color:#aaa;">Expires 08/27</div>
+                        </div>
+                        <span class="ms-auto badge rounded-pill"
+                              style="background:rgba(122,155,110,.15);color:var(--sage-green-secondary);font-family:'Poppins',sans-serif;font-size:0.72rem;">
+                            Default
+                        </span>
+                    </div>
+
+                    <!-- Add payment form (hidden until button clicked) -->
+                    <div id="add-payment-form" style="display:none;margin-top:14px;border:1.5px solid #e8e8e8;border-radius:10px;padding:18px 16px;background:#fafafa;">
+                        <div style="font-family:'Poppins',sans-serif;font-weight:600;font-size:0.9rem;color:var(--charcoal-gray-secondary);margin-bottom:14px;">
+                            <i class="bi bi-credit-card me-2"></i>New Card
+                        </div>
+
+                        <!-- Card Number -->
+                        <div class="mb-3">
+                            <label class="profile-field-label mb-1" for="card-number">Card Number</label>
+                            <input type="text" id="card-number" class="profile-input w-100"
+                                placeholder="1234 5678 9012 3456">
+                        </div>
+
+                        <!-- Cardholder Name -->
+                        <div class="mb-3">
+                            <label class="profile-field-label mb-1" for="card-name">Cardholder Name</label>
+                            <input type="text" id="card-name" class="profile-input w-100"
+                                placeholder="Name as it appears on card" autocomplete="cc-name">
+                        </div>
+
+                        <!-- Expiration + CVV row -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="profile-field-label mb-1" for="card-expiry">Expiration Date</label>
+                                <input type="text" id="card-expiry" class="profile-input w-100"
+                                    placeholder="MM / YY">
+                            </div>
+                            <div class="col-6">
+                                <label class="profile-field-label mb-1" for="card-cvv">CVV</label>
+                                <input type="password" id="card-cvv" class="profile-input w-100"
+                                    placeholder="•••" maxlength="4">
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button class="btn-hp-outline-edit" onclick="cancelPayment()">Cancel</button>
+                            <button class="btn-hp-edit" onclick="savePayment()">
+                                <i class="bi bi-check-lg me-1"></i>Save Card
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="btn-hp-outline-edit mt-2 w-100" id="btn-add-payment" onclick="togglePaymentForm()">
+                        <i class="bi bi-plus me-1"></i>Add Payment Method
+                    </button>
+                </div>
+                <% } %>
+
+            </div>
+        </div>
+
+        <!-- ── Change Password ── -->
+        <div class="pwd-section mt-4" id="pwd-accordion">
+            <div class="pwd-toggle-header" onclick="togglePwd()">
+                <div class="profile-section-title mb-0">
+                    <i class="bi bi-lock"></i> Change Password
+>>>>>>> reviews
                 </div>
             </div>
         </div>
@@ -494,6 +736,7 @@
             document.getElementById('btn-edit').style.display = '';
         }
 
+<<<<<<< HEAD
         // ── Address edit (customers only) ───────────────────
         function toggleAddrEdit(show) {
             document.getElementById('view-addr').style.display = show ? 'none' : '';
@@ -505,6 +748,97 @@
             document.getElementById('view-store').style.display = show ? 'none' : '';
             document.getElementById('edit-store').style.display = show ? 'block' : 'none';
         }
+=======
+// ── Edit / view toggle ──────────────────────────────
+function enterEditMode() {
+    document.getElementById('view-mode').style.display = 'none';
+    document.getElementById('edit-mode').style.display = 'block';
+    document.getElementById('btn-edit').style.display = 'none';
+}
+function cancelEdit() {
+    document.getElementById('view-mode').style.display = '';
+    document.getElementById('edit-mode').style.display = 'none';
+    document.getElementById('btn-edit').style.display = '';
+}
+function saveChanges() {
+    const firstName = document.getElementById('ed-first').value.trim();
+    const lastName  = document.getElementById('ed-last').value.trim();
+    if (!firstName || !lastName) return;
+    const role = '<%= user.Role %>';
+    const url  = role === 'vendor' ? '/vendor/api/profile' : '/customer/api/profile';
+    const payload = { firstName, lastName };
+    if (role === 'vendor') {
+        payload.storeName = document.getElementById('ed-storename').value.trim();
+    }
+    fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            document.getElementById('vw-first').textContent = firstName;
+            document.getElementById('vw-last').textContent  = lastName;
+            document.getElementById('header-name').textContent = firstName + ' ' + lastName;
+            if (role === 'vendor') {
+                document.getElementById('vw-storename').textContent = payload.storeName;
+            }
+            cancelEdit();
+            showToast();
+        }
+    })
+    .catch(() => {});
+}
+
+// ── Address edit ────────────────────────────────────
+function toggleAddrEdit(show) {
+    document.getElementById('view-addr').style.display = show ? 'none' : '';
+    document.getElementById('edit-addr').style.display = show ? 'block' : 'none';
+}
+function saveAddr() {
+    const address = document.getElementById('ed-street').value.trim();
+    const role = '<%= user.Role %>';
+    const url  = role === 'vendor' ? '/vendor/api/profile' : '/customer/api/profile';
+    fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            document.getElementById('vw-addr').textContent = address || 'Not set';
+            toggleAddrEdit(false);
+            showToast();
+        }
+    })
+    .catch(() => {});
+}
+
+// ── Bio edit ──────────────────────────────────────────
+function toggleBioEdit(show) {
+    document.getElementById('view-bio').style.display = show ? 'none' : '';
+    document.getElementById('edit-bio').style.display = show ? 'block' : 'none';
+}
+function saveBio() {
+    const bio = document.getElementById('ed-bio').value.trim();
+    fetch('/vendor/api/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bio })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            document.getElementById('vw-bio').textContent = bio || 'No bio yet.';
+            toggleBioEdit(false);
+            showToast();
+        }
+    })
+    .catch(() => {});
+}
+>>>>>>> reviews
 
         function toggleDriverEdit(show) {
             document.getElementById('view-driver').style.display = show ? 'none' : '';

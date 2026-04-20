@@ -19,7 +19,6 @@ class CustomerService
     {
         const customer = await this.customerRepository.getByUserId(userId);
 
-        console.log(userId);
 
         return customer
     }
@@ -27,11 +26,14 @@ class CustomerService
     async updateCustoemerProfile(customerId, fields)
     {
         const customer = await this.customerRepository.getById(customerId);
-
         customer.updateProfile(fields);
-
         await this.customerRepository.update(customer);
         return customer;
+    }
+
+    async updateProfile(userId, customerId, fields)
+    {
+        return await this.customerRepository.updateProfile(userId, customerId, fields);
     }
 }
 

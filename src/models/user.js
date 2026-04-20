@@ -1,25 +1,23 @@
-// const {db, dbPromise} = require('../config/db');
+const {db, dbPromise} = require('../config/db');
 
-// // queries the db for user row using email
-// function findUserByEmail(email, cb) {
-//     console.log("FIND USER BY EMAIL FUNCTION CALLED!")
-//     db
-//     .get('SELECT * FROM Users WHERE Email = ?',
-//         email, (err, row) => {
-//         if (err) return cb(err);
-//         cb(null, row);
-//     });
-// }
+// queries the db for user row using email
+function findUserByEmail(email, cb) {
+    db
+    .get('SELECT * FROM Users WHERE Email = ?',
+        email, (err, row) => {
+        if (err) return cb(err);
+        cb(null, row);
+    });
+}
 
-// function getUserByID(ID, cb) {
-//     console.log("GET USER BY ID FUNCTION CALLED!")
-//     db
-//     .get('SELECT * FROM Users WHERE UserID = ?',
-//         ID, (err, row) => {
-//         if (err) return cb(err);
-//         cb(null, row);
-//     });
-// }
+function getUserByID(ID, cb) {
+    db
+    .get('SELECT * FROM Users WHERE UserID = ?',
+        ID, (err, row) => {
+        if (err) return cb(err);
+        cb(null, row);
+    });
+}
 
 // function getUserIDByEmail(email, cb) {
 //     db

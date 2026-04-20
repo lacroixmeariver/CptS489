@@ -11,8 +11,6 @@ const Merchant = require("../backend/models/merchant")
 const { dbPromise, db } = require('../config/db');
 const Customer = require('../backend/models/customer');
 const CustomerRepository = require('../middleware/customerRepository');
-
-
 // GET routes ----------------------------------------------
 router.get("/login", authController.getLogin);
 router.get("/forgot-password", (req, res) =>
