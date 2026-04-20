@@ -91,7 +91,7 @@ async function postChangePassword(req, res, next) {
           });
         }
 
-        // new password hashed with new salt 
+        // new password hashed with new salt
         const newSalt = crypto.randomBytes(16).toString("hex");
         crypto.pbkdf2(
           newPassword,

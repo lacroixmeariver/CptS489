@@ -1,229 +1,404 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>HomePlate — Create Account</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
+
 <body>
 
-<div class="auth-wrapper">
-    <div class="auth-card register">
+    <div class="auth-wrapper">
+        <div class="auth-card register">
 
-        <!-- Brand -->
-        <a href="index.html" class="auth-logo">HomePlate</a>
-        <div class="auth-tagline">Join your local food community</div>
+            <!-- Brand -->
+            <a href="index.html" class="auth-logo">HomePlate</a>
+            <div class="auth-tagline">Join your local food community</div>
 
-        <div class="auth-title">Create your account</div>
+            <div class="auth-title">Create your account</div>
 
-        <form id="register-form" action="/register" method="post" onsubmit="return validateRegister()">
+            <form id="register-form" action="/register" method="post" onsubmit="return validateRegister()">
 
-            <!-- Name row -->
-            <div class="row g-3 mb-3">
-                <div class="col-6">
-                    <label class="auth-label mb-1" for="reg-first">First name</label>
-                    <input name="firstName" type="text" id="reg-first" class="form-control auth-input"
-                        placeholder="First name" required autocomplete="given-name">
-                </div>
-                <div class="col-6">
-                    <label class="auth-label mb-1" for="reg-last">Last name</label>
-                    <input name="lastName" type="text" id="reg-last" class="form-control auth-input"
-                        placeholder="Last name" required autocomplete="family-name">
-                </div>
-            </div>
-
-            <!-- Email -->
-            <div class="mb-3">
-                <label class="auth-label mb-1" for="reg-email">Email address</label>
-                <input name="email" type="email" id="reg-email" class="form-control auth-input"
-                    placeholder="you@example.com" required autocomplete="email">
-            </div>
-
-            <!-- Password -->
-            <div class="mb-3">
-                <label class="auth-label mb-1" for="reg-password">Password</label>
-                <div class="password-toggle">
-                    <input name="password" type="password" id="reg-password" class="form-control auth-input"
-                        placeholder="Create a password" required autocomplete="new-password"
-                        oninput="updateStrength(this.value)">
-                    <button type="button" class="toggle-btn" onclick="togglePassword('reg-password', this)">
-                        <i class="bi bi-eye"></i>
-                    </button>
-                </div>
-                <div class="strength-bar-row">
-                    <div class="strength-seg" id="s1"></div>
-                    <div class="strength-seg" id="s2"></div>
-                    <div class="strength-seg" id="s3"></div>
-                    <div class="strength-seg" id="s4"></div>
-                </div>
-                <div class="strength-label" id="strength-text" style="color:#bbb;">Enter a password</div>
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="mb-4">
-                <label class="auth-label mb-1" for="reg-confirm">Confirm password</label>
-                <div class="password-toggle">
-                    <input type="password" id="reg-confirm" class="form-control auth-input"
-                        placeholder="Repeat your password" required autocomplete="new-password">
-                    <button type="button" class="toggle-btn" onclick="togglePassword('reg-confirm', this)">
-                        <i class="bi bi-eye"></i>
-                    </button>
-                </div>
-                <div id="confirm-error" style="font-family:'Open Sans',sans-serif;font-size:0.8rem;color:#dc3545;display:none;margin-top:4px;">
-                    Passwords do not match.
-                </div>
-            </div>
-
-            <!-- Email -->
-            <div class="mb-3">
-                <label class="auth-label mb-1" for="phoneNumber">Phone number</label>
-                <input name="phoneNumber" type="tel" id="phoneNumber" class="form-control auth-input"
-                    placeholder="(000) 000-0000" required autocomplete="email">
-            </div>
-
-            <!-- Role selector -->
-            <div class="section-label">I am joining as a…</div>
-            <div class="d-flex flex-column gap-2 mb-4">
-                <label class="role-card selected" id="card-customer">
-                    <input type="radio" name="role" value="customer" checked onchange="selectRole('card-customer')">
-                    <div class="role-icon role-icon-customer"><i class="bi bi-person-fill"></i></div>
-                    <div>
-                        <div class="role-title">Customer</div>
-                        <div class="role-desc">Browse menus and order from home cooks nearby</div>
+                <!-- Name row -->
+                <div class="row g-3 mb-3">
+                    <div class="col-6">
+                        <label class="auth-label mb-1" for="reg-first">First name</label>
+                        <input name="firstName" type="text" id="reg-first" class="form-control auth-input"
+                            placeholder="First name" required autocomplete="given-name">
                     </div>
-                    <div class="check-circle" id="cc-customer"></div>
-                </label>
+                    <div class="col-6">
+                        <label class="auth-label mb-1" for="reg-last">Last name</label>
+                        <input name="lastName" type="text" id="reg-last" class="form-control auth-input"
+                            placeholder="Last name" required autocomplete="family-name">
+                    </div>
+                </div>
 
-                <label class="role-card" id="card-cook" onclick="selectRole('card-cook')">
-                    <input type="radio" name="role" value="vendor" id="cook-selection" onchange="selectRole('card-cook')">
-                    <div class="role-icon role-icon-cook"><i class="bi bi-fire"></i></div>
-                    <div>
-                        <div class="role-title">Home Cook</div>
-                        <div class="role-desc">Share your recipes and sell meals to your community</div>
-                    </div>
-                    <div class="check-circle" id="cc-cook"></div>
-                </label>
+                <!-- Email -->
+                <div class="mb-3">
+                    <label class="auth-label mb-1" for="reg-email">Email address</label>
+                    <input name="email" type="email" id="reg-email" class="form-control auth-input"
+                        placeholder="you@example.com" required autocomplete="email">
+                </div>
 
-                <label class="role-card" id="card-driver">
-                    <input type="radio" name="role" value="driver" onchange="selectRole('card-driver')">
-                    <div class="role-icon role-icon-driver">
-                        <i class="bi bi-bicycle"></i>
+                <!-- Password -->
+                <div class="mb-3">
+                    <label class="auth-label mb-1" for="reg-password">Password</label>
+                    <div class="password-toggle">
+                        <input name="password" type="password" id="reg-password" class="form-control auth-input"
+                            placeholder="Create a password" required autocomplete="new-password"
+                            oninput="updateStrength(this.value)">
+                        <button type="button" class="toggle-btn" onclick="togglePassword('reg-password', this)">
+                            <i class="bi bi-eye"></i>
+                        </button>
                     </div>
-                    <div>
-                        <div class="role-title">Delivery Driver</div>
-                        <div class="role-desc">Deliver meals and earn money on your own schedule</div>
+                    <div class="strength-bar-row">
+                        <div class="strength-seg" id="s1"></div>
+                        <div class="strength-seg" id="s2"></div>
+                        <div class="strength-seg" id="s3"></div>
+                        <div class="strength-seg" id="s4"></div>
                     </div>
-                    <div class="check-circle" id="cc-driver"></div>
-                </label>
+                    <div class="strength-label" id="strength-text" style="color:#bbb;">Enter a password</div>
+                </div>
 
-                <label class="role-card" id="card-admin">
-                    <input type="radio" name="role" value="admin" onchange="selectRole('card-admin')" >
-                    <div class="role-icon role-icon-admin">
-                        <i class="bi bi-cup-hot"></i>
+                <!-- Confirm Password -->
+                <div class="mb-4">
+                    <label class="auth-label mb-1" for="reg-confirm">Confirm password</label>
+                    <div class="password-toggle">
+                        <input type="password" id="reg-confirm" class="form-control auth-input"
+                            placeholder="Repeat your password" required autocomplete="new-password">
+                        <button type="button" class="toggle-btn" onclick="togglePassword('reg-confirm', this)">
+                            <i class="bi bi-eye"></i>
+                        </button>
                     </div>
-                    <div>
-                        <div class="role-title">Admin</div>
-                        <div class="role-desc">Only for dev purposes</div>
+                    <div id="confirm-error"
+                        style="font-family:'Open Sans',sans-serif;font-size:0.8rem;color:#dc3545;display:none;margin-top:4px;">
+                        Passwords do not match.
                     </div>
-                    <div class="check-circle" id="cc-admin"></div>
-                </label>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label class="auth-label mb-1" for="phoneNumber">Phone number</label>
+                    <input name="phoneNumber" type="tel" id="phoneNumber" class="form-control auth-input"
+                        placeholder="(000) 000-0000" required autocomplete="email">
+                </div>
+
+                <!-- Role selector -->
+                <div class="section-label">I am joining as a…</div>
+                <div class="d-flex flex-column gap-2 mb-4">
+                    <label class="role-card selected" id="card-customer">
+                        <input type="radio" name="role" value="Customer" checked onchange="selectRole('card-customer')">
+                        <div class="role-icon role-icon-customer"><i class="bi bi-person-fill"></i></div>
+                        <div>
+                            <div class="role-title">Customer</div>
+                            <div class="role-desc">Browse menus and order from home cooks nearby</div>
+                        </div>
+                        <div class="check-circle" id="cc-customer"></div>
+                    </label>
+
+                    <!-- customer address -->
+                    <div id="fields-customer" class="role-fields mb-3">
+                        <div class="section-label mt-2">Delivery address</div>
+                        <div class="mb-2">
+                            <label class="auth-label mb-1" for="customerAddress">Home address <span
+                                    style="color:#aaa;font-weight:400;">(optional)</span></label>
+                            <input name="address" type="text" id="customerAddress" class="form-control auth-input"
+                                placeholder="1234 Main St, City, State">
+                        </div>
+                    </div>
+
+                    <label class="role-card" id="card-cook" onclick="selectRole('card-cook')">
+                        <input type="radio" name="role" value="Vendor" id="cook-selection"
+                            onchange="selectRole('card-cook')">
+                        <div class="role-icon role-icon-cook"><i class="bi bi-fire"></i></div>
+                        <div>
+                            <div class="role-title">Home Cook</div>
+                            <div class="role-desc">Share your recipes and sell meals to your community</div>
+                        </div>
+                        <div class="check-circle" id="cc-cook"></div>
+                    </label>
+
+                    <!-- merchant table required fields - address and store name -->
+                    <div id="fields-cook" class="role-fields mb-3" style="display:none;">
+                        <div class="section-label mt-2">Kitchen details</div>
+                        <div class="mb-2">
+                            <label class="auth-label mb-1" for="merchantName">Kitchen name</label>
+                            <input name="merchantName" type="text" id="merchantName" class="form-control auth-input"
+                                placeholder="e.g. Ofelia's Kitchen" disabled>
+                        </div>
+                        <div class="mb-2">
+                            <label class="auth-label mb-1" for="merchantAddress">Kitchen address</label>
+                            <input name="merchantAddress" type="text" id="merchantAddress"
+                                class="form-control auth-input" placeholder="123 Main St, City, State" disabled>
+                        </div>
+                    </div>
+
+                    <label class="role-card" id="card-driver">
+                        <input type="radio" name="role" value="Driver" onchange="selectRole('card-driver')">
+                        <div class="role-icon role-icon-driver">
+                            <i class="bi bi-car-front-fill"></i>
+                        </div>
+                        <div>
+                            <div class="role-title">Delivery Driver</div>
+                            <div class="role-desc">Deliver meals and earn money on your own schedule</div>
+                        </div>
+                        <div class="check-circle" id="cc-driver"></div>
+                    </label>
+
+                    <!-- driver required fields - DL and plate number -->
+                    <div id="fields-driver" class="role-fields mb-3" style="display:none;">
+                        <div class="section-label mt-2">Driver credentials</div>
+                        <div class="mb-2">
+                            <label class="auth-label mb-1" for="driversLicense">Driver's license number</label>
+                            <input name="driversLicenseNumber" type="text" id="driversLicense"
+                                class="form-control auth-input" placeholder="EXAMPLJA18580" disabled>
+                        </div>
+                        <div class="mb-2">
+                            <label class="auth-label mb-1" for="licensePlate">License plate number</label>
+                            <input name="licensePlateNumber" type="text" id="licensePlate"
+                                class="form-control auth-input" placeholder="SAMPL-1234" disabled>
+                        </div>
+                        <div class="mb-2">
+                            <label class="auth-label mb-1" for="vehicleMake">Vehicle make</label>
+                            <input name="vehicleMake" type="text" id="vehicleMake" class="form-control auth-input"
+                                placeholder="Subaru" disabled>
+                        </div>
+                        <div class="mb-2">
+                            <label class="auth-label mb-1" for="vehicleModel">Vehicle model</label>
+                            <input name="vehicleModel" type="text" id="vehicleModel" class="form-control auth-input"
+                                placeholder="Outback" disabled>
+                        </div>
+                        <div class="mb-2">
+                            <label class="auth-label mb-1" for="vehicleColor">Vehicle color</label>
+                            <input name="vehicleColor" type="text" id="vehicleColor" class="form-control auth-input"
+                                placeholder="Khaki Blue" disabled>
+                        </div>
+                    </div>
+
+                    <label class="role-card" id="card-admin">
+                        <input type="radio" name="role" value="Admin" onchange="selectRole('card-admin')">
+                        <div class="role-icon role-icon-admin">
+                            <i class="bi bi-cup-hot"></i>
+                        </div>
+                        <div>
+                            <div class="role-title">Admin</div>
+                            <div class="role-desc">Only for dev purposes</div>
+                        </div>
+                        <div class="check-circle" id="cc-admin"></div>
+                    </label>
+                </div>
+
+                <!-- Terms -->
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="reg-terms" required style="border-color:#ccc;">
+                    <label class="form-check-label" for="reg-terms"
+                        style="font-family:'Open Sans',sans-serif;font-size:0.83rem;color:#777;">
+                        I agree to the
+                        <a href="#"
+                            style="color:var(--burnt-orange-primary);font-weight:600;text-decoration:none;">Terms of
+                            Service</a>
+                        and
+                        <a href="#"
+                            style="color:var(--burnt-orange-primary);font-weight:600;text-decoration:none;">Privacy
+                            Policy</a>
+                    </label>
+                </div>
+
+                <!-- Error -->
+                <div id="reg-error" class="alert alert-danger py-2"
+                    style="font-family:'Open Sans',sans-serif;font-size:0.85rem;display:none;"></div>
+
+                <button type="submit" class="btn-auth">
+                    <i class="bi bi-person-plus me-2"></i>Create Account
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                Already have an account? <a href="/login">Log in</a>
             </div>
 
-            <!-- Terms -->
-            <div class="form-check mb-4">
-                <input class="form-check-input" type="checkbox" id="reg-terms" required
-                    style="border-color:#ccc;">
-                <label class="form-check-label" for="reg-terms"
-                    style="font-family:'Open Sans',sans-serif;font-size:0.83rem;color:#777;">
-                    I agree to the
-                    <a href="#" style="color:var(--burnt-orange-primary);font-weight:600;text-decoration:none;">Terms of Service</a>
-                    and
-                    <a href="#" style="color:var(--burnt-orange-primary);font-weight:600;text-decoration:none;">Privacy Policy</a>
-                </label>
-            </div>
-
-            <!-- Error -->
-            <div id="reg-error" class="alert alert-danger py-2" style="font-family:'Open Sans',sans-serif;font-size:0.85rem;display:none;"></div>
-
-            <button type="submit" class="btn-auth">
-                <i class="bi bi-person-plus me-2"></i>Create Account
-            </button>
-        </form>
-
-        <div class="auth-footer">
-            Already have an account? <a href="/login">Log in</a>
         </div>
-
     </div>
-</div>
 
-<script>
-function togglePassword(id, btn) {
-    const input = document.getElementById(id);
-    const icon = btn.querySelector('i');
-    if (input.type === 'password') {
-        input.type = 'text';
-        icon.className = 'bi bi-eye-slash';
-    } else {
-        input.type = 'password';
-        icon.className = 'bi bi-eye';
-    }
-}
+    <script>
+        // maps each role card to its additional required fields div and the inputs inside it
+        const ROLE_CONFIG = {
+            'card-customer': { fieldsId: 'fields-customer', required: [] },
+            'card-cook': { fieldsId: 'fields-cook', required: ['merchantName', 'merchantAddress'] },
+            'card-driver': { fieldsId: 'fields-driver', required: ['licensePlateNumber', 'driversLicenseNumber', 'vehicleMake', 'vehicleModel', 'vehicleColor'] },
+            'card-admin': { fieldsId: null, required: [] },
+        };
 
-function selectRole(selectedId) {
-    ['card-customer', 'card-cook', 'card-driver', 'card-admin'].forEach(id => {
-        document.getElementById(id).classList.toggle('selected', id === selectedId);
-    });
-    // Check the radio inside the selected card
-    document.querySelector('#' + selectedId + ' input[type="radio"]').checked = true;
-    
-}
+        let currentRole = 'card-customer';
 
-function updateStrength(val) {
-    let score = 0;
-    if (val.length >= 8)           score++;
-    if (/[A-Z]/.test(val))         score++;
-    if (/[0-9]/.test(val))         score++;
-    if (/[^A-Za-z0-9]/.test(val))  score++;
+        function selectRole(selectedId) {
+            // update card highlight
+            Object.keys(ROLE_CONFIG).forEach(id => {
+                document.getElementById(id).classList.toggle('selected', id === selectedId);
+            });
+            document.querySelector('#' + selectedId + ' input[type="radio"]').checked = true;
 
-    const colors  = ['#e0e0e0', '#e85d04', '#f4a261', '#7a9b6e', '#2e7d32'];
-    const labels  = ['', 'Weak', 'Fair', 'Good', 'Strong'];
-    const txtClrs = ['#bbb', '#dc3545', '#fd7e14', '#7a9b6e', '#2e7d32'];
+            Object.entries(ROLE_CONFIG).forEach(([id, cfg]) => {
+                if (!cfg.fieldsId) return;
+                const block = document.getElementById(cfg.fieldsId);
+                const isActive = (id === selectedId);
+                block.style.display = isActive ? 'block' : 'none';
+                block.querySelectorAll('input').forEach(input => {
+                    input.disabled = !isActive;
+                });
+            });
 
-    for (let i = 1; i <= 4; i++) {
-        document.getElementById('s' + i).style.background = i <= score ? colors[score] : '#e8e8e8';
-    }
-    const txt = document.getElementById('strength-text');
-    txt.textContent = val.length ? labels[score] || 'Enter a password' : 'Enter a password';
-    txt.style.color = txtClrs[score] || '#bbb';
-}
+            currentRole = selectedId;
+        }
 
-function validateRegister() {
-    const errEl = document.getElementById('reg-error');
-    const pass    = document.getElementById('reg-password').value;
-    const confirm = document.getElementById('reg-confirm').value;
+        function togglePassword(id, btn) {
+            const input = document.getElementById(id);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bi bi-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'bi bi-eye';
+            }
+        }
 
-    document.getElementById('confirm-error').style.display = 'none';
-    errEl.style.display = 'none';
+        function updateStrength(val) {
+            let score = 0;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
 
-    if (pass !== confirm) {
-        document.getElementById('confirm-error').style.display = 'block';
-        return false;
-    }
-    if (pass.length < 8) {
-        errEl.textContent = 'Password must be at least 8 characters.';
-        errEl.style.display = 'block';
-        return false;
-    }
-    return true; // proceeds to customer-dashboard.html
-}
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+            const colors = ['#e0e0e0', '#e85d04', '#f4a261', '#7a9b6e', '#2e7d32'];
+            const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+            const txtClrs = ['#bbb', '#dc3545', '#fd7e14', '#7a9b6e', '#2e7d32'];
+
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('s' + i).style.background = i <= score ? colors[score] : '#e8e8e8';
+            }
+            const txt = document.getElementById('strength-text');
+            txt.textContent = val.length ? labels[score] || 'Enter a password' : 'Enter a password';
+            txt.style.color = txtClrs[score] || '#bbb';
+        }
+
+        function validateRegister() {
+            const errEl = document.getElementById('reg-error');
+            const pass = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+            const email = document.getElementById('reg-email').value.trim();
+            const phone = document.getElementById('phoneNumber').value.trim();
+            const first = document.getElementById('reg-first').value.trim();
+            const last = document.getElementById('reg-last').value.trim();
+
+            document.getElementById('confirm-error').style.display = 'none';
+            errEl.style.display = 'none';
+
+            // first name check
+            if (!/^[A-Za-z'-]{2,}$/.test(first)) {
+                errEl.textContent = 'Enter a valid first name.';
+                errEl.style.display = 'block';
+                return false;
+            }
+
+            // last name check
+            if (!/^[A-Za-z'-]{2,}$/.test(last)) {
+                errEl.textContent = 'Enter a valid last name.';
+                errEl.style.display = 'block';
+                return false;
+            }
+
+            // email validation check
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                errEl.textContent = 'Enter a valid email address.';
+                errEl.style.display = 'block';
+                return false;
+            }
+
+            // phone number validation - note: this is US formatting
+            const phoneDigits = phone.replace(/\D/g, '');
+            if (phoneDigits.length !== 10) {
+                errEl.textContent = 'Enter a valid 10-digit phone number.';
+                errEl.style.display = 'block';
+                return false;
+            }
+
+            if (pass !== confirm) {
+                document.getElementById('confirm-error').style.display = 'block';
+                return false;
+            }
+            if (pass.length < 8) {
+                errEl.textContent = 'Password must be at least 8 characters.';
+                errEl.style.display = 'block';
+                return false;
+            }
+
+            // validation for required fields for the active role
+            const cfg = ROLE_CONFIG[currentRole];
+            for (const name of cfg.required) {
+                const input = document.querySelector(`[name="${name}"]`);
+                if (!input || !input.value.trim()) {
+                    errEl.textContent = `Please fill in all required fields for your role.`;
+                    errEl.style.display = 'block';
+                    input && input.focus();
+                    return false;
+                }
+            }
+            if (currentRole === 'card-driver') {
+                const license = document.getElementById('driversLicense').value.trim();
+                const plate = document.getElementById('licensePlate').value.trim();
+
+                if (!/^[A-Za-z0-9]{6,}$/.test(license)) {
+                    errEl.textContent = 'Enter a valid driver’s license number.';
+                    errEl.style.display = 'block';
+                    return false;
+                }
+
+                if (!/^[A-Za-z0-9-]{5,}$/.test(plate)) {
+                    errEl.textContent = 'Enter a valid license plate.';
+                    errEl.style.display = 'block';
+                    return false;
+                }
+            }
+            if (currentRole === 'card-cook') {
+                const name = document.getElementById('merchantName').value.trim();
+
+                if (name.length < 3) {
+                    errEl.textContent = 'Kitchen name must be at least 3 characters.';
+                    errEl.style.display = 'block';
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // live formatting so that the phone number isn't just all one string
+        document.getElementById('phoneNumber').addEventListener('input', function (e) {
+            let digits = e.target.value.replace(/\D/g, '').substring(0, 10);
+
+            let formatted = digits;
+            if (digits.length > 6) {
+                formatted = `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+            } else if (digits.length > 3) {
+                formatted = `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+            }
+
+            e.target.value = formatted;
+        });
+        selectRole('card-customer');
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

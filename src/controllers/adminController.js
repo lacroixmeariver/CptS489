@@ -94,7 +94,7 @@ exports.getIssues = async (req, res, next) => {
 exports.getUserDetail = async (req, res, next) => {
   try {
     const targetUser = await userModel.getUserByID(req.query.modalUserID);
-    res.render("admins/admins-user-detail", { user: req.user, targetUser });
+    res.render("admins/admin-user-detail", { user: req.user, targetUser });
   } catch (err) {
     next(err);
   }

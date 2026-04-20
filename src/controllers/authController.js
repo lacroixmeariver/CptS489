@@ -27,7 +27,7 @@ exports.logout = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) return next(err);
-    if (!user) return res.redirect("/login");
+    if (!user) return res.redirect("/login?reason=invalid");
     req.logIn(user, (err) => {
       if (err) return next(err);
       dashRedirect(res, user.Role);
@@ -66,4 +66,3 @@ exports.postRegister = async (req, res, next) => {
     next(err);
   }
 };
-
