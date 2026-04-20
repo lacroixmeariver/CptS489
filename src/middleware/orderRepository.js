@@ -1,23 +1,25 @@
-const Order = require("/src/backend/models/order");
-const OrderItem = require("/src/backend/models/orderItem");
+const Order = require("../backend/models/order");
+const OrderItem = require("../backend/models/orderItem");
 
 class OrderRepository
 {
-    constructor(db)
+    constructor(dbPromise)
     {
-        this.db = db;
+        this.dbPromise = dbPromise;
     }
 
     async save(order)
     {
-        const result = await this.db.run(`INSERT INTO Orders (CustomerID, MerchantID, OrderStatus, TimeOrdered, TimeCompleted, TotalAmount) VALUES (?, ?, ?, ?, ?, ?)`,
+        const total = order.calculateTotalAmount();
+        const db = await this.dbPromise;
+        const result = await db.run(`INSERT INTO Orders (CustomerID, MerchantID, OrderStatus, TimeOrdered, TimeCompleted, TotalAmount) VALUES (?, ?, ?, ?, ?, ?)`,
             [
                 order.customerId,
                 order.merchantId,
-                order.status,
+                order.orderStatus,
                 order.timeOrdered,
                 order.timeCompleted,
-                order.totalAmount
+                total
             ]
         );
         
@@ -25,11 +27,12 @@ class OrderRepository
 
         for (const item of order.orderItems)
         {
-            await this.db.run('INSERT INTO OrderItems (OrderID, Name, Price, Quantity) VALUES(?, ?, ?, ?)',
+            console.log("Items", item);
+            await db.run('INSERT INTO OrderItems (OrderID, ItemID, PriceAtPurchase, Quantity) VALUES(?, ?, ?, ?)',
                 [
                     orderId,
-                    item.name,
-                    item.price,
+                    item.itemId,
+                    item.priceAtPurchase,
                     item.quantity
                 ]
             );
@@ -40,7 +43,8 @@ class OrderRepository
 
     async update(order)
     {
-        await this.db.run(
+        const db = await this.dbPromise;
+        await db.run(
             `UPDATE Orders
             SET CustomerID = ?,
                 MerchantID = ?,
@@ -52,7 +56,7 @@ class OrderRepository
             [
                 order.customerId,
                 order.merchantId,
-                order.status,
+                order.orderStatus,
                 order.timeOrdered,
                 order.timeCompleted,
                 order.totalAmount,
@@ -60,69 +64,143 @@ class OrderRepository
             ]
         );
 
-        await this.db.run(
+        await db.run(
             `DELETE FROM OrderItems WHERE OrderID = ?`,
             [order.orderId]
         );
 
         for (const item of order.orderItems)
         {
-            await this.db.run(
-                `INSERT INTO OrderItems (OrderID, Name, Price, Quantity)
+            await db.run(
+                `INSERT INTO OrderItems (OrderID, ItemID, PriceAtPurchase, Quantity)
                 VALUES (?, ?, ?, ?)`,
                 [
                     order.orderId,
-                    item.name,
-                    item.price,
+                    item.itemId,
+                    item.priceAtPurchase,
                     item.quantity
                 ]
             );
         }
     }
 
-    async getById(orderId)
+   async getById(orderId)
     {
-        await this.db.get(
-            `SELECT * FROM Orders WHERE OrderId = ?`,
+        const db = await this.dbPromise;
+
+        const orderRow = await db.get(
+            `SELECT o.*, u.First_name || ' ' || u.Last_name AS CustomerName
+            FROM Orders o
+            LEFT JOIN Customers c ON o.CustomerID = c.CustomerID
+            LEFT JOIN Users u ON c.UserID = u.UserID
+            WHERE o.OrderID = ?`,
             [orderId]
         );
 
         if (!orderRow) return null;
 
-        const itemRows = await this.db.all(
-            `SELECT * FROM OrderItems WHERE OrderID = ?`,
+        const itemRows = await db.all(
+            `SELECT oi.OrderItemID, oi.ItemID, oi.PriceAtPurchase, oi.Quantity,
+                    mi.ItemName
+            FROM OrderItems oi
+            LEFT JOIN MenuItems mi ON oi.ItemID = mi.ItemID
+            WHERE oi.OrderID = ?`,
             [orderId]
         );
 
+        console.log(itemRows);
+
         const items = itemRows.map(row =>
-            new OrderItem(row.ItemID, row.Name, row.Price, row. Quantity)
+            new OrderItem(
+                row.OrderItemID,
+                row.ItemID,
+                row.ItemName,
+                row.PriceAtPurchase,
+                row.Quantity
+            )
         );
 
-        return new Order(
+        console.log("Items", items);
+
+        const newOrder = new Order(
             orderRow.OrderID,
             orderRow.CustomerID,
-            oderRow.MechantID,
+            orderRow.MerchantID,
             orderRow.OrderStatus,
             orderRow.TimeOrdered,
             orderRow.TimeCompleted,
-            orderRow.TotalAmount,
             items
         );
+
+        newOrder.customerName = orderRow.CustomerName || null;
+        console.log("NewOrder", newOrder);
+        return newOrder;
     }
 
     async findByCustomerId(customerId)
     {
-        return await this.db.all(
-            `SELECT * FROM Orders WHERE CustomerId = ?`,
+        const db = await this.dbPromise;
+        return await db.all(
+            `SELECT o.*, m.MerchantName
+             FROM Orders o
+             LEFT JOIN Merchants m ON o.MerchantID = m.MerchantID
+             WHERE o.CustomerID = ?
+             ORDER BY o.OrderID DESC`,
             [customerId]
         );
     }
 
     async findByMerchantId(merchantId)
     {
-        return await this.db.all(
+        const db = await this.dbPromise;
+        return await db.all(
             `SELECT * FROM Orders WHERE MerchantID = ?`,
             [merchantId]
         );
     }
+
+    async findPendingOrdersByMerchantId(merchantId)
+    {
+        const db = await this.dbPromise;
+        const orderList = [];
+        const orders = await db.all(
+            `SELECT * FROM Orders WHERE MerchantID = ? AND OrderStatus = 'Pending'`,
+            [merchantId]
+        );
+
+            for (const element of orders) {
+                const fullOrder = await this.getById(element.OrderID);
+                console.log("FullOder", fullOrder);
+                orderList.push(fullOrder);
+            }
+
+        return orderList;
+    }
+
+    async cancelPendingOrdersByMerchantId(merchantId)
+    {
+        const db = await this.dbPromise;
+        await db.run(
+            `UPDATE Orders SET OrderStatus = 'Cancelled', TimeCompleted = ? WHERE MerchantID = ? AND OrderStatus = 'Pending'`,
+            [new Date().toISOString(), merchantId]
+        );
+    }
+
+    async findCurrentOrdersByMerchantId(merchantId)
+    {
+        const db = await this.dbPromise;
+        const orderList = [];
+        const orders = await db.all(
+            `SELECT * FROM Orders WHERE MerchantID = ? AND OrderStatus = 'Accepted'`,
+            [merchantId]
+        );
+        for (const element of orders) {
+            const fullOrder = await this.getById(element.OrderID);
+            orderList.push(fullOrder);
+        }
+        return orderList;
+    }
+
 }
+
+module.exports = OrderRepository;

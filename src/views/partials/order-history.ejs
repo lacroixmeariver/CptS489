@@ -7,20 +7,18 @@
     </div>
 <% } else { %>
     <% orders.forEach(order => { %>
-    <div style="background:#fff;border-radius:12px;padding:18px 22px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center;">
-        <div>
-            <div style="font-family:'Poppins',sans-serif;font-weight:600;margin-bottom:4px;">
-                <%= order.MerchantName %>
+    <div class="order-row">
+        <div class="order-row-header">
+            <div class="order-info">
+                <span class="fw-bold">Order #<%= order.OrderID %></span>
+                <span><i class="bi bi-shop me-1"></i><%= order.MerchantName || '' %></span>
+                <span class="text-muted"><i class="bi bi-clock me-1"></i><%= new Date(parseFloat(order.TimeOrdered)).toLocaleString() %></span>
+                <span><strong>$<%= order.TotalAmount.toFixed(2) %></strong></span>
             </div>
-            <div style="font-family:'Open Sans',sans-serif;font-size:0.83rem;color:#888;">
-                Order #<%= order.OrderID %> &nbsp;·&nbsp; <%= order.TimeOrdered %>
-            </div>
-        </div>
-        <div style="text-align:right;">
-            <div style="font-family:'Poppins',sans-serif;font-weight:700;color:var(--burnt-orange-primary);">
-                $<%= order.TotalAmount.toFixed(2) %>
-            </div>
-            <span class="order-status-badge <%= order.OrderStatus === 'Completed' ? 'status-complete' : 'status-other' %>">
+            <span style="font-size:0.8rem;padding:3px 12px;border-radius:20px;font-family:'Poppins',sans-serif;white-space:nowrap;
+                <%= order.OrderStatus === 'Completed'
+                    ? 'background:rgba(122,155,110,.1);color:var(--sage-green-secondary);'
+                    : 'background:rgba(224,107,107,.15);color:#e06b6b;' %>">
                 <%= order.OrderStatus %>
             </span>
         </div>

@@ -81,6 +81,33 @@
     color: #fff;
 }
 
+/* ---- Flat order row (uniform height, no nesting) ---- */
+.order-row {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+
+.order-row-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.order-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.88rem;
+    color: #555;
+}
+
 /* ---- Section card & title (merchant-dashboard.css complement) ---- */
 .section-card {
     background-color: #fff;

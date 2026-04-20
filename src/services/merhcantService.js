@@ -13,11 +13,16 @@ class MerchantService
         return await this.merchantRepository.getById(merchantId)
     }
 
+    async getMerchantByUserID(userId)
+    {
+        return await this.merchantRepository.getByUserId(userId)
+    }
+
     async openStore(merhantId)
     {
         const merchant = await this.merchantRepository.getById(merhantId);
 
-        merchant.updateStatus("open");
+        merchant.UpdateStatus("open");
 
         await this.merchantRepository.update(merchant);
         return merchant;
@@ -27,7 +32,7 @@ class MerchantService
     {
         const merchant = await this.merchantRepository.getById(merchantId);
 
-        merchant.updateStatus("close");
+        merchant.UpdateStatus("closed");
 
         await this.merchantRepository.update(merchant);
         return merchant;
@@ -35,9 +40,10 @@ class MerchantService
 
     async addMenuItem(merchantId, menuItem)
     {
+        console.log('Adding menu item to merchant:', merchantId, menuItem);
         const merchant = await this.merchantRepository.getById(merchantId);
 
-        merchant.addMenuItem(menuItem)
+        merchant.AddMenuItem(menuItem)
         
         await this.merchantRepository.update(merchant);
         return merchant;
@@ -47,19 +53,20 @@ class MerchantService
     {
         const merchant = await this.merchantRepository.getById(merchantId);
 
-        merchant.removeMenuItem(itemId);
+        merchant.RemoveMenuItem(itemId);
 
-        await this.merchantRepository.update(merchant);
+        await this.merchantRepository.deleteMenuItem(itemId);
+
         return merchant;
     }
 
-    async editMenuItem(merchantId, updatedItem)
+    async editMenuItem(merchantId, itemId, updatedFields)
     {
         const merchant = await this.merchantRepository.getById(merchantId);
 
-        merchant.editMenuItem(updatedItem);
+        console.log('Before update:', updatedFields);
 
-        await this.merchantRepository.update(merchant);
+        await this.merchantRepository.updateItems(merchantId, itemId, updatedFields);
         return merchant;
     }
 
@@ -68,6 +75,28 @@ class MerchantService
         const merchant = await this.merchantRepository.getById(merchantId);
         return merchant.menuItems;
     }
+
+    async toggleMenuItemAvailability(merchantId, itemId)
+    {
+        const merchant = await this.merchantRepository.getById(merchantId);
+        const id = parseInt(itemId);
+        const item = merchant.menuItems.find(i => i.itemId === id);
+        if (!item) return;
+
+        item.available = !item.available;
+        await this.merchantRepository.update(merchant);
+    }
+
+    async getAllMerchantsWithStats()
+    {
+        return await this.merchantRepository.getAllWithStats();
+    }
+
+    async getReviews(merchantId)
+    {
+        return await this.merchantRepository.getReviews(merchantId);
+    }
+
 }
 
 module.exports = MerchantService;

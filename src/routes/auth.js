@@ -4,6 +4,11 @@ var router = express.Router();
 const userModel = require('../models/user');
 const createUser = require('../middleware/createUser');
 const redirectByRole = require('../middleware/redirectByRole');
+const MerchantRepository = require("../middleware/merchantRepository");
+const Merchant = require("../backend/models/merchant")
+const { dbPromise, db } = require('../config/db');
+const Customer = require('../backend/models/customer');
+const CustomerRepository = require('../middleware/customerRepository');
 
 // get the login page 
 // if user already logged in it'll re-route to dashboard
@@ -52,8 +57,36 @@ function loginAndRedirect(req, res, next, userId) {
 // post info to the register page 
 router.post('/register', (req, res, next) => {
   const { email, password, firstName, lastName, phoneNumber, role } = req.body
-  createUser.createUser({ email, password, firstName, lastName, phoneNumber, role }, (err, userID) => {
+  createUser.createUser({ email, password, firstName, lastName, phoneNumber, role }, async (err, userID) => {
     if (err) return next(err);
+    if (role === 'vendor')
+    {
+      const repo = new MerchantRepository(dbPromise);
+
+      const defaultName = `${firstName}'s Store`;
+
+      const merchant = new Merchant(
+        0,
+        defaultName,
+        null,
+        true,
+        0,
+        [],
+        'closed'
+      );
+
+      await repo.save(merchant, userID);
+    }
+      else if (role === 'customer')
+      {
+        const repo = new CustomerRepository(dbPromise);
+        const customer = new Customer(
+          0,
+          null
+         );
+
+        await repo.save(customer, userID);
+      }
     loginAndRedirect(req, res, next, userID)
   })
 })

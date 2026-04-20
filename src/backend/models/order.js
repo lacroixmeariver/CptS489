@@ -3,7 +3,7 @@ class Order
     /// <summary>
     /// instantiates a customer's order, including details such as the customer, merchant, order status, timestamps, total amount, and the items in the order.
     /// </summary>
-    constructor(orderId=null, customerId, merchantId, orderStatus, timeOrdered, timeCompleted=null, orderItems)
+    constructor(orderId=null, customerId, merchantId, orderStatus, timeOrdered, timeCompleted=null, orderItems=[])
     {
         this.orderId = orderId;
         this.customerId = customerId;
@@ -46,13 +46,13 @@ class Order
     /// </summary>
     updateOrderStatus(newStatus)
     {
-        if (this.orderStatus === "completed" || this.orderStatus === "canceled")
+        if (this.orderStatus === "Completed" || this.orderStatus === "Cancelled")
         {
             throw new Error("Cannot change status of a completed or canceled order.");
         }
         this.orderStatus = newStatus;
 
-        if (newStatus === "completed" || newStatus === "canceled")
+        if (newStatus === "Completed" || newStatus === "Cancelled")
         {
             this.timeCompleted = new Date();
         }
@@ -77,7 +77,7 @@ class Order
     /// </summary>
     isFinalized()
     {
-        return this.orderStatus === "completed" || this.orderStatus === "canceled";
+        return this.orderStatus === "Completed" || this.orderStatus === "Cancelled";
     }
 
     /// <summary>

@@ -1,6 +1,7 @@
 const { openDelimiter } = require("ejs");
-const OrderService = require("/src/services/orderService.js");
+const OrderService = require("../services/orderService");
 const CustomerRepository = require("../middleware/customerRepository")
+const db = require("../config/db")
 
 class CustomerService
 {
@@ -14,6 +15,15 @@ class CustomerService
         return await this.customerRepository.getById(customerId);
     }
 
+    async getCustomerByUserId(userId)
+    {
+        const customer = await this.customerRepository.getByUserId(userId);
+
+        console.log(userId);
+
+        return customer
+    }
+
     async updateCustoemerProfile(customerId, fields)
     {
         const customer = await this.customerRepository.getById(customerId);
@@ -23,17 +33,6 @@ class CustomerService
         await this.customerRepository.update(customer);
         return customer;
     }
-
-    async getOrder(customerId, orderId)
-    {
-        const order = OrderService.getOrderById(orderId);
-
-
-        if (orderId.customerId !== customerId)
-        {
-            throw new Error("Unauthorized access to order");
-        }
-
-        return order;
-    }
 }
+
+module.exports = CustomerService;

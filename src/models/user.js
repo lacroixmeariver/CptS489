@@ -1,4 +1,4 @@
-const db = require('../config/db');
+const {db, dbPromise} = require('../config/db');
 
 // queries the db for user row using email
 function findUserByEmail(email, cb) {
