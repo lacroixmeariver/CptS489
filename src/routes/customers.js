@@ -1,39 +1,150 @@
-var express = require("express");
-var router = express.Router();
-const { isAuthenticated } = require("../middleware/isAuth");
-const db = require("../config/db");
 
-// get the customer dashboard page
-router.get("/dashboard", isAuthenticated, (req, res) => {
-  res.render("customers/customer-dashboard", { user: req.user });
+var express = require('express');
+const router = express.Router();
+const { isAuthenticated } = require('../middleware/isAuth');
+const db = require('../config/db');
+const profileController = require("../controllers/profileController");
+const MerchantRepository = require("../middleware/merchantRepository");
+const MerchantService = require("../services/merhcantService");
+const CustomerRepository = require("../middleware/customerRepository");
+const CustomerService = require("../services/customerService");
+const OrderService = require("../services/orderService");
+const OrderRepository = require("../middleware/orderRepository");
+
+const customerRepository = new CustomerRepository(db.dbPromise);
+const customerService = new CustomerService(customerRepository);
+const orderRepository = new OrderRepository(db.dbPromise);
+const orderService = new OrderService(orderRepository);
+const merchantRepository = new MerchantRepository(db.dbPromise);
+const merchantService = new MerchantService(merchantRepository);
+
+router.get('/dashboard', isAuthenticated, async (req, res) => {
+    const customer = await customerService.getCustomerByUserId(req.user.UserID);
+    const allOrders = customer ? await orderService.getOrdersByCustomerId(customer.customerId) : [];
+    const totalOrders = allOrders.length;
+
+    const database = await db.dbPromise;
+    const reviewRow = customer
+        ? await database.get('SELECT COUNT(*) AS cnt FROM Reviews WHERE CustomerID = ?', [customer.customerId])
+        : { cnt: 0 };
+    const totalReviews = reviewRow ? reviewRow.cnt : 0;
+
+    res.render('customers/customer-dashboard', { user: req.user, totalOrders, totalReviews });
 });
 
-router.get("/order-history", isAuthenticated, (req, res) => {
-  res.render("customers/customer-order-history", { user: req.user });
+
+router.get('/order-status', isAuthenticated, async (req, res) => {
+    const customer = await customerService.getCustomerByUserId(req.user.UserID);
+    const orders = await orderService.getOrdersByCustomerId(customer.customerId);
+    res.render('partials/order-status', { user: req.user, orders });
 });
 
-router.get("/order-history", isAuthenticated, (req, res) => {
-  res.render("customers/customer-order-history", { user: req.user });
+router.get('/api/order-status/:orderId', isAuthenticated, async (req, res) => {
+    const order = await orderService.getOrderById(req.params.orderId);
+    if (!order) return res.json({ status: 'unknown' });
+    const map = {
+        'Pending': 'pending', 'Accepted': 'current',
+        'Ready For Pickup': 'ready_for_pickup',
+        'Completed': 'completed', 'Cancelled': 'cancelled'
+    };
+    res.json({ status: map[order.orderStatus] || 'unknown' });
 });
 
-router.get("/order-status", isAuthenticated, (req, res) => {
-  res.render("customers/customer-order-status", { user: req.user });
+router.post('/api/cancel-order/:orderId', isAuthenticated, async (req, res) => {
+    await orderService.cancelOrder(req.params.orderId);
+    res.json({ success: true });
 });
 
-router.get("/reviews", isAuthenticated, (req, res) => {
-  res.render("customers/customer-reviews", { user: req.user });
+router.post('/api/pickup-order/:orderId', isAuthenticated, async (req, res) => {
+    await orderService.completeOrder(req.params.orderId);
+    res.json({ success: true });
 });
 
-router.get("/profile", isAuthenticated, (req, res) => {
-  res.render("shared/profile", { user: req.user });
+router.get('/order-history', isAuthenticated, async (req, res) => {
+    const customer = await customerService.getCustomerByUserId(req.user.UserID);
+    const allOrders = await orderService.getOrdersByCustomerId(customer.customerId);
+    const orders = allOrders.filter(o => o.OrderStatus === 'Completed' || o.OrderStatus === 'Cancelled');
+    res.render('partials/order-history', { user: req.user, orders });
 });
 
-router.get("/cart", isAuthenticated, (req, res) => {
-  res.render("customers/cart", { user: req.user });
+router.get('/reviews', isAuthenticated, (req, res) => {});
+
+
+
+router.get('/cart', isAuthenticated, (req, res) => {
+    res.render('customers/cart', { user: req.user });
 });
 
-router.get("/checkout", isAuthenticated, (req, res) => {
-  res.render("customers/checkout", { user: req.user });
+router.get('/checkout', isAuthenticated, (req, res) => {
+    res.render('customers/checkout', { user: req.user });
+});
+
+router.get('/browse', isAuthenticated, async (req, res) => {
+    const merchants = await merchantService.getAllMerchantsWithStats();
+    res.render('customers/browse', { user: req.user, merchants });
+});
+
+router.get('/merchant/:merchantId', isAuthenticated, async (req, res) => {
+    const merchantId = req.params.merchantId;
+    const merchant = await merchantService.getMerchantByID(merchantId);
+    const menuItems = await merchantService.getMenu(merchantId);
+    const reviews = await merchantService.getReviews(merchantId);
+
+    res.render('customers/restaurant-detail', { 
+        user: req.user, 
+        merchant, 
+        menuItems: merchant.menuItems.filter(i => i.available),
+        reviews 
+    });
+});
+
+router.get('/restaurant-detail', isAuthenticated, async (req, res) => {
+    const merchants = await merchantService.getAllMerchantsWithStats();
+    res.render('customers/browse', { user: req.user, merchants });
+});
+
+router.post('/checkout', isAuthenticated, async (req, res) => {
+    const customer = await customerService.getCustomerByUserId(req.user.UserID);
+    const { merchantId, items } = req.body;
+    const merchant = await merchantService.getMerchantByID(merchantId);
+
+    const orderItems = items.map(i => ({
+        itemId: Number(i.itemId),
+        name: i.name,
+        priceAtPurchase: i.price,
+        quantity: i.quantity
+    }));
+
+    console.log(orderItems);
+
+    const newOrder = await orderService.createOrder(
+        customer.customerId,
+        merchantId,
+        orderItems
+    );
+
+    console.log('New Order', newOrder);
+
+    const orderCheck = await orderService.getOrdersByCustomerId(customer.customerId);
+    console.log(orderCheck);
+
+    res.json({ success: true, order: newOrder, merchant });
+});
+
+router.get('/order-confirmation', isAuthenticated, async (req, res) => {
+    const orderId = req.query.orderId;
+    if (!orderId) return res.redirect('/customer/browse');
+
+    const order = await orderService.getOrderById(orderId);
+    if (!order) return res.redirect('/customer/browse');
+
+    const merchant = await merchantService.getMerchantByID(order.merchantId);
+
+    res.render('customers/order-confirmation', {
+        user: req.user,
+        order,
+        merchant
+    });
 });
 
 module.exports = router;

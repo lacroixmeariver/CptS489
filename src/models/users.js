@@ -1,4 +1,5 @@
-const db = require("../config/db");
+const {db, dbPromise} = require('../config/db');
+
 
 function findUserByEmail(email) {
   return new Promise((resolve, reject) => {

@@ -6,7 +6,8 @@ const passport = require("passport");
 // GET operations ----------------------------------------------------------
 
 exports.getLogin = (req, res) => {
-  if (req.user) return dashRedirect(res, req.user.Role);
+  if (req.user) {
+    return loginAndRedirect(res, req.user.UserID);}
   res.render("auth/login", { title: "Login", reason: req.query.reason });
 };
 

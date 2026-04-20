@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 
-<body data-role="<%= user.Role %>" data-user="<%= user.first_name %>">
+<body data-role="<%= user.Role %>" data-user="<%= user.First_name %>">
 
     <!-- main content -->
    <div class="main-box">
@@ -26,7 +26,7 @@
             <div class="container" style="margin-top: 20px;">
                 <h2 style="align-self: center;">My Menu</h2>
                 <button class="button-ready" type="button" data-bs-toggle="modal" data-bs-target="#menu-edit-form">Add New Item +</button>
-                <a href="/vendor/dashboard">
+                <a href="/vendors/dashboard">
                     <button class="button-cancel" type="button"> Return To Dashboard</button>
                 </a>
 
@@ -73,7 +73,7 @@
                                     <ul>
                                         <li><%= item.recipe || 'No Recipe Provided.' %></li>
                                     </ul>
-                                <form action="/vendor/menu/delete/<%= item.itemId %>" method="post">
+                                <form action="/vendors/menu/delete/<%= item.itemId %>" method="post">
                                     <button class="button-cancel" type="submit">Delete Item</button>
                                 </form>
                             </div>
@@ -151,7 +151,7 @@
 
             if (itemId) {
                 title.textContent = "Edit Menu Item";
-                form.action = `/vendor/menu/edit/${itemId}`;
+                form.action = `/vendors/menu/edit/${itemId}`;
 
                 document.getElementById("itemId").value = itemId;
                 document.getElementById("itemName").value = button.dataset.name;
@@ -162,7 +162,7 @@
 
             } else {
                 title.textContent = "Add Menu Item";
-                form.action = "/vendor/menu/add";
+                form.action = "/vendors/menu/add";
 
                 form.reset();
                 document.getElementById("itemId").value = "";

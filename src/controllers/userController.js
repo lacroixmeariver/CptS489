@@ -1,8 +1,9 @@
 const userModel = require("../models/users");
 
-module.exports = {
-    routeToUserDash: async (req, res, next) => {
+exports.getUserPage = 
+    async (req, res, next) => {
         try {
+            console.log("User: ", req.user)
             const role = req.user.Role.toLowerCase();
             if (role === "admin") {
             res.redirect("/admins/dashboard");
@@ -17,7 +18,7 @@ module.exports = {
         } catch (err) {
             next(err);
         }
-    }, 
+    }
 
-}
+
 

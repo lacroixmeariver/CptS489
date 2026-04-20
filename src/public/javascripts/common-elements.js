@@ -51,31 +51,16 @@ const cookSidenav = `
         <a href="/vendors/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
             <i class="bi bi-house-fill sidebar-nav-link-icon"></i>
         </a>
-        <a href="/vendors/menu" data-bs-toggle="tooltip" data-bs-placement="right" title="My Menu">
+        <a href="/vendors/my-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="My Menu">
             <i class="bi bi-journal-text sidebar-nav-link-icon"></i>
         </a>
-        <a href="/vendors/orders" data-bs-toggle="tooltip" data-bs-placement="right" title="Live Orders">
+        <a href="/vendors/live-operations" data-bs-toggle="tooltip" data-bs-placement="right" title="Live Orders">
             <i class="bi bi-bag-check sidebar-nav-link-icon"></i>
         </a>
         <a href="/vendors/reports" data-bs-toggle="tooltip" data-bs-placement="right" title="Reports">
             <i class="bi bi-bar-chart-fill sidebar-nav-link-icon"></i>
         </a>
-        <a href="/vendors/profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
-        
-        
-        <a href="/vendor/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
-            <i class="bi bi-house-fill sidebar-nav-link-icon"></i>
-        </a>
-        <a href="/vendor/menu" data-bs-toggle="tooltip" data-bs-placement="right" title="My Menu">
-            <i class="bi bi-journal-text sidebar-nav-link-icon"></i>
-        </a>
-        <a href="/vendor/live-operations" data-bs-toggle="tooltip" data-bs-placement="right" title="Live Orders">
-            <i class="bi bi-bag-check sidebar-nav-link-icon"></i>
-        </a>
-        <a href="/vendor/reports" data-bs-toggle="tooltip" data-bs-placement="right" title="Reports">
-            <i class="bi bi-bar-chart-fill sidebar-nav-link-icon"></i>
-        </a>
-        <a href="/user-profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
+        <a href="/profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
             <i class="bi bi-person-circle sidebar-nav-link-icon"></i>
         </a>
     </nav>
@@ -89,15 +74,7 @@ const driverSidenav = `
         <a href="/drivers/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
             <i class="bi bi-house-fill sidebar-nav-link-icon"></i>
         </a>
-        <a href="/drivers/current-order" data-bs-toggle="tooltip" data-bs-placement="right" title="Current Order">
-            <i class="bi bi-bicycle sidebar-nav-link-icon"></i>
-        </a>
-        <a href="/drivers/history" data-bs-toggle="tooltip" data-bs-placement="right" title="Order History">
-            <i class="bi bi-receipt sidebar-nav-link-icon"></i>
-        </a>
-        <a href="/drivers/earnings" data-bs-toggle="tooltip" data-bs-placement="right" title="Earnings">
-            <i class="bi bi-cash sidebar-nav-link-icon"></i>
-        </a>
+        
         <a href="/profile" data-bs-toggle="tooltip" data-bs-placement="right" title="My Account">
             <i class="bi bi-person-circle sidebar-nav-link-icon"></i>
         </a>
@@ -112,7 +89,7 @@ const customerSidenav = `
         <a href="/customers/dashboard" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
             <i class="bi bi-house-fill sidebar-nav-link-icon"></i>
         </a>
-        <a href="/customer/browse" data-bs-toggle="tooltip" data-bs-placement="right" title="Browse">
+        <a href="/customers/browse" data-bs-toggle="tooltip" data-bs-placement="right" title="Browse">
             <i class="bi bi-search sidebar-nav-link-icon"></i>
         </a>
         <a href="/customers/order-history" data-bs-toggle="tooltip" data-bs-placement="right" title="My Orders">
@@ -128,8 +105,9 @@ const customerSidenav = `
 // function to obtain user role
 function getSidenav(role) {
   if (role.toLowerCase() === "admin") return adminSidenav;
-  if (role.toLowerCase() === "cook" || "cook") return cookSidenav;
+  if (role.toLowerCase() === "vendor" || role.toLowerCase() === "cook") return cookSidenav;
   if (role.toLowerCase() === "driver") return driverSidenav;
+  if (role.toLowerCase() === "customer") return customerSidenav;
   return customerSidenav;
 }
 

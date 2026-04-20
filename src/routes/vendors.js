@@ -16,14 +16,20 @@ const orderService = new OrderService(orderRepo);
 router.get('/dashboard', isAuthenticated, async (req, res) => {
     console.log('User in dashboard:', req.user);
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    res.render('vendor/merchant-dashboard', { user: req.user, merchant: merchant });
+    res.render('vendors/merchant-dashboard', { user: req.user, merchant: merchant });
 });
+
+router.get('/reports', isAuthenticated, async (req, res) => {
+    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    res.render('vendors/merchant-reports', { user: req.user, merchant: merchant });
+});
+
 
 router.get('/open-store', isAuthenticated, async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
     await merchantService.openStore(merchant.merchantId);
     console.log('store open');
-    res.redirect('/vendor/live-operations');
+    res.redirect('/vendors/live-operations');
 });
 
 router.get('/close-store', isAuthenticated, async (req, res) => {
@@ -31,7 +37,7 @@ router.get('/close-store', isAuthenticated, async (req, res) => {
     await orderService.cancelPendingOrdersForMerchant(merchant.merchantId);
     await merchantService.closeStore(merchant.merchantId);
     console.log('store closed');
-    res.redirect('/vendor/dashboard');
+    res.redirect('/vendors/dashboard');
 });
 
 
@@ -103,12 +109,12 @@ router.get('/api/toggle-menu-item', isAuthenticated, async (req, res) => {
 // get the live operations page 
 router.get('/live-operations', isAuthenticated, async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    res.render('vendor/live-operations', { user: req.user, merchant: merchant });
+    res.render('vendors/live-operations', { user: req.user, merchant: merchant });
 });
 
 router.get('/my-menu',isAuthenticated, async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    res.render('vendor/my-menu', { user: req.user, merchant: merchant });
+    res.render('vendors/my-menu', { user: req.user, merchant: merchant });
 });
 
 router.post('/menu/delete/:itemId', isAuthenticated, async (req, res) => {
@@ -143,7 +149,7 @@ router.post('/menu/toggle-availability/:itemId', isAuthenticated, async (req, re
     console.log('availability', merchant.menuItems.find(item => item.itemId === itemId).available);
     merchantService.toggleMenuItemAvailability(merchant.merchantId, itemId);
     console.log('availability', merchant.menuItems.find(item => item.itemId === itemId).available);
-    res.redirect('/vendor/my-menu');
+    res.redirect('/vendors/my-menu');
 });
 
 router.post('/menu/add', isAuthenticated, async (req, res) => {
@@ -158,7 +164,7 @@ router.post('/menu/add', isAuthenticated, async (req, res) => {
     };
 
     await merchantService.addMenuItem(merchant.merchantId, newItem);
-    res.redirect('/vendor/my-menu');
+    res.redirect('/vendors/my-menu');
 });
 
 

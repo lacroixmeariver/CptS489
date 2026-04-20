@@ -1,4 +1,4 @@
-const db = require("../config/db");
+const {db, dbPromise} = require('../config/db');
 
 // returns a count representing the amount of active orders a driver is assigned to
 function getActiveOrders(DriverID) {

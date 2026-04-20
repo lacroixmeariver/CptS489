@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 
-<body data-role="<%= user.Role %>" data-user="<%= user.first_name %>">
+<body data-role="<%= user.Role %>" data-user="<%= user.First_name %>">
     <div class="main-box">
        
         <div class="container mt-4">
@@ -33,7 +33,7 @@
                     </li>
                     <li id="close-store-button">
                         <!--Links to index page right now will eventually cause the close store function and take user back to merchant dashboard-->
-                        <a href="/vendor/close-store">
+                        <a href="/vendors/close-store">
                             <button class="button-cancel" type="button">Close Store</button>
                         </a>
                     </li>
@@ -72,7 +72,7 @@
         document.addEventListener("DOMContentLoaded", () => {
 
         function loadCurrentOrders() {
-            fetch("/vendor/api/current-orders")
+            fetch("/vendors/api/current-orders")
                 .then(res => res.json())
                 .then(orders => {
                     const container = document.getElementById("current-orders-container");
@@ -106,7 +106,7 @@
         }
 
         function loadPendingOrders() {
-            fetch("/vendor/api/pending-orders")
+            fetch("/vendors/api/pending-orders")
                 .then(res => res.json())
                 .then(orders => {
                     const container = document.getElementById("pending-orders-container");
@@ -143,7 +143,7 @@
         }
 
         function loadLiveMenu() {
-            fetch("/vendor/api/live-menu")
+            fetch("/vendors/api/live-menu")
                 .then(res => res.json())
                 .then(items => {
                     const container = document.getElementById("live-menu-container");
@@ -171,7 +171,7 @@
         }
 
         window.acceptOrder = function(orderId) {
-            fetch(`/vendor/accept-order/${orderId}`, { method: "POST" })
+            fetch(`/vendors/accept-order/${orderId}`, { method: "POST" })
                 .then(() => {
                     loadCurrentOrders();
                     loadPendingOrders();
@@ -179,7 +179,7 @@
         };
 
         window.confirmOrder = function(orderId) {
-            fetch(`/vendor/confirm-order/${orderId}`, { method: "POST" })
+            fetch(`/vendors/confirm-order/${orderId}`, { method: "POST" })
                 .then(() => {
                     loadCurrentOrders();
                     loadPendingOrders();
@@ -187,7 +187,7 @@
         };
 
         window.cancelOrder = function(orderId) {
-            fetch(`/vendor/cancel-order/${orderId}`, { method: "POST" })
+            fetch(`/vendors/cancel-order/${orderId}`, { method: "POST" })
                 .then(() => {
                     loadCurrentOrders();
                     loadPendingOrders();
@@ -195,14 +195,14 @@
         };
 
         window.completeOrder = function(orderId) {
-            fetch(`/vendor/api/complete-order?orderId=${orderId}`, { method: "GET" })
+            fetch(`/vendors/api/complete-order?orderId=${orderId}`, { method: "GET" })
                 .then(() => {
                     loadCurrentOrders();
                 });
         };
 
         window.toggleItemAvailability = function(itemId, available) {
-            fetch(`/vendor/api/toggle-menu-item?itemId=${itemId}&available=${available}`)
+            fetch(`/vendors/api/toggle-menu-item?itemId=${itemId}&available=${available}`)
                 .then(() => {
                     loadLiveMenu();
                 });

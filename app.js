@@ -1,5 +1,6 @@
 var createError = require("http-errors");
 var express = require("express");
+var router = express.Router();
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
@@ -11,11 +12,11 @@ const { isBanned } = require("./src/middleware/checkUserStatus");
 // routers
 var indexRouter = require("./src/routes/index");
 var authRouter = require("./src/routes/auth");
-var userRouter = require("./src/routes/users");
-var customerRouter = require("./src/routes/customers");
+var usersRouter = require("./src/routes/users");
+var customersRouter = require("./src/routes/customers");
 var adminRouter = require("./src/routes/admins");
 var driverRouter = require("./src/routes/drivers");
-var vendorRouter = require("./src/routes/vendors");
+var vendorsRouter = require("./src/routes/vendors");
 var profileRouter = require("./src/routes/profiles");
 
 // view engine setup
@@ -40,11 +41,11 @@ app.use(isBanned); // middleware to make sure banned and suspended users are not
 
 app.use("/", indexRouter);
 app.use("/", authRouter);
-app.use("/", userRouter);
-app.use("/customers", customerRouter);
+app.use("/", usersRouter);
+app.use("/customers", customersRouter);
 app.use("/admins", adminRouter);
 app.use("/drivers", driverRouter);
-app.use("/vendors", vendorRouter);
+app.use("/vendors", vendorsRouter);
 app.use("/", profileRouter);
 
 // catch 404 and forward to error handler

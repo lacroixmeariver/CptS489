@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="/stylesheets/merchant-dashboard.css">
     <link rel="stylesheet" href="/stylesheets/customer-dashboard.css">
 </head>
-<body data-role="<%= user.Role %>" data-user="<%= user.first_name %>">
+<body data-role="<%= user.Role %>" data-user="<%= user.First_name %>">
 
 <!-- ── Dashboard Body ────────────────────────────── -->
 <div class="main-box">
@@ -93,9 +93,9 @@
 
 <script>
 const sectionFiles = {
-    'order-status': '/customer/order-status',
-    'history':      '/customer/order-history',
-    'reviews':      '/customer/reviews'
+    'order-status': '/customers/order-status',
+    'history':      '/customers/order-history',
+    'reviews':      '/customers/reviews'
 };
 
 function clearSection() {

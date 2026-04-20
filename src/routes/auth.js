@@ -1,15 +1,17 @@
+
+const express = require("express");
 const router = express.Router();
+const passport = require("passport");
 const authController = require("../controllers/authController");
-var express = require('express');
-var passport = require('passport');
 const userModel = require('../models/user');
-const createUser = require('../middleware/createUser');
+const createUser = require('../service/createUser');
 const redirectByRole = require('../middleware/redirectByRole');
 const MerchantRepository = require("../middleware/merchantRepository");
 const Merchant = require("../backend/models/merchant")
 const { dbPromise, db } = require('../config/db');
 const Customer = require('../backend/models/customer');
 const CustomerRepository = require('../middleware/customerRepository');
+
 
 // GET routes ----------------------------------------------
 router.get("/login", authController.getLogin);

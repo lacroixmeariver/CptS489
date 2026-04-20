@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 const { isAuthenticated } = require("../middleware/isAuth");
 const { isBanned } = require("../middleware/checkUserStatus");
-const { routeToUserDash: getUserPage } = require("../controllers/userController");
+const { getUserPage } = require("../controllers/userController");
 
 // gets the user page
 // routes according to user type
