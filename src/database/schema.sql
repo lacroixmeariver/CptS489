@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS Merchants(
     Verified TEXT NOT NULL CHECK (Verified IN ('Pending', 'Approved', 'Rejected')) DEFAULT 'Pending',
     StoreScore REAL NOT NULL DEFAULT 0.0,
     Status TEXT NOT NULL CHECK (Status IN ('open', 'closed')) DEFAULT 'closed',
-    Bio TEXT
+    Bio TEXT,
+    StoreImage TEXT
 );
 
 
@@ -77,7 +78,8 @@ CREATE TABLE IF NOT EXISTS MenuItems(
     Price REAL NOT NULL,
     Description TEXT NOT NULL,
     Recipe TEXT,
-    Available BOOLEAN NOT NULL DEFAULT TRUE
+    Available BOOLEAN NOT NULL DEFAULT TRUE,
+    ImagePath TEXT
 );
 
 CREATE TABLE IF NOT EXISTS Reviews(

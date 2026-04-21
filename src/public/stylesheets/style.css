@@ -924,6 +924,12 @@ tbody tr:hover {
   justify-content: center;
   flex-shrink: 0;
   position: relative;
+  overflow: hidden;
+}
+
+.profile-avatar .avatar-edit-btn {
+  position: absolute;
+  z-index: 2;
 }
 
 .profile-user-description {

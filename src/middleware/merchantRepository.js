@@ -26,7 +26,7 @@ class MerchantRepository
 
         for (const item of merchant.menuItems)
         {
-            await db.run('INSERT INTO MenuItems (MerchantID, ItemName, Calories, Price, Description, Recipe, Available) VALUES(?, ?, ?, ?, ?, ?, ?)',
+            await db.run('INSERT INTO MenuItems (MerchantID, ItemName, Calories, Price, Description, Recipe, Available, ImagePath) VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
                 [
                     merchantId,
                     item.name,
@@ -34,7 +34,8 @@ class MerchantRepository
                     item.price,
                     item.description,
                     item.recipe,
-                    item.available
+                    item.available,
+                    item.imagePath || null
                 ]
             );
         }
@@ -74,8 +75,8 @@ class MerchantRepository
                 );
             } else {
                 await db.run(
-                    `INSERT INTO MenuItems (MerchantID, ItemName, Calories, Price, Description, Recipe, Available) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                    [merchant.merchantId, item.name, item.calories, item.price, item.description, item.recipe, item.available]
+                    `INSERT INTO MenuItems (MerchantID, ItemName, Calories, Price, Description, Recipe, Available, ImagePath) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                    [merchant.merchantId, item.name, item.calories, item.price, item.description, item.recipe, item.available, item.imagePath || null]
                 );
             }
         }
@@ -97,7 +98,7 @@ class MerchantRepository
                 );
         
                 const items = itemRows.map(row =>
-                    new MenuItem(row.ItemID, row.ItemName, row.Calories, row.Price, row.Description, row.Recipe, row.Available)
+                    new MenuItem(row.ItemID, row.ItemName, row.Calories, row.Price, row.Description, row.Recipe, row.Available, row.ImagePath)
                 );
         
         return new Merchant(
@@ -108,7 +109,8 @@ class MerchantRepository
                     merchantRow.StoreScore,
                     items,
                     merchantRow.Status,
-                    merchantRow.Bio
+                    merchantRow.Bio,
+                    merchantRow.StoreImage
                 );
     }
 
@@ -129,7 +131,7 @@ class MerchantRepository
                 );
 
                 const items = itemRows.map(row =>
-                    new MenuItem(row.ItemID, row.ItemName, row.Calories, row.Price, row.Description, row.Recipe, row.Available)
+                    new MenuItem(row.ItemID, row.ItemName, row.Calories, row.Price, row.Description, row.Recipe, row.Available, row.ImagePath)
                 );
         
                 return new Merchant(
@@ -140,7 +142,8 @@ class MerchantRepository
                     merchantRow.StoreScore,
                     items,
                     merchantRow.Status,
-                    merchantRow.Bio
+                    merchantRow.Bio,
+                    merchantRow.StoreImage
                 );
     }
 
@@ -157,26 +160,51 @@ class MerchantRepository
     async updateItems(merchantID, itemId, updatedFields)
     {
         const db = await this.dbPromise;
-        await db.run(
-            `UPDATE MenuItems
-            SET ItemName = ?,
-                Calories = ?,
-                Price = ?,
-                Description = ?,
-                Recipe = ?,
-                Available = ?
-            WHERE MerchantID = ? AND ItemID = ?`,
-            [
-                updatedFields.name,
-                updatedFields.calories,
-                updatedFields.price,
-                updatedFields.description,
-                updatedFields.recipe,
-                updatedFields.available,
-                merchantID,
-                itemId
-            ]
-        );
+        if (updatedFields.imagePath !== undefined) {
+            await db.run(
+                `UPDATE MenuItems
+                SET ItemName = ?,
+                    Calories = ?,
+                    Price = ?,
+                    Description = ?,
+                    Recipe = ?,
+                    Available = ?,
+                    ImagePath = ?
+                WHERE MerchantID = ? AND ItemID = ?`,
+                [
+                    updatedFields.name,
+                    updatedFields.calories,
+                    updatedFields.price,
+                    updatedFields.description,
+                    updatedFields.recipe,
+                    updatedFields.available,
+                    updatedFields.imagePath,
+                    merchantID,
+                    itemId
+                ]
+            );
+        } else {
+            await db.run(
+                `UPDATE MenuItems
+                SET ItemName = ?,
+                    Calories = ?,
+                    Price = ?,
+                    Description = ?,
+                    Recipe = ?,
+                    Available = ?
+                WHERE MerchantID = ? AND ItemID = ?`,
+                [
+                    updatedFields.name,
+                    updatedFields.calories,
+                    updatedFields.price,
+                    updatedFields.description,
+                    updatedFields.recipe,
+                    updatedFields.available,
+                    merchantID,
+                    itemId
+                ]
+            );
+        }
     }
 
     async getAllWithStats()
@@ -188,6 +216,7 @@ class MerchantRepository
                 m.MerchantName,
                 m.MerchantAddress,
                 m.StoreScore,
+                m.StoreImage,
                 ROUND(AVG(mi.Price), 2) AS AvgPrice,
                 COUNT(DISTINCT r.ReviewID) AS ReviewCount,
                 COUNT(DISTINCT o.OrderID) AS OrderCount
@@ -210,6 +239,7 @@ class MerchantRepository
                 m.MerchantName,
                 m.MerchantAddress,
                 m.StoreScore,
+                m.StoreImage,
                 ROUND(AVG(mi2.Price), 2) AS AvgPrice,
                 COUNT(DISTINCT r.ReviewID) AS ReviewCount,
                 COUNT(DISTINCT o.OrderID) AS OrderCount

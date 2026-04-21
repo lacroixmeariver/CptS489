@@ -3,7 +3,7 @@ class Merchant
     /// <summary>
     /// instantiates a merchant with details such as the merchant's unique identifier, name, address, verification status, and store score.
     /// </summary>
-    constructor(merchantId, name, adress, verified=false, storeScore=0, menuItems=[], status='closed', bio=null)
+    constructor(merchantId, name, adress, verified=false, storeScore=0, menuItems=[], status='closed', bio=null, storeImage=null)
     {
         this.merchantId = merchantId;
         this.name = name;
@@ -13,6 +13,7 @@ class Merchant
         this.menuItems = menuItems;
         this.status = status;
         this.bio = bio;
+        this.storeImage = storeImage;
     }
 
     AddMenuItem(menuItem)

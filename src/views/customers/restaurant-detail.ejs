@@ -23,12 +23,16 @@
 </div>
 
 <!-- ── Restaurant Profile Banner ─────────────── -->
-<div class="restaurant-profile-banner">
+<div class="restaurant-profile-banner"<% if (merchant.storeImage) { %> style="background:linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),url('<%= merchant.storeImage %>') center/cover no-repeat;"<% } %>>
     <div style="max-width:1200px;margin:0 auto;">
         <div class="d-flex align-items-center gap-4 flex-wrap">
             <!-- Cook avatar -->
-            <div style="width:80px;height:80px;border-radius:16px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:2.2rem;color:#fff;flex-shrink:0;">
-                <%= merchant.name.charAt(0) %>
+            <div style="width:80px;height:80px;border-radius:16px;background:rgba(255,255,255,.15);overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:2.2rem;color:#fff;flex-shrink:0;">
+                <% if (merchant.storeImage) { %>
+                    <img src="<%= merchant.storeImage %>" alt="<%= merchant.name %>" style="width:100%;height:100%;object-fit:cover;">
+                <% } else { %>
+                    <%= merchant.name.charAt(0) %>
+                <% } %>
             </div>
             <!-- Info -->
             <div class="flex-grow-1">
@@ -67,7 +71,7 @@
         <% } else { %>
             <% menuItems.forEach(item => { %>
                 <div class="menu-item-card">
-                    <div class="menu-item-img" style="background:#f5ede0;"></div>
+                    <div class="menu-item-img" style="background:#f5ede0;<% if (item.imagePath) { %>background-image:url('<%= item.imagePath %>');background-size:cover;background-position:center;<% } %>"></div>
                     <div class="menu-item-info">
                         <div class="menu-item-name"><%= item.name %></div>
                         <div class="menu-item-desc"><%= item.description %></div>

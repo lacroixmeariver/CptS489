@@ -8,6 +8,7 @@ const OrderService = require("../services/orderService");
 const OrderRepository = require("../middleware/orderRepository");
 const ReviewRepository = require("../middleware/reviewRepository");
 const ReviewService = require("../services/reviewService");
+const upload = require('../middleware/upload');
 
 const merchantRepo = new MerchantRepository(dbPromise);
 const merchantService = new MerchantService(merchantRepo);
@@ -140,7 +141,7 @@ router.post('/menu/delete/:itemId', isAuthenticated, async (req, res) => {
     res.redirect('/vendor/my-menu');
 });
 
-router.post('/menu/edit/:itemId', isAuthenticated, async (req, res) => {
+router.post('/menu/edit/:itemId', isAuthenticated, upload.single('itemImage'), async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
     const itemId = req.params.itemId;
 
@@ -152,6 +153,9 @@ router.post('/menu/edit/:itemId', isAuthenticated, async (req, res) => {
         recipe: req.body.itemRecipe,
         available: req.body.itemAvailable === 'on' ? true : false
     };
+    if (req.file) {
+        updatedFields.imagePath = '/images/uploads/' + req.file.filename;
+    }
 
     await merchantService.editMenuItem(merchant.merchantId, itemId, updatedFields);
 
@@ -167,7 +171,7 @@ router.post('/menu/toggle-availability/:itemId', isAuthenticated, async (req, re
     res.redirect('/vendors/my-menu');
 });
 
-router.post('/menu/add', isAuthenticated, async (req, res) => {
+router.post('/menu/add', isAuthenticated, upload.single('itemImage'), async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
     const newItem = {
         name: req.body.itemName,
@@ -175,11 +179,21 @@ router.post('/menu/add', isAuthenticated, async (req, res) => {
         description: req.body.itemDescription,
         recipe: req.body.itemRecipe,
         calories: req.body.itemCalories,
-        available: true
+        available: true,
+        imagePath: req.file ? '/images/uploads/' + req.file.filename : null
     };
 
     await merchantService.addMenuItem(merchant.merchantId, newItem);
     res.redirect('/vendors/my-menu');
+});
+
+router.post('/api/upload-store-image', isAuthenticated, upload.single('storeImage'), async (req, res) => {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    const imagePath = '/images/uploads/' + req.file.filename;
+    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    const database = await dbPromise;
+    await database.run('UPDATE Merchants SET StoreImage=? WHERE MerchantID=?', [imagePath, merchant.merchantId]);
+    res.json({ ok: true, imagePath });
 });
 
 router.post('/api/profile', isAuthenticated, async (req, res) => {
