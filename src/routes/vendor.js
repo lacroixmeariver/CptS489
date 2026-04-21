@@ -18,7 +18,7 @@ const reviewService = new ReviewService(reviewRepo);
 
 router.get('/dashboard', isAuthenticated, async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    res.render('vendor/merchant-dashboard', { user: req.user, merchant: merchant });
+    res.render('vendor/merchant-dashboard', { user: req.user, merchant: merchant, verifyMsg: req.query.verifyMsg || null, noMenuMsg: req.query.noMenuMsg || null });
 });
 
 router.get('/reviews', isAuthenticated, async (req, res) => {
@@ -29,6 +29,12 @@ router.get('/reviews', isAuthenticated, async (req, res) => {
 
 router.get('/open-store', isAuthenticated, async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    if (merchant.verified !== 'Approved') {
+        return res.redirect('/vendor/dashboard?verifyMsg=' + encodeURIComponent(merchant.verified || 'Pending'));
+    }
+    if (!merchant.menuItems || merchant.menuItems.length === 0) {
+        return res.redirect('/vendor/dashboard?noMenuMsg=1');
+    }
     await merchantService.openStore(merchant.merchantId);
     res.redirect('/vendor/live-operations');
 });

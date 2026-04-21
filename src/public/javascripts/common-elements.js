@@ -54,8 +54,8 @@ const cookSidenav = `
         <a href="/vendor/my-menu" data-bs-toggle="tooltip" data-bs-placement="right" title="My Menu">
             <i class="bi bi-journal-text sidebar-nav-link-icon"></i>
         </a>
-        <a href="/vendor/live-operations" data-bs-toggle="tooltip" data-bs-placement="right" title="Live Orders">
-            <i class="bi bi-bag-check sidebar-nav-link-icon"></i>
+        <a id="store-toggle-link" href="/vendor/open-store" data-bs-toggle="tooltip" data-bs-placement="right" title="Open Store">
+            <i id="store-toggle-icon" class="bi bi-bag sidebar-nav-link-icon"></i>
         </a>
         <a href="/vendor/reports" data-bs-toggle="tooltip" data-bs-placement="right" title="Reports">
             <i class="bi bi-bar-chart-fill sidebar-nav-link-icon"></i>
@@ -127,4 +127,42 @@ document.addEventListener("DOMContentLoaded", function () {
     tooltipTriggerList.map(function (el) {
         return new bootstrap.Tooltip(el);
     });
+
+    // For vendors: fetch store status and update sidenav + dashboard card icon
+    if (role === 'vendor') {
+        fetch('/vendors/api/store-status')
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (!data) return;
+                const isOpen = data.status === 'open';
+
+                // Sidenav toggle link
+                const toggleLink = document.getElementById('store-toggle-link');
+                const toggleIcon = document.getElementById('store-toggle-icon');
+                if (toggleLink && toggleIcon) {
+                    toggleLink.href = isOpen ? '/vendor/close-store' : '/vendor/open-store';
+                    toggleLink.title = isOpen ? 'Close Store' : 'Open Store';
+                    toggleIcon.className = isOpen
+                        ? 'bi bi-bag-check-fill sidebar-nav-link-icon'
+                        : 'bi bi-bag sidebar-nav-link-icon';
+                }
+
+                // Dashboard "Open Store" card icon
+                const dashCard = document.querySelector('a[href="/vendor/open-store"] .card-img-top i, a[href="/vendor/close-store"] .card-img-top i');
+                const dashCardLink = document.querySelector('a[href="/vendor/open-store"], a[href="/vendor/close-store"]');
+                if (dashCardLink) {
+                    dashCardLink.href = isOpen ? '/vendor/close-store' : '/vendor/open-store';
+                    const cardText = dashCardLink.querySelector('.card-text');
+                    if (cardText) cardText.textContent = isOpen ? 'Close Store' : 'Open Store';
+                }
+                if (dashCard) {
+                    dashCard.className = isOpen
+                        ? 'bi bi-bag-check-fill'
+                        : 'bi bi-house-fill';
+                    dashCard.style.fontSize = '2.5rem';
+                    dashCard.style.color = '#fff';
+                }
+            })
+            .catch(() => {});
+    }
 });

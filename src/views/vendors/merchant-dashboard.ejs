@@ -26,6 +26,20 @@
             <!-- container for all the cards present -->
             <div class="analytics-container">
 
+                <% if (verifyMsg) { %>
+                <% const vmColor = verifyMsg==='Rejected' ? '#fee2e2' : '#fef9c3'; const vmText = verifyMsg==='Rejected' ? '#991b1b' : '#78350f'; %>
+                <div style="background:<%= vmColor %>;color:<%= vmText %>;border-radius:10px;padding:12px 18px;margin-bottom:16px;font-family:'Open Sans',sans-serif;font-size:0.9rem;display:flex;align-items:center;gap:10px;">
+                    <i class="bi bi-<%= verifyMsg==='Rejected' ? 'x-circle-fill' : 'hourglass-split' %>" style="font-size:1.2rem;"></i>
+                    <span>Your store cannot open yet — Verification status: <strong><%= verifyMsg %></strong>. Please wait for admin approval.</span>
+                </div>
+                <% } %>
+                <% if (noMenuMsg) { %>
+                <div style="background:#fef9c3;color:#78350f;border-radius:10px;padding:12px 18px;margin-bottom:16px;font-family:'Open Sans',sans-serif;font-size:0.9rem;display:flex;align-items:center;gap:10px;">
+                    <i class="bi bi-exclamation-triangle-fill" style="font-size:1.2rem;"></i>
+                    <span>You need at least one menu item before you can open your store. <a href="/vendor/my-menu" style="color:#92400e;font-weight:600;">Add items to your menu</a>.</span>
+                </div>
+                <% } %>
+
                 <div class="row card-container">
                     <h2 id="recent-activity-heading">What to do next</h2>
                     <div class="card"> 

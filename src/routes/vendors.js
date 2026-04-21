@@ -20,7 +20,7 @@ const reviewService = new ReviewService(reviewRepo);
 router.get('/dashboard', isAuthenticated, async (req, res) => {
     console.log('User in dashboard:', req.user);
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    res.render('vendors/merchant-dashboard', { user: req.user, merchant: merchant });
+    res.render('vendors/merchant-dashboard', { user: req.user, merchant: merchant, verifyMsg: req.query.verifyMsg || null, noMenuMsg: req.query.noMenuMsg || null });
 });
 
 router.get('/reports', isAuthenticated, async (req, res) => {
@@ -31,6 +31,12 @@ router.get('/reports', isAuthenticated, async (req, res) => {
 
 router.get('/open-store', isAuthenticated, async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    if (merchant.verified !== 'Approved') {
+        return res.redirect('/vendors/dashboard?verifyMsg=' + encodeURIComponent(merchant.verified || 'Pending'));
+    }
+    if (!merchant.menuItems || merchant.menuItems.length === 0) {
+        return res.redirect('/vendors/dashboard?noMenuMsg=1');
+    }
     await merchantService.openStore(merchant.merchantId);
     console.log('store open');
     res.redirect('/vendors/live-operations');
@@ -83,6 +89,11 @@ router.get("/api/live-menu", isAuthenticated, async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
     const liveMenu = await merchantService.getMenu(merchant.merchantId);
     res.json(liveMenu);
+});
+
+router.get('/api/store-status', isAuthenticated, async (req, res) => {
+    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    res.json({ status: merchant.status, verified: merchant.verified });
 });
 
 router.get('/api/complete-order', isAuthenticated, async (req, res) => {
