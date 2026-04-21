@@ -114,8 +114,11 @@ router.get('/checkout', isAuthenticated, (req, res) => {
 });
 
 router.get('/browse', isAuthenticated, async (req, res) => {
-    const merchants = await merchantService.getAllMerchantsWithStats();
-    res.render('customer/browse', { user: req.user, merchants });
+    const q = (req.query.q || '').trim();
+    const merchants = q
+        ? await merchantService.searchMerchants(q)
+        : await merchantService.getAllMerchantsWithStats();
+    res.render('customer/browse', { user: req.user, merchants, q });
 });
 
 router.get('/merchant/:merchantId', isAuthenticated, async (req, res) => {

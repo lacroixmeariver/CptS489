@@ -89,6 +89,11 @@ class MerchantService
         return await this.merchantRepository.getAllWithStats();
     }
 
+    async searchMerchants(q)
+    {
+        return await this.merchantRepository.searchMerchants(q);
+    }
+
     async updateProfile(userId, merchantId, fields)
     {
         return await this.merchantRepository.updateProfile(userId, merchantId, fields);

@@ -200,6 +200,37 @@ class MerchantRepository
         return merchantRows;
     }
 
+    async searchMerchants(q)
+    {
+        const db = await this.dbPromise;
+        const term = `%${q}%`;
+        const merchantRows = await db.all(
+            `SELECT DISTINCT
+                m.MerchantID,
+                m.MerchantName,
+                m.MerchantAddress,
+                m.StoreScore,
+                ROUND(AVG(mi2.Price), 2) AS AvgPrice,
+                COUNT(DISTINCT r.ReviewID) AS ReviewCount,
+                COUNT(DISTINCT o.OrderID) AS OrderCount
+            FROM Merchants m
+            JOIN MenuItems mi2 ON m.MerchantID = mi2.MerchantID
+            LEFT JOIN MenuItems mi ON m.MerchantID = mi.MerchantID
+            LEFT JOIN Reviews r ON m.MerchantID = r.MerchantID
+            LEFT JOIN Orders o ON m.MerchantID = o.MerchantID
+            WHERE m.Status = 'open'
+              AND (
+                m.MerchantName LIKE ?
+                OR m.Bio LIKE ?
+                OR mi.ItemName LIKE ?
+                OR mi.Description LIKE ?
+              )
+            GROUP BY m.MerchantID`,
+            [term, term, term, term]
+        );
+        return merchantRows;
+    }
+
     async updateProfile(userId, merchantId, { firstName, lastName, address, bio, storeName })
     {
         const db = await this.dbPromise;

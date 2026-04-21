@@ -23,7 +23,7 @@
         <form action="/customer/browse" method="get">
             <div class="browse-search-bar">
                 <i class="bi bi-search" style="color:#aaa;font-size:18px;flex-shrink:0;"></i>
-                <input type="text" name="q" placeholder="Search for dishes, cuisines, or cooks…">
+                <input type="text" name="q" placeholder="Search for dishes, cuisines, or cooks…" value="<%= q || '' %>">
                 <button type="submit" class="search-btn">Search</button>
             </div>
         </form>
@@ -32,7 +32,7 @@
     <!-- All Cooks Near You -->
     <div>
         <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-            <h3 class="browse-section-title mb-0"><i class="bi bi-geo-alt me-1"></i>All Cooks Near You</h3>
+            <h3 class="browse-section-title mb-0"><i class="bi bi-geo-alt me-1"></i><%= q ? 'Results for "' + q + '"' : 'All Cooks Near You' %></h3>
             <div class="d-flex align-items-center gap-2">
                 <span style="font-family:'Open Sans',sans-serif;font-size:0.82rem;color:#888;"><%= merchants.length %> cooks found</span>
                 <select class="form-select form-select-sm" style="max-width:170px;font-family:'Poppins',sans-serif;font-size:0.82rem;">
@@ -47,6 +47,12 @@
 
         <div class="row g-3">
 
+            <% if (merchants.length === 0) { %>
+            <div class="col-12 text-center py-5" style="color:#888;font-family:'Open Sans',sans-serif;">
+                <i class="bi bi-search" style="font-size:2rem;"></i>
+                <p class="mt-2">No cooks found for "<%= q %>".<br>Try a different search term.</p>
+            </div>
+            <% } %>
             <% merchants.forEach(merchant => { %>
             <div class="col-6 col-md-4 col-lg-3">
                 <a href="/customer/merchant/<%= merchant.MerchantID %>" class="restaurant-card">
