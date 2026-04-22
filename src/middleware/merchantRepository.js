@@ -41,8 +41,7 @@ class MerchantRepository {
         return merchantId;
     }
 
-    return merchantId;
-  }
+
 
   async update(merchant) {
     const db = await this.dbPromise;
@@ -81,7 +80,7 @@ class MerchantRepository {
             }
         }
     }
-  }
+  
 
     async getById(merchantId)
     {
@@ -148,23 +147,23 @@ class MerchantRepository {
                 );
     }
 
-    const itemRows = await db.all(
-      `SELECT * FROM MenuItems WHERE MerchantID = ?`,
-      [merchantId],
-    );
+    // const itemRows = await db.all(
+    //   `SELECT * FROM MenuItems WHERE MerchantID = ?`,
+    //   [merchantId],
+    // );
 
-    const items = itemRows.map(
-      (row) =>
-        new MenuItem(
-          row.ItemID,
-          row.ItemName,
-          row.Calories,
-          row.Price,
-          row.Description,
-          row.Recipe,
-          row.Available,
-        ),
-    );
+    // const items = itemRows.map(
+    //   (row) =>
+    //     new MenuItem(
+    //       row.ItemID,
+    //       row.ItemName,
+    //       row.Calories,
+    //       row.Price,
+    //       row.Description,
+    //       row.Recipe,
+    //       row.Available,
+    //     ),
+    // );
 
     async updateItems(merchantID, itemId, updatedFields)
     {
@@ -297,24 +296,24 @@ class MerchantRepository {
                 [bio, merchantId]
             );
         }
-    }
-    if (storeName !== undefined) {
-      await db.run(
-        `UPDATE Merchants SET MerchantName = ? WHERE MerchantID = ?`,
-        [storeName, merchantId],
-      );
-    }
-    if (address !== undefined) {
-      await db.run(
-        `UPDATE Merchants SET MerchantAddress = ? WHERE MerchantID = ?`,
-        [address, merchantId],
-      );
-    }
-    if (bio !== undefined) {
-      await db.run(`UPDATE Merchants SET Bio = ? WHERE MerchantID = ?`, [
-        bio,
-        merchantId,
-      ]);
+    
+        if (storeName !== undefined) {
+        await db.run(
+            `UPDATE Merchants SET MerchantName = ? WHERE MerchantID = ?`,
+            [storeName, merchantId],
+        );
+        }
+        if (address !== undefined) {
+        await db.run(
+            `UPDATE Merchants SET MerchantAddress = ? WHERE MerchantID = ?`,
+            [address, merchantId],
+        );
+        }
+        if (bio !== undefined) {
+        await db.run(`UPDATE Merchants SET Bio = ? WHERE MerchantID = ?`, [
+            bio,
+            merchantId,
+        ]);
     }
   }
 

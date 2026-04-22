@@ -226,6 +226,7 @@ router.post('/api/profile', isAuthenticated, async (req, res) => {
 });
 
 router.get('/reviews', isAuthenticated, async (req, res) => {
+    try{
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
     const data = await orderService.getReportData(
       merchant.merchantId,

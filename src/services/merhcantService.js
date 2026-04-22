@@ -104,6 +104,6 @@ class MerchantService
         return await this.merchantRepository.getReviews(merchantId);
     }
 
-
+}
 
 module.exports = MerchantService;
