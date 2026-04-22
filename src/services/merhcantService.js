@@ -1,4 +1,4 @@
-const { openDelimiter } = require("ejs");
+//const { openDelimiter } = require("ejs");
 const MerchantRepository = require("../middleware/merchantRepository")
 
 class MerchantService
@@ -18,9 +18,9 @@ class MerchantService
         return await this.merchantRepository.getByUserId(userId)
     }
 
-    async openStore(merhantId)
+    async openStore(merchantId)
     {
-        const merchant = await this.merchantRepository.getById(merhantId);
+        const merchant = await this.merchantRepository.getById(merchantId);
 
         merchant.UpdateStatus("open");
 

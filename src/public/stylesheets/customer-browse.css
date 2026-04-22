@@ -247,6 +247,7 @@
 .restaurant-profile-banner {
   background: linear-gradient(135deg, #2c2c2c 0%, #444 100%);
   padding: 36px 32px;
+  margin-left: 85px;
   color: #fff;
 }
 

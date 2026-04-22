@@ -145,26 +145,9 @@ class MerchantRepository {
                     merchantRow.Bio,
                     merchantRow.StoreImage
                 );
+
+    
     }
-
-    // const itemRows = await db.all(
-    //   `SELECT * FROM MenuItems WHERE MerchantID = ?`,
-    //   [merchantId],
-    // );
-
-    // const items = itemRows.map(
-    //   (row) =>
-    //     new MenuItem(
-    //       row.ItemID,
-    //       row.ItemName,
-    //       row.Calories,
-    //       row.Price,
-    //       row.Description,
-    //       row.Recipe,
-    //       row.Available,
-    //     ),
-    // );
-
     async updateItems(merchantID, itemId, updatedFields)
     {
         const db = await this.dbPromise;
