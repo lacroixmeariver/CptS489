@@ -1,5 +1,4 @@
-const {db, dbPromise} = require('../config/db');
-
+const { db, dbPromise } = require("../config/db");
 
 function findUserByEmail(email) {
   return new Promise((resolve, reject) => {
@@ -99,8 +98,7 @@ function addUser(data, additionalInfo) {
                 resolve(userID);
               },
             );
-          } 
-          else if (userRole === "driver") {
+          } else if (userRole === "driver") {
             db.run(
               "INSERT INTO Drivers (UserID, LicensePlateNumber, DriversLicenseNumber, VehicleMake, VehicleModel, VehicleColor) VALUES (?, ?, ?, ?, ?, ?)",
               [

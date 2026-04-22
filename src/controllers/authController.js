@@ -7,7 +7,8 @@ const passport = require("passport");
 
 exports.getLogin = (req, res) => {
   if (req.user) {
-    return loginAndRedirect(res, req.user.UserID);}
+    return loginAndRedirect(res, req.user.UserID);
+  }
   res.render("auth/login", { title: "Login", reason: req.query.reason });
 };
 

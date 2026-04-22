@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS Drivers(
     VehicleColor TEXT NOT NULL,
     DriversLicenseNumber TEXT NOT NULL UNIQUE,
     CurrentOrderAssigned INTEGER REFERENCES Orders(OrderID),
+    DriverStatus TEXT NOT NULL CHECK (DriverStatus IN ('Online', 'Offline')) DEFAULT 'Offline',
     BasePay FLOAT NOT NULL DEFAULT 21.61
 );
 
@@ -49,6 +50,7 @@ CREATE TABLE IF NOT EXISTS Orders(
     CustomerID INTEGER REFERENCES Customers(CustomerID) ON DELETE SET NULL,
     MerchantID INTEGER REFERENCES Merchants(MerchantID) ON DELETE SET NULL,
     AssignedDriverID INTEGER REFERENCES Drivers(DriverID) ON DELETE SET NULL,
+    DeliveryAddress TEXT REFERENCES Customers(Address),
     OrderStatus TEXT NOT NULL CHECK (OrderStatus IN ('Pending', 'Accepted', 'Ready For Pickup', 'Completed', 'Cancelled')) DEFAULT 'Pending',
     TimeOrdered TEXT NOT NULL,
     TimeCompleted TEXT,
@@ -96,4 +98,13 @@ CREATE TABLE IF NOT EXISTS Disputes(
     Status TEXT NOT NULL CHECK (Status IN ('Pending', 'Resolved', 'Appealed')) DEFAULT 'Pending',
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS Messages (
+    MessageID INTEGER PRIMARY KEY AUTOINCREMENT,
+    OrderID     INTEGER NOT NULL REFERENCES Orders(OrderID) ON DELETE CASCADE,
+    SenderID    INTEGER NOT NULL REFERENCES Users(UserID)   ON DELETE CASCADE,
+    SenderRole  TEXT    NOT NULL CHECK (SenderRole IN ('driver', 'customer')),
+    Body        TEXT    NOT NULL,
+    SentAt      DATETIME DEFAULT CURRENT_TIMESTAMP
 );

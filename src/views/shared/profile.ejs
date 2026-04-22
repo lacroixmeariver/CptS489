@@ -115,7 +115,7 @@
                 </div>
 
                     <!-- ── Change Password ── -->
-                    <div class="pwd-section mt-4" id="pwd-accordion">
+                    <div class="pwd-section mt-4 mb-4" id="pwd-accordion">
                         <div class="pwd-toggle-header" onclick="togglePwd()">
                             <div class="profile-section-title mb-0">
                                 <i class="bi bi-lock"></i> Change Password
@@ -338,7 +338,7 @@ function saveChanges() {
     const lastName  = document.getElementById('ed-last').value.trim();
     if (!firstName || !lastName) return;
     const role = '<%= user.Role %>';
-    const url  = role === 'vendor' ? '/vendor/api/profile' : '/customer/api/profile';
+    const url  = role === 'vendor' ? '/vendor/api/profile' : 'admin'? 'profile/update': '/customer/api/profile';
     const payload = { firstName, lastName };
     if (role === 'vendor') {
         payload.storeName = document.getElementById('ed-storename').value.trim();

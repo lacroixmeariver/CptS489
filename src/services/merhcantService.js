@@ -1,104 +1,97 @@
 const { openDelimiter } = require("ejs");
-const MerchantRepository = require("../middleware/merchantRepository")
+const MerchantRepository = require("../middleware/merchantRepository");
 
-class MerchantService
-{
-    constructor(merchantRepository)
-    {
-        this.merchantRepository = merchantRepository;
-    }
+class MerchantService {
+  constructor(merchantRepository) {
+    this.merchantRepository = merchantRepository;
+  }
 
-    async getMerchantByID(merchantId)
-    {
-        return await this.merchantRepository.getById(merchantId)
-    }
+  async getMerchantByID(merchantId) {
+    return await this.merchantRepository.getById(merchantId);
+  }
 
-    async getMerchantByUserID(userId)
-    {
-        return await this.merchantRepository.getByUserId(userId)
-    }
+  async getMerchantByUserID(userId) {
+    return await this.merchantRepository.getByUserId(userId);
+  }
 
-    async openStore(merhantId)
-    {
-        const merchant = await this.merchantRepository.getById(merhantId);
+  async openStore(merhantId) {
+    const merchant = await this.merchantRepository.getById(merhantId);
 
-        merchant.UpdateStatus("open");
+    merchant.UpdateStatus("open");
 
-        await this.merchantRepository.update(merchant);
-        return merchant;
-    }
+    await this.merchantRepository.update(merchant);
+    return merchant;
+  }
 
-    async closeStore(merchantId)
-    {
-        const merchant = await this.merchantRepository.getById(merchantId);
+  async closeStore(merchantId) {
+    const merchant = await this.merchantRepository.getById(merchantId);
 
-        merchant.UpdateStatus("closed");
+    merchant.UpdateStatus("closed");
 
-        await this.merchantRepository.update(merchant);
-        return merchant;
-    }
+    await this.merchantRepository.update(merchant);
+    return merchant;
+  }
 
-    async addMenuItem(merchantId, menuItem)
-    {
-        const merchant = await this.merchantRepository.getById(merchantId);
+  async addMenuItem(merchantId, menuItem) {
+    const merchant = await this.merchantRepository.getById(merchantId);
 
-        merchant.AddMenuItem(menuItem)
-        
-        await this.merchantRepository.update(merchant);
-        return merchant;
-    }
+    merchant.AddMenuItem(menuItem);
 
-    async removeMenuItem(merchantId, itemId)
-    {
-        const merchant = await this.merchantRepository.getById(merchantId);
+    await this.merchantRepository.update(merchant);
+    return merchant;
+  }
 
-        merchant.RemoveMenuItem(itemId);
+  async removeMenuItem(merchantId, itemId) {
+    const merchant = await this.merchantRepository.getById(merchantId);
 
-        await this.merchantRepository.deleteMenuItem(itemId);
+    merchant.RemoveMenuItem(itemId);
 
-        return merchant;
-    }
+    await this.merchantRepository.deleteMenuItem(itemId);
 
-    async editMenuItem(merchantId, itemId, updatedFields)
-    {
-        const merchant = await this.merchantRepository.getById(merchantId);
+    return merchant;
+  }
 
-        await this.merchantRepository.updateItems(merchantId, itemId, updatedFields);
-        return merchant;
-    }
+  async editMenuItem(merchantId, itemId, updatedFields) {
+    const merchant = await this.merchantRepository.getById(merchantId);
 
-    async getMenu(merchantId)
-    {
-        const merchant = await this.merchantRepository.getById(merchantId);
-        return merchant.menuItems;
-    }
+    await this.merchantRepository.updateItems(
+      merchantId,
+      itemId,
+      updatedFields,
+    );
+    return merchant;
+  }
 
-    async toggleMenuItemAvailability(merchantId, itemId)
-    {
-        const merchant = await this.merchantRepository.getById(merchantId);
-        const id = parseInt(itemId);
-        const item = merchant.menuItems.find(i => i.itemId === id);
-        if (!item) return;
+  async getMenu(merchantId) {
+    const merchant = await this.merchantRepository.getById(merchantId);
+    return merchant.menuItems;
+  }
 
-        item.available = !item.available;
-        await this.merchantRepository.update(merchant);
-    }
+  async toggleMenuItemAvailability(merchantId, itemId) {
+    const merchant = await this.merchantRepository.getById(merchantId);
+    const id = parseInt(itemId);
+    const item = merchant.menuItems.find((i) => i.itemId === id);
+    if (!item) return;
 
-    async getAllMerchantsWithStats()
-    {
-        return await this.merchantRepository.getAllWithStats();
-    }
+    item.available = !item.available;
+    await this.merchantRepository.update(merchant);
+  }
 
-    async updateProfile(userId, merchantId, fields)
-    {
-        return await this.merchantRepository.updateProfile(userId, merchantId, fields);
-    }
+  async getAllMerchantsWithStats() {
+    return await this.merchantRepository.getAllWithStats();
+  }
 
-    async getReviews(merchantId)
-    {
-        return await this.merchantRepository.getReviews(merchantId);
-    }
+  async updateProfile(userId, merchantId, fields) {
+    return await this.merchantRepository.updateProfile(
+      userId,
+      merchantId,
+      fields,
+    );
+  }
 
+  async getReviews(merchantId) {
+    return await this.merchantRepository.getReviews(merchantId);
+  }
 }
 
 module.exports = MerchantService;
