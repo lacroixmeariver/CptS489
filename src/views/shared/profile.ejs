@@ -23,9 +23,18 @@
 
         <!-- Page header + avatar -->
         <div class="d-flex align-items-center gap-3 mb-4">
-            <div class="profile-avatar">
-                <%= user.First_name.charAt(0) %><%= user.Last_name.charAt(0) %>
-                <div class="avatar-edit-btn" title="Change photo"><i class="bi bi-camera-fill"></i></div>
+            <div class="profile-avatar" id="profile-avatar-wrap">
+                <% if (user.Role === 'vendor' && extra && extra.StoreImage) { %>
+                    <img src="<%= extra.StoreImage %>" alt="Store photo" id="avatar-store-img" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                <% } else { %>
+                    <span id="avatar-initials"><%= user.First_name.charAt(0) %><%= user.Last_name.charAt(0) %></span>
+                <% } %>
+                <% if (user.Role === 'vendor') { %>
+                    <input type="file" id="avatarFileInput" name="storeImage" accept="image/jpeg,image/png,image/webp" style="display:none;">
+                    <div class="avatar-edit-btn" title="Change store photo" onclick="document.getElementById('avatarFileInput').click()"><i class="bi bi-camera-fill"></i></div>
+                <% } else { %>
+                    <div class="avatar-edit-btn" title="Change photo"><i class="bi bi-camera-fill"></i></div>
+                <% } %>
             </div>
             <div>
                 <h1 id="header-name" style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:var(--charcoal-gray-secondary);margin:0;">
@@ -34,6 +43,14 @@
                 <span style="font-family:'Open Sans',sans-serif;font-size:0.85rem;color:#999;">
                     <%= user.Role === 'vendor' ? 'Merchant account' : 'Customer account' %>
                 </span>
+                <% if (user.Role === 'vendor' && extra) { %>
+                <% const vs = extra.Verified || 'Pending'; %>
+                <span style="display:inline-block;margin-top:4px;font-family:'Open Sans',sans-serif;font-size:0.78rem;font-weight:600;padding:2px 10px;border-radius:20px;
+                    background:<%= vs==='Approved' ? 'rgba(22,163,74,0.12)' : vs==='Rejected' ? 'rgba(220,38,38,0.12)' : 'rgba(202,138,4,0.15)' %>;
+                    color:<%= vs==='Approved' ? '#15803d' : vs==='Rejected' ? '#dc2626' : '#92400e' %>;">
+                    <i class="bi bi-<%= vs==='Approved' ? 'patch-check-fill' : vs==='Rejected' ? 'x-circle-fill' : 'hourglass-split' %> me-1"></i>Verification: <%= vs %>
+                </span>
+                <% } %>
             </div>
 
         </div>
@@ -197,6 +214,25 @@
                         </div>
                     </div>
                 </div>
+
+                <% if (user.Role === 'vendor') { %>
+                <div class="profile-card mt-3">
+                    <div class="profile-section-title">
+                        <i class="bi bi-image"></i> Store Photo
+                    </div>
+                    <% if (extra && extra.StoreImage) { %>
+                        <img src="<%= extra.StoreImage %>" alt="Store photo" style="max-width:100%;max-height:220px;object-fit:cover;border-radius:8px;margin-bottom:12px;" id="storeImagePreview">
+                    <% } else { %>
+                        <p class="text-muted mb-2" id="noStoreImageMsg">No store photo uploaded yet.</p>
+                        <img src="" alt="Store photo" id="storeImagePreview" style="display:none;max-width:100%;max-height:220px;object-fit:cover;border-radius:8px;margin-bottom:12px;">
+                    <% } %>
+                    <div class="d-flex gap-2 align-items-center flex-wrap mt-1">
+                        <label for="storeImageInput" class="btn-hp-edit" style="cursor:pointer;"><i class="bi bi-upload me-1"></i>Choose &amp; Upload Photo</label>
+                        <input type="file" id="storeImageInput" accept="image/jpeg,image/png,image/webp" style="display:none;">
+                        <small class="text-muted">jpg/png/webp, max 5MB</small>
+                    </div>
+                </div>
+                <% } %>
 
                 <% if (user.Role === 'vendor') { %>
                 <div class="profile-card mt-3">
@@ -469,6 +505,48 @@ function saveBio() {
         function confirmDelete() {
             new bootstrap.Modal(document.getElementById('deleteModal')).show();
         }
+
+        // ── Store image upload (vendor) ─────────────────────
+        <% if (user.Role === 'vendor') { %>
+        function uploadStoreImage(file) {
+            const formData = new FormData();
+            formData.append('storeImage', file);
+            fetch('/vendors/api/upload-store-image', { method: 'POST', body: formData })
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.ok) return;
+                    const path = data.imagePath;
+                    // Update store image preview card
+                    const preview = document.getElementById('storeImagePreview');
+                    const noMsg = document.getElementById('noStoreImageMsg');
+                    if (preview) { preview.src = path; preview.style.display = ''; }
+                    if (noMsg)  noMsg.style.display = 'none';
+                    // Update avatar circle
+                    const wrap = document.getElementById('profile-avatar-wrap');
+                    let img = document.getElementById('avatar-store-img');
+                    const initials = document.getElementById('avatar-initials');
+                    if (!img) {
+                        img = document.createElement('img');
+                        img.id = 'avatar-store-img';
+                        img.alt = 'Store photo';
+                        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+                        wrap.insertBefore(img, wrap.firstChild);
+                    }
+                    img.src = path;
+                    if (initials) initials.style.display = 'none';
+                    showToast();
+                })
+                .catch(() => {});
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            ['storeImageInput', 'avatarFileInput'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('change', e => {
+                    if (e.target.files[0]) uploadStoreImage(e.target.files[0]);
+                });
+            });
+        });
+        <% } %>
     </script>
 
     <% if (locals.pwdError) { %>

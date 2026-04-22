@@ -17,9 +17,12 @@ const dbPromise = open({
   driver: sqlite3.Database,
 });
 
-dbPromise
-  .then(() => console.log("Connected to database (promise DB)!"))
-  .catch((err) => console.error("Promise DB connection error:", err.message));
+// Run image column migrations on startup (safe to run repeatedly)
+dbPromise.then(async (database) => {
+    console.log('Connected to database (promise DB)!');
+    await database.run(`ALTER TABLE Merchants ADD COLUMN StoreImage TEXT`).catch(() => {});
+    await database.run(`ALTER TABLE MenuItems ADD COLUMN ImagePath TEXT`).catch(() => {});
+}).catch(err => console.error('Promise DB connection error:', err.message));
 
 // Export BOTH
 module.exports = {

@@ -16,37 +16,70 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="stylesheet" href="/stylesheets/customer-browse.css">
 </head>
-
 <body data-role="<%= user.Role %>" data-user="<%= user.First_name %>">
 
-    <div class="main-box">
-        
+<div class="main-box">
+<!-- ── Back breadcrumb ────────────────────────── -->
+<div style="background:var(--cream-primary);padding:10px 32px;border-bottom:1px solid #eadfc8;">
+    <a href="/customer/browse" style="font-family:'Open Sans',sans-serif;font-size:0.85rem;color:#888;text-decoration:none;">
+        <i class="bi bi-arrow-left me-1"></i>Back to Browse
+    </a>
+</div>
 
-        <!-- ── Restaurant Profile Banner ─────────────── -->
-        <div class="restaurant-profile-banner">
-            <div style="max-width:1200px;margin-left:85px; ">
-                <div class="d-flex align-items-center gap-4 flex-wrap">
-                    <!-- Cook avatar -->
-                    <div
-                        style="width:80px;height:80px;border-radius:16px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:2.2rem;color:#fff;flex-shrink:0;">
-                        <%= merchant.name.charAt(0) %>
-                    </div>
-                    <!-- Info -->
-                    <div class="flex-grow-1">
-                        <h1
-                            style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.5rem;color:#fff;margin:0 0 4px;">
-                            <%= merchant.name %>
-                        </h1>
-                        <div
-                            style="font-family:'Open Sans',sans-serif;font-size:0.88rem;color:rgba(255,255,255,.8);margin-bottom:10px;">
-                            Home-cooked meals by <%= merchant.name %>
-                        </div>
-                        <div class="d-flex flex-wrap gap-3"
-                            style="font-family:'Open Sans',sans-serif;font-size:0.83rem;color:rgba(255,255,255,.85);">
-                            <span><i class="bi bi-star-fill me-1" style="color:var(--golden-yellow-secondary);"></i>
-                                <%= merchant.storeScore %> (<%= reviews.length %>)
-                            </span>
-                        </div>
+<!-- ── Restaurant Profile Banner ─────────────── -->
+<div class="restaurant-profile-banner"<% if (merchant.storeImage) { %> style="background:linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),url('<%= merchant.storeImage %>') center/cover no-repeat;"<% } %>>
+    <div style="max-width:1200px;margin:0 auto;">
+        <div class="d-flex align-items-center gap-4 flex-wrap">
+            <!-- Cook avatar -->
+            <div style="width:80px;height:80px;border-radius:16px;background:rgba(255,255,255,.15);overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:2.2rem;color:#fff;flex-shrink:0;">
+                <% if (merchant.storeImage) { %>
+                    <img src="<%= merchant.storeImage %>" alt="<%= merchant.name %>" style="width:100%;height:100%;object-fit:cover;">
+                <% } else { %>
+                    <%= merchant.name.charAt(0) %>
+                <% } %>
+            </div>
+            <!-- Info -->
+            <div class="flex-grow-1">
+                <h1 style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.5rem;color:#fff;margin:0 0 4px;">
+                    <%= merchant.name %>
+                </h1>
+                <div style="font-family:'Open Sans',sans-serif;font-size:0.88rem;color:rgba(255,255,255,.8);margin-bottom:10px;">
+                    Home-cooked meals by <%= merchant.name %>
+                </div>
+                <div class="d-flex flex-wrap gap-3" style="font-family:'Open Sans',sans-serif;font-size:0.83rem;color:rgba(255,255,255,.85);">
+                    <span><i class="bi bi-star-fill me-1" style="color:var(--golden-yellow-secondary);"></i><%= merchant.storeScore %> (<%= reviews.length %>)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bio -->
+        <% if (merchant.bio) { %>
+        <p style="font-family:'Open Sans',sans-serif;font-size:0.86rem;color:rgba(255,255,255,.75);margin:16px 0 0;max-width:700px;line-height:1.6;">
+            <%= merchant.bio %>
+        </p>
+        <% } %>
+    </div>
+</div>
+
+<!-- ── Main Content ──────────────────────────── -->
+<div style="max-width:1200px;margin:0 auto;padding:28px 24px;">
+    <div class="row g-4">
+
+        <!-- ── Menu Column ─────────────────────── -->
+        <div class="col-lg-8">
+        <% if (menuItems.length === 0) { %>
+            <div class="text-center py-5" style="color:#bbb;font-family:'Poppins',sans-serif;">
+                <i class="bi bi-card-list" style="font-size:2rem;display:block;margin-bottom:8px;"></i>
+                <div>Menu is being prepared. Check back soon!</div>
+            </div>
+        <% } else { %>
+            <% menuItems.forEach(item => { %>
+                <div class="menu-item-card">
+                    <div class="menu-item-img" style="background:#f5ede0;<% if (item.imagePath) { %>background-image:url('<%= item.imagePath %>');background-size:cover;background-position:center;<% } %>"></div>
+                    <div class="menu-item-info">
+                        <div class="menu-item-name"><%= item.name %></div>
+                        <div class="menu-item-desc"><%= item.description %></div>
+                        <div class="menu-item-price">$<%= item.price.toFixed(2) %></div>
                     </div>
                 </div>
 

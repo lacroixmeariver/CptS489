@@ -37,6 +37,9 @@
                     <% merchant.menuItems.forEach(function(item) { %>
                         <div class="order-row">
                             <div class="order-row-header">
+                                <% if (item.imagePath) { %>
+                                    <img src="<%= item.imagePath %>" alt="<%= item.name %>" style="width:48px;height:48px;object-fit:cover;border-radius:6px;margin-right:8px;">
+                                <% } %>
                                 <div class="order-info">
                                     <span><strong>Item#</strong> <%= item.itemId %></span>
                                     <span><strong>Name:</strong> <%= item.name %></span>
@@ -51,7 +54,8 @@
                                         data-calories="<%= item.calories %>"
                                         data-price="<%= item.price %>"
                                         data-description="<%= item.description %>"
-                                        data-recipe="<%= item.recipe %>">
+                                        data-recipe="<%= item.recipe %>"
+                                        data-image-path="<%= item.imagePath || '' %>">
                                         Edit
                                 </button>
                                 <div class="form-check form-switch">
@@ -87,7 +91,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
 
-                    <form id="menuForm" method="POST">
+                    <form id="menuForm" method="POST" enctype="multipart/form-data">
 
                     <div class="modal-header">
                         <h5 class="modal-title" id="menuModalTitle">Add Menu Item</h5>
@@ -116,6 +120,14 @@
                             <div class="mb-3">
                                 <label for="itemRecipe" class="form-label">Recipe</label>
                                 <textarea class="form-control" id="itemRecipe" name="itemRecipe" rows="3">An example recipe for a menu item.</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="itemImage" class="form-label">Item Photo <small class="text-muted">(optional, jpg/png/webp, max 5MB)</small></label>
+                                <input type="file" class="form-control" id="itemImage" name="itemImage" accept="image/jpeg,image/png,image/webp">
+                                <div id="currentImagePreview" class="mt-2" style="display:none;">
+                                    <small class="text-muted">Current image:</small><br>
+                                    <img id="currentImageThumb" src="" alt="Current item image" style="max-width:100px;max-height:100px;object-fit:cover;border-radius:4px;">
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -160,12 +172,23 @@
                 document.getElementById("itemPrice").value = button.dataset.price;
                 document.getElementById("itemDescription").value = button.dataset.description;
 
+                const imgPath = button.dataset.imagePath;
+                const preview = document.getElementById("currentImagePreview");
+                const thumb = document.getElementById("currentImageThumb");
+                if (imgPath) {
+                    thumb.src = imgPath;
+                    preview.style.display = 'block';
+                } else {
+                    preview.style.display = 'none';
+                }
+
             } else {
                 title.textContent = "Add Menu Item";
                 form.action = "/vendors/menu/add";
 
                 form.reset();
                 document.getElementById("itemId").value = "";
+                document.getElementById("currentImagePreview").style.display = 'none';
             }
         });
 

@@ -8,6 +8,7 @@ const OrderService = require("../services/orderService");
 const OrderRepository = require("../middleware/orderRepository");
 const ReviewRepository = require("../middleware/reviewRepository");
 const ReviewService = require("../services/reviewService");
+const upload = require('../middleware/upload');
 
 const merchantRepo = new MerchantRepository(dbPromise);
 const merchantService = new MerchantService(merchantRepo);
@@ -17,13 +18,10 @@ const reviewRepo = new ReviewRepository(dbPromise);
 const reviewService = new ReviewService(reviewRepo);
 
 // gets the vendor dashboard page
-router.get("/dashboard", isAuthenticated, async (req, res) => {
-  console.log("User in dashboard:", req.user);
-  const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-  res.render("vendors/merchant-dashboard", {
-    user: req.user,
-    merchant: merchant,
-  });
+router.get('/dashboard', isAuthenticated, async (req, res) => {
+    console.log('User in dashboard:', req.user);
+    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    res.render('vendors/merchant-dashboard', { user: req.user, merchant: merchant, verifyMsg: req.query.verifyMsg || null, noMenuMsg: req.query.noMenuMsg || null });
 });
 
 router.get("/reports", isAuthenticated, async (req, res) => {
@@ -34,11 +32,18 @@ router.get("/reports", isAuthenticated, async (req, res) => {
   });
 });
 
-router.get("/open-store", isAuthenticated, async (req, res) => {
-  const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-  await merchantService.openStore(merchant.merchantId);
-  console.log("store open");
-  res.redirect("/vendors/live-operations");
+
+router.get('/open-store', isAuthenticated, async (req, res) => {
+    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    if (merchant.verified !== 'Approved') {
+        return res.redirect('/vendors/dashboard?verifyMsg=' + encodeURIComponent(merchant.verified || 'Pending'));
+    }
+    if (!merchant.menuItems || merchant.menuItems.length === 0) {
+        return res.redirect('/vendors/dashboard?noMenuMsg=1');
+    }
+    await merchantService.openStore(merchant.merchantId);
+    console.log('store open');
+    res.redirect('/vendors/live-operations');
 });
 
 router.get("/close-store", isAuthenticated, async (req, res) => {
@@ -93,10 +98,15 @@ router.get("/api/live-menu", isAuthenticated, async (req, res) => {
   res.json(liveMenu);
 });
 
-router.get("/api/complete-order", isAuthenticated, async (req, res) => {
-  const orderId = req.query.orderId;
-  await orderService.completeOrder(orderId);
-  res.json({ success: true });
+router.get('/api/store-status', isAuthenticated, async (req, res) => {
+    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    res.json({ status: merchant.status, verified: merchant.verified });
+});
+
+router.get('/api/complete-order', isAuthenticated, async (req, res) => {
+    const orderId = req.query.orderId;
+    await orderService.completeOrder(orderId);
+    res.json({ success: true });
 });
 
 router.get("/api/cancel-order", isAuthenticated, async (req, res) => {
@@ -137,18 +147,21 @@ router.post("/menu/delete/:itemId", isAuthenticated, async (req, res) => {
   res.redirect("/vendor/my-menu");
 });
 
-router.post("/menu/edit/:itemId", isAuthenticated, async (req, res) => {
-  const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-  const itemId = req.params.itemId;
+router.post('/menu/edit/:itemId', isAuthenticated, upload.single('itemImage'), async (req, res) => {
+    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    const itemId = req.params.itemId;
 
-  const updatedFields = {
-    name: req.body.itemName,
-    price: req.body.itemPrice,
-    calories: req.body.itemCalories,
-    description: req.body.itemDescription,
-    recipe: req.body.itemRecipe,
-    available: req.body.itemAvailable === "on" ? true : false,
-  };
+    const updatedFields = {
+        name: req.body.itemName,
+        price: req.body.itemPrice,
+        calories: req.body.itemCalories,
+        description: req.body.itemDescription,
+        recipe: req.body.itemRecipe,
+        available: req.body.itemAvailable === 'on' ? true : false
+    };
+    if (req.file) {
+        updatedFields.imagePath = '/images/uploads/' + req.file.filename;
+    }
 
   await merchantService.editMenuItem(
     merchant.merchantId,
@@ -170,64 +183,49 @@ router.post(
       merchant.menuItems.find((item) => item.itemId === itemId).available,
     );
     merchantService.toggleMenuItemAvailability(merchant.merchantId, itemId);
-    console.log(
-      "availability",
-      merchant.menuItems.find((item) => item.itemId === itemId).available,
-    );
-    res.redirect("/vendors/my-menu");
-  },
-);
-
-router.post("/menu/add", isAuthenticated, async (req, res) => {
-  const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-  const newItem = {
-    name: req.body.itemName,
-    price: req.body.itemPrice,
-    description: req.body.itemDescription,
-    recipe: req.body.itemRecipe,
-    calories: req.body.itemCalories,
-    available: true,
-  };
-
-  await merchantService.addMenuItem(merchant.merchantId, newItem);
-  res.redirect("/vendors/my-menu");
+    console.log('availability', merchant.menuItems.find(item => item.itemId === itemId).available);
+    res.redirect('/vendors/my-menu');
 });
 
-router.post("/api/profile", isAuthenticated, async (req, res) => {
-  try {
-    const { firstName, lastName, address, bio, storeName } = req.body;
+router.post('/menu/add', isAuthenticated, upload.single('itemImage'), async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    if (!merchant) return res.status(400).json({ error: "Merchant not found" });
-    await merchantService.updateProfile(req.user.UserID, merchant.merchantId, {
-      firstName,
-      lastName,
-      address,
-      bio,
-      storeName,
-    });
-    res.json({ ok: true });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to save profile" });
-  }
+    const newItem = {
+        name: req.body.itemName,
+        price: req.body.itemPrice,
+        description: req.body.itemDescription,
+        recipe: req.body.itemRecipe,
+        calories: req.body.itemCalories,
+        available: true,
+        imagePath: req.file ? '/images/uploads/' + req.file.filename : null
+    };
+
+    await merchantService.addMenuItem(merchant.merchantId, newItem);
+    res.redirect('/vendors/my-menu');
 });
 
-router.get("/reviews", isAuthenticated, async (req, res) => {
-  const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-  const reviews = await reviewService.getReviewsByMerchantId(
-    merchant.merchantId,
-  );
-  res.json(reviews);
+router.post('/api/upload-store-image', isAuthenticated, upload.single('storeImage'), async (req, res) => {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    const imagePath = '/images/uploads/' + req.file.filename;
+    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    const database = await dbPromise;
+    await database.run('UPDATE Merchants SET StoreImage=? WHERE MerchantID=?', [imagePath, merchant.merchantId]);
+    res.json({ ok: true, imagePath });
 });
 
-router.get("/api/reports", isAuthenticated, async (req, res) => {
-  const { period, type } = req.query;
-  const validPeriods = ["daily", "monthly", "yearly"];
-  const validTypes = ["income", "items"];
-  if (!validPeriods.includes(period) || !validTypes.includes(type)) {
-    return res.status(400).json({ error: "Invalid period or type parameter." });
-  }
-  try {
+router.post('/api/profile', isAuthenticated, async (req, res) => {
+    try {
+        const { firstName, lastName, address, bio, storeName } = req.body;
+        const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+        if (!merchant) return res.status(400).json({ error: 'Merchant not found' });
+        await merchantService.updateProfile(req.user.UserID, merchant.merchantId, { firstName, lastName, address, bio, storeName });
+        res.json({ ok: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to save profile' });
+    }
+});
+
+router.get('/reviews', isAuthenticated, async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
     const data = await orderService.getReportData(
       merchant.merchantId,
