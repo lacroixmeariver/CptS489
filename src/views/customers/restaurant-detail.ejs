@@ -75,6 +75,7 @@
                     <div class="menu-item-info">
                         <div class="menu-item-name"><%= item.name %></div>
                         <div class="menu-item-desc"><%= item.description %></div>
+                        <div class="menu-item-desc"><%= item.calories %> calories</div>
                         <div class="menu-item-price">$<%= item.price.toFixed(2) %></div>
                     </div>
                     <button class="menu-item-add" onclick="addToCart('<%= item.itemId %>', '<%= item.name %>', <%= item.price %>)">
