@@ -208,18 +208,29 @@
                 });
         };
 
-        setInterval(() => {
-            loadCurrentOrders();
-            loadPendingOrders();
-            loadLiveMenu();
-        }, 3000);
-
+        
         loadCurrentOrders();
         loadPendingOrders();
         loadLiveMenu();
+
+        socket.on("order_created", () => {
+            loadCurrentOrders();
+            loadPendingOrders();
+        })
+        socket.on("order_updated", () => {
+            loadCurrentOrders();
+        })
+        socket.on("order_canceled", () => {
+            loadCurrentOrders();
+            loadPendingOrders();
+        })
+        socket.on("menu_updated", () => {
+            loadLiveMenu();
+        })
     });
 </script>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/javascripts/common-elements.js"></script>
 
 

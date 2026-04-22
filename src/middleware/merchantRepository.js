@@ -1,12 +1,10 @@
 const Merchant = require("../backend/models/merchant");
 const MenuItem = require("../backend/models/menuItem");
 
-class MerchantRepository
-{
-    constructor(dbPromise)
-    {
-        this.dbPromise = dbPromise;
-    }
+class MerchantRepository {
+  constructor(dbPromise) {
+    this.dbPromise = dbPromise;
+  }
 
     async save(merchant, userId)
     {
@@ -43,11 +41,13 @@ class MerchantRepository
         return merchantId;
     }
 
-    async update(merchant)
-    {
-        const db = await this.dbPromise;
-        await db.run(
-            `UPDATE Merchants
+    return merchantId;
+  }
+
+  async update(merchant) {
+    const db = await this.dbPromise;
+    await db.run(
+      `UPDATE Merchants
             SET MerchantName  = ?,
                 MerchantAddress = ?,
                 Verified= ?,
@@ -55,16 +55,16 @@ class MerchantRepository
                 Status = ?,
                 Bio = ?
             WHERE MerchantID = ?`,
-            [
-                merchant.name,
-                merchant.address,
-                merchant.verified,
-                merchant.storeScore,
-                merchant.status,
-                merchant.bio,
-                merchant.merchantId
-            ]
-        );
+      [
+        merchant.name,
+        merchant.address,
+        merchant.verified,
+        merchant.storeScore,
+        merchant.status,
+        merchant.bio,
+        merchant.merchantId,
+      ],
+    );
 
         for (const item of merchant.menuItems)
         {
@@ -81,6 +81,7 @@ class MerchantRepository
             }
         }
     }
+  }
 
     async getById(merchantId)
     {
@@ -147,15 +148,23 @@ class MerchantRepository
                 );
     }
 
+    const itemRows = await db.all(
+      `SELECT * FROM MenuItems WHERE MerchantID = ?`,
+      [merchantId],
+    );
 
-    async deleteMenuItem(itemId)
-    {
-        const db = await this.dbPromise;
-        await db.run(
-            `DELETE FROM MenuItems Where ItemID = ?`,
-            [itemId]
-        )
-    }
+    const items = itemRows.map(
+      (row) =>
+        new MenuItem(
+          row.ItemID,
+          row.ItemName,
+          row.Calories,
+          row.Price,
+          row.Description,
+          row.Recipe,
+          row.Available,
+        ),
+    );
 
     async updateItems(merchantID, itemId, updatedFields)
     {
@@ -207,11 +216,10 @@ class MerchantRepository
         }
     }
 
-    async getAllWithStats()
-    {
-        const db = await this.dbPromise;
-        const merchantRows = await db.all(
-            `SELECT
+  async getAllWithStats() {
+    const db = await this.dbPromise;
+    const merchantRows = await db.all(
+      `SELECT
                 m.MerchantID,
                 m.MerchantName,
                 m.MerchantAddress,
@@ -225,9 +233,10 @@ class MerchantRepository
             LEFT JOIN Reviews r ON m.MerchantID = r.MerchantID
             LEFT JOIN Orders o ON m.MerchantID = o.MerchantID
             WHERE m.Status = 'open'
-            GROUP BY m.MerchantID`);
-        return merchantRows;
-    }
+            GROUP BY m.MerchantID`,
+    );
+    return merchantRows;
+  }
 
     async searchMerchants(q)
     {
@@ -289,17 +298,34 @@ class MerchantRepository
             );
         }
     }
-
-    async getReviews(merchantId)
-    {
-        const db = await this.dbPromise;
-        const reviewRows = await db.all(
-            `SELECT ReviewID, CustomerID, Rating, Comment, ReviewDate FROM Reviews WHERE MerchantID = ?`,
-            [merchantId]
-        );
-        return reviewRows;
+    if (storeName !== undefined) {
+      await db.run(
+        `UPDATE Merchants SET MerchantName = ? WHERE MerchantID = ?`,
+        [storeName, merchantId],
+      );
     }
+    if (address !== undefined) {
+      await db.run(
+        `UPDATE Merchants SET MerchantAddress = ? WHERE MerchantID = ?`,
+        [address, merchantId],
+      );
+    }
+    if (bio !== undefined) {
+      await db.run(`UPDATE Merchants SET Bio = ? WHERE MerchantID = ?`, [
+        bio,
+        merchantId,
+      ]);
+    }
+  }
 
+  async getReviews(merchantId) {
+    const db = await this.dbPromise;
+    const reviewRows = await db.all(
+      `SELECT ReviewID, CustomerID, Rating, Comment, ReviewDate FROM Reviews WHERE MerchantID = ?`,
+      [merchantId],
+    );
+    return reviewRows;
+  }
 }
 
 module.exports = MerchantRepository;

@@ -1,4 +1,4 @@
-const { db, dbPromise } = require('../config/db');
+const { db, dbPromise } = require("../config/db");
 
 // gets a row from the merchants table via vendor id
 function getVendorByID(MerchantID) {

@@ -104,16 +104,16 @@ const customerSidenav = `
 
 // function to obtain user role
 function getSidenav(role) {
-    if (role === 'admin')  return adminSidenav;
-    if (role === 'vendor' || role === 'cook') return cookSidenav;
-    if (role === 'driver') return driverSidenav;
-    return customerSidenav;
+  if (role === "admin") return adminSidenav;
+  if (role === "vendor" || role === "cook") return cookSidenav;
+  if (role === "driver") return driverSidenav;
+  return customerSidenav;
 }
 
 // function to insert content
 document.addEventListener("DOMContentLoaded", function () {
-    const role = document.body.dataset.role;
-    const userName = document.body.dataset.user;
+  const role = document.body.dataset.role;
+  const userName = document.body.dataset.user;
 
     document.body.insertAdjacentHTML("afterbegin", navbar(userName));
     if (role === 'customer'){
