@@ -73,25 +73,28 @@
                 <div>Menu is being prepared. Check back soon!</div>
             </div>
         <% } else { %>
-            <% menuItems.forEach(item => { %>
-                <div class="menu-item-card">
-                    <div class="menu-item-img" style="background:#f5ede0;<% if (item.imagePath) { %>background-image:url('<%= item.imagePath %>');background-size:cover;background-position:center;<% } %>"></div>
-                    <div class="menu-item-info">
-                        <div class="menu-item-name"><%= item.name %></div>
-                        <div class="menu-item-desc"><%= item.description %></div>
-                        <div class="menu-item-desc"><%= item.calories %> calories</div>
-                        <div class="menu-item-price">$<%= item.price.toFixed(2) %></div>
-                    </div>
-                </div>
-
-                <!-- Bio -->
-                <% if (merchant.bio) { %>
-                    <p
-                        style="font-family:'Open Sans',sans-serif;font-size:0.86rem;color:rgba(255,255,255,.75);margin:16px 0 0;max-width:700px;line-height:1.6;">
-                        <%= merchant.bio %>
-                    </p>
-                    <% } %>
+    <% menuItems.forEach(item => { %>
+        <div class="menu-item-card">
+            <div class="menu-item-img"
+                 style="background:#f5ede0;<% if (item.imagePath) { %>background-image:url(<%- JSON.stringify(item.imagePath) %>);background-size:cover;background-position:center;<% } %>">
             </div>
+
+            <div class="menu-item-info">
+                <div class="menu-item-name"><%= item.name %></div>
+                <div class="menu-item-desc"><%= item.description %></div>
+                <div class="menu-item-desc"><%= item.calories %> calories</div>
+                <div class="menu-item-price">$<%= item.price.toFixed(2) %></div>
+            </div>
+        </div>
+    <% }); %>
+
+    <% if (merchant.bio) { %>
+        <p style="font-family:'Open Sans',sans-serif;font-size:0.86rem;color:rgba(255,255,255,.75);margin:16px 0 0;max-width:700px;line-height:1.6;">
+            <%= merchant.bio %>
+        </p>
+    <% } %>
+<% } %>
+        
         </div>
 
         <!-- ── Main Content ──────────────────────────── -->
@@ -134,6 +137,7 @@
                                 <% }); %>
                                     <% } %>
                 </div>
+            
 
                 <h3 class="mt-4" style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.25rem;">
                     Reviews</h3>
@@ -392,5 +396,3 @@
     </script>
     <script src="/javascripts/common-elements.js"></script>
 </body>
-
-</html>
