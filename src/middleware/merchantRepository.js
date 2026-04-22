@@ -198,6 +198,14 @@ class MerchantRepository {
         }
     }
 
+    async deleteMenuItem(merchantId, itemId) {
+        const db = await this.dbPromise;
+        await db.run(
+            `DELETE FROM MenuItems WHERE MerchantID = ? AND ItemID = ?`,
+            [merchantId, itemId],
+        );
+    }
+
   async getAllWithStats() {
     const db = await this.dbPromise;
     const merchantRows = await db.all(

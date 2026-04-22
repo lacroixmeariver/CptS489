@@ -11,6 +11,7 @@ class Merchant {
     menuItems = [],
     status = "closed",
     bio = null,
+    storeImage = null,
   ) {
     this.merchantId = merchantId;
     this.name = name;
@@ -20,6 +21,7 @@ class Merchant {
     this.menuItems = menuItems;
     this.status = status;
     this.bio = bio;
+    this.storeImage = storeImage;
   }
 
   AddMenuItem(menuItem) {

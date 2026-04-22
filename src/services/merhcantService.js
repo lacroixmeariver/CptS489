@@ -54,7 +54,7 @@ class MerchantService
 
         merchant.RemoveMenuItem(itemId);
 
-        await this.merchantRepository.deleteMenuItem(itemId);
+        await this.merchantRepository.deleteMenuItem(merchantId, itemId);
 
         return merchant;
     }

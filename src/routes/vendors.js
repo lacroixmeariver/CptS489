@@ -226,18 +226,29 @@ router.post('/api/profile', isAuthenticated, async (req, res) => {
 });
 
 router.get('/reviews', isAuthenticated, async (req, res) => {
-    try{
+  try {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    const data = await orderService.getReportData(
-      merchant.merchantId,
-      period,
-      type,
-    );
+    const reviews = await reviewService.getReviewsByMerchantId(merchant.merchantId);
+    res.json(reviews);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to load reviews. Please try again." });
+  }
+});
+
+router.get('/api/reports', isAuthenticated, async (req, res) => {
+  const { period, type } = req.query;
+  const validPeriods = ['daily', 'monthly', 'yearly'];
+  const validTypes = ['income', 'items'];
+  if (!validPeriods.includes(period) || !validTypes.includes(type)) {
+    return res.status(400).json({ error: 'Invalid period or type parameter.' });
+  }
+  try {
+    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+    const data = await orderService.getReportData(merchant.merchantId, period, type);
     res.json({ ok: true, data });
   } catch (err) {
-    res
-      .status(500)
-      .json({ error: "Failed to generate report. Please try again." });
+    res.status(500).json({ error: 'Failed to generate report. Please try again.' });
   }
 });
 

@@ -10,6 +10,7 @@ class MenuItem {
     description = null,
     recipe = null,
     available = true,
+    imagePath = null,
   ) {
     this.itemId = itemId;
     this.name = name;
@@ -18,6 +19,7 @@ class MenuItem {
     this.available = available;
     this.calories = calories;
     this.recipe = recipe;
+    this.imagePath = imagePath;
   }
 
   UpdateDatabase() {
