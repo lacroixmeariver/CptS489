@@ -36,19 +36,24 @@
                 <p style="font-family:'Open Sans',sans-serif;font-size:0.88rem;color:#888;margin:4px 0 0;">
                     Manage your deliveries, track earnings, and chat with customers.
                 </p>
+                <p>Currently in db: <%= driverStatus %></p>
+                <p>Order: <%= order ?? 'None' %></p>
+                    
+                
             </div>
 
             <!-- Online / Offline toggle -->
             <div class="online-toggle-row">
-                <div class="online-dot active" id="status-dot"></div>
+                <div class="online-dot <%= driverStatus === 'Online' ? 'active' : '' %>" id="status-dot"></div>
                 <span
                     style="font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:600;color:var(--charcoal-gray-secondary);"
                     id="status-text">
-                    You are Online
+                    <%= driverStatus === 'Online' ? 'You are Online' : 'You are Offline' %>
                 </span>
                 <div class="form-check form-switch ms-auto mb-0">
                     <input class="form-check-input" type="checkbox" id="online-switch"
-                        style="width:2.5em;height:1.3em;cursor:pointer;" checked onchange="toggleOnlineStatus(this)">
+                        style="width:2.5em;height:1.3em;cursor:pointer;" <%= driverStatus === 'Online' ? 'checked' : '' %>
+                        onchange="toggleOnlineStatus(this)">
                 </div>
             </div>
 
@@ -132,12 +137,15 @@
         </main>
     </div><!-- /main-box -->
 
+    
+    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const sectionFiles = {
-            'current-order': 'current-order',
-            'history': 'history',
-            'earnings': 'earnings'
+            'current-order': '/drivers/current-order',
+            'history': '/drivers/history',
+            'earnings': '/drivers/earnings'
         };
 
         function clearSection() {
@@ -153,44 +161,44 @@
             if (tab) tab.classList.add('active');
         }
 
-        function showSection(section) {
+        function showSection(section, bustCache = false) {
             setActiveTab(section);
             clearSection();
-            const file = sectionFiles[section];
-            if (!file) return;
-            fetch(file)
+            let url = sectionFiles[section];
+            if (!url) return;
+            if (bustCache) url += '?t=' + Date.now();
+            
+            fetch(url)
                 .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
                 .then(html => {
-                    const container = document.getElementById('section-content');
-                    container.innerHTML = html;
-                    container.querySelectorAll('script').forEach(oldScript => {
-                        const s = document.createElement('script');
-                        s.textContent = oldScript.textContent;
-                        oldScript.parentNode.replaceChild(s, oldScript);
-                    });
+                const container = document.getElementById('section-content');
+                container.innerHTML = html;
+                container.querySelectorAll('script').forEach(oldScript => {
+                    const s = document.createElement('script');
+                    s.textContent = oldScript.textContent;
+                    oldScript.parentNode.replaceChild(s, oldScript);
+                });
                 })
                 .catch(err => {
-                    document.getElementById('section-content').innerHTML =
-                        '<div class="alert alert-danger">Could not load section: ' + err.message + '</div>';
+                document.getElementById('section-content').innerHTML =
+                    '<div class="alert alert-danger">Could not load section: ' + err.message + '</div>';
                 });
         }
 
-        function toggleOnlineStatus(cb) {
-            const dot = document.getElementById('status-dot');
-            const text = document.getElementById('status-text');
-            if (cb.checked) {
-                dot.classList.add('active');
-                text.textContent = 'You are Online';
-            } else {
-                dot.classList.remove('active');
-                text.textContent = 'You are Offline';
-            }
-        }
+       
 
-        document.addEventListener('DOMContentLoaded', () => showSection('current-order'));
+        document.addEventListener('DOMContentLoaded', () => showSection('current-order', true));
     </script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const currentUser = <%- JSON.stringify(user) %>;
+        const driverStatus = '<%- driverStatus %>';
+    </script>
+    <script src="/javascripts/driver.js"></script>
+    <script src="/javascripts/common-elements.js"></script>
 </body>
 
-<script src="/javascripts/common-elements.js"></script>
+
 
 </html>

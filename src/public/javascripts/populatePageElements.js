@@ -1,5 +1,4 @@
 function populateModal(row) {
-
   document.querySelector('#userModalBody [data-field="name"]').textContent =
     row.dataset.name;
   document.querySelector('#userModalBody [data-field="email"]').textContent =

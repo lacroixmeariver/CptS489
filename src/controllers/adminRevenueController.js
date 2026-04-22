@@ -1,4 +1,4 @@
-const { dbPromise } = require('../config/db');
+const { dbPromise } = require("../config/db");
 
 exports.getRevenuePage = async (req, res, next) => {
   try {
@@ -33,7 +33,7 @@ exports.getRevenuePage = async (req, res, next) => {
       `),
     ]);
 
-    res.render('admins/revenue', {
+    res.render("admins/revenue", {
       user: req.user,
       totalRevenue,
       recentOrders,

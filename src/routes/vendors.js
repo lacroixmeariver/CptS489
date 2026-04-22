@@ -1,7 +1,7 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-const { isAuthenticated } = require('../middleware/isAuth');
-const { dbPromise, db} = require('../config/db');
+const { isAuthenticated } = require("../middleware/isAuth");
+const { dbPromise, db } = require("../config/db");
 const MerchantRepository = require("../middleware/merchantRepository");
 const MerchantService = require("../services/merhcantService");
 const OrderService = require("../services/orderService");
@@ -24,9 +24,12 @@ router.get('/dashboard', isAuthenticated, async (req, res) => {
     res.render('vendors/merchant-dashboard', { user: req.user, merchant: merchant, verifyMsg: req.query.verifyMsg || null, noMenuMsg: req.query.noMenuMsg || null });
 });
 
-router.get('/reports', isAuthenticated, async (req, res) => {
-    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    res.render('vendors/merchant-reports', { user: req.user, merchant: merchant });
+router.get("/reports", isAuthenticated, async (req, res) => {
+  const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+  res.render("vendors/merchant-reports", {
+    user: req.user,
+    merchant: merchant,
+  });
 });
 
 
@@ -43,53 +46,56 @@ router.get('/open-store', isAuthenticated, async (req, res) => {
     res.redirect('/vendors/live-operations');
 });
 
-router.get('/close-store', isAuthenticated, async (req, res) => {
-    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    await orderService.cancelPendingOrdersForMerchant(merchant.merchantId);
-    await merchantService.closeStore(merchant.merchantId);
-    console.log('store closed');
-    res.redirect('/vendors/dashboard');
+router.get("/close-store", isAuthenticated, async (req, res) => {
+  const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+  await orderService.cancelPendingOrdersForMerchant(merchant.merchantId);
+  await merchantService.closeStore(merchant.merchantId);
+  console.log("store closed");
+  res.redirect("/vendors/dashboard");
 });
 
-
-router.post('/accept-order/:orderId', isAuthenticated, async (req, res) => {
-    const orderId = req.params.orderId;
-    await orderService.updateOrderStatus(orderId, 'Accepted');
-    res.json({ success: true });
+router.post("/accept-order/:orderId", isAuthenticated, async (req, res) => {
+  const orderId = req.params.orderId;
+  await orderService.updateOrderStatus(orderId, "Accepted");
+  res.json({ success: true });
 });
 
-router.post('/confirm-order/:orderId', isAuthenticated, async (req, res) => {
-    const orderId = req.params.orderId;
-    await orderService.updateOrderStatus(orderId, 'Ready For Pickup');
-    res.json({ success: true });
+router.post("/confirm-order/:orderId", isAuthenticated, async (req, res) => {
+  const orderId = req.params.orderId;
+  await orderService.updateOrderStatus(orderId, "Ready For Pickup");
+  res.json({ success: true });
 });
 
-router.post('/cancel-order/:orderId', isAuthenticated, async (req, res) => {
-    const orderId = req.params.orderId;
+router.post("/cancel-order/:orderId", isAuthenticated, async (req, res) => {
+  const orderId = req.params.orderId;
 
-    await orderService.cancelOrder(orderId);
+  await orderService.cancelOrder(orderId);
 
-    res.json({ success: true });
+  res.json({ success: true });
 });
 
 router.get("/api/pending-orders", isAuthenticated, async (req, res) => {
-    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    const pendingOrders = await orderService.getPendingOrdersForMerchant(merchant.merchantId);
-    console.log(pendingOrders);
-    res.json(pendingOrders);
+  const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+  const pendingOrders = await orderService.getPendingOrdersForMerchant(
+    merchant.merchantId,
+  );
+  console.log(pendingOrders);
+  res.json(pendingOrders);
 });
 
 router.get("/api/current-orders", isAuthenticated, async (req, res) => {
-    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    const currentOrders = await orderService.getCurrentOrdersForMerchant(merchant.merchantId);
-    console.log(currentOrders);
-    res.json(currentOrders);
+  const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+  const currentOrders = await orderService.getCurrentOrdersForMerchant(
+    merchant.merchantId,
+  );
+  console.log(currentOrders);
+  res.json(currentOrders);
 });
 
 router.get("/api/live-menu", isAuthenticated, async (req, res) => {
-    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    const liveMenu = await merchantService.getMenu(merchant.merchantId);
-    res.json(liveMenu);
+  const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+  const liveMenu = await merchantService.getMenu(merchant.merchantId);
+  res.json(liveMenu);
 });
 
 router.get('/api/store-status', isAuthenticated, async (req, res) => {
@@ -103,42 +109,42 @@ router.get('/api/complete-order', isAuthenticated, async (req, res) => {
     res.json({ success: true });
 });
 
-router.get('/api/cancel-order', isAuthenticated, async (req, res) => {
-    const orderId = req.query.orderId;
-    await orderService.cancelOrder(orderId);
-    res.json({ success: true });
+router.get("/api/cancel-order", isAuthenticated, async (req, res) => {
+  const orderId = req.query.orderId;
+  await orderService.cancelOrder(orderId);
+  res.json({ success: true });
 });
 
-router.get('/api/confirm-order', isAuthenticated, async (req, res) => {
-    const orderId = req.query.orderId;
-    await orderService.confirmOrder(orderId);
-    res.json({ success: true });
+router.get("/api/confirm-order", isAuthenticated, async (req, res) => {
+  const orderId = req.query.orderId;
+  await orderService.confirmOrder(orderId);
+  res.json({ success: true });
 });
 
-router.get('/api/toggle-menu-item', isAuthenticated, async (req, res) => {
-    const itemId = req.query.itemId;
-    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    await merchantService.toggleMenuItemAvailability(merchant.merchantId, itemId);
-    res.json({ success: true });
+router.get("/api/toggle-menu-item", isAuthenticated, async (req, res) => {
+  const itemId = req.query.itemId;
+  const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+  await merchantService.toggleMenuItemAvailability(merchant.merchantId, itemId);
+  res.json({ success: true });
 });
 
-// get the live operations page 
-router.get('/live-operations', isAuthenticated, async (req, res) => {
-    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    res.render('vendors/live-operations', { user: req.user, merchant: merchant });
+// get the live operations page
+router.get("/live-operations", isAuthenticated, async (req, res) => {
+  const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+  res.render("vendors/live-operations", { user: req.user, merchant: merchant });
 });
 
-router.get('/my-menu',isAuthenticated, async (req, res) => {
-    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    res.render('vendors/my-menu', { user: req.user, merchant: merchant });
+router.get("/my-menu", isAuthenticated, async (req, res) => {
+  const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+  res.render("vendors/my-menu", { user: req.user, merchant: merchant });
 });
 
-router.post('/menu/delete/:itemId', isAuthenticated, async (req, res) => {
-    const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    const itemId = req.params.itemId;
+router.post("/menu/delete/:itemId", isAuthenticated, async (req, res) => {
+  const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
+  const itemId = req.params.itemId;
 
-    await merchantService.removeMenuItem(merchant.merchantId, itemId);
-    res.redirect('/vendor/my-menu');
+  await merchantService.removeMenuItem(merchant.merchantId, itemId);
+  res.redirect("/vendor/my-menu");
 });
 
 router.post('/menu/edit/:itemId', isAuthenticated, upload.single('itemImage'), async (req, res) => {
@@ -157,15 +163,25 @@ router.post('/menu/edit/:itemId', isAuthenticated, upload.single('itemImage'), a
         updatedFields.imagePath = '/images/uploads/' + req.file.filename;
     }
 
-    await merchantService.editMenuItem(merchant.merchantId, itemId, updatedFields);
+  await merchantService.editMenuItem(
+    merchant.merchantId,
+    itemId,
+    updatedFields,
+  );
 
-    res.redirect('/vendor/my-menu');
+  res.redirect("/vendor/my-menu");
 });
 
-router.post('/menu/toggle-availability/:itemId', isAuthenticated, async (req, res) => {
+router.post(
+  "/menu/toggle-availability/:itemId",
+  isAuthenticated,
+  async (req, res) => {
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
     const itemId = req.params.itemId;
-    console.log('availability', merchant.menuItems.find(item => item.itemId === itemId).available);
+    console.log(
+      "availability",
+      merchant.menuItems.find((item) => item.itemId === itemId).available,
+    );
     merchantService.toggleMenuItemAvailability(merchant.merchantId, itemId);
     console.log('availability', merchant.menuItems.find(item => item.itemId === itemId).available);
     res.redirect('/vendors/my-menu');
@@ -210,30 +226,23 @@ router.post('/api/profile', isAuthenticated, async (req, res) => {
 });
 
 router.get('/reviews', isAuthenticated, async (req, res) => {
+    try{
     const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-    const reviews = await reviewService.getReviewsByMerchantId(merchant.merchantId);
-    res.json(reviews);
+    const data = await orderService.getReportData(
+      merchant.merchantId,
+      period,
+      type,
+    );
+    res.json({ ok: true, data });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Failed to generate report. Please try again." });
+  }
 });
 
-router.get('/api/reports', isAuthenticated, async (req, res) => {
-    const { period, type } = req.query;
-    const validPeriods = ['daily', 'monthly', 'yearly'];
-    const validTypes = ['income', 'items'];
-    if (!validPeriods.includes(period) || !validTypes.includes(type)) {
-        return res.status(400).json({ error: 'Invalid period or type parameter.' });
-    }
-    try {
-        const merchant = await merchantService.getMerchantByUserID(req.user.UserID);
-        const data = await orderService.getReportData(merchant.merchantId, period, type);
-        res.json({ ok: true, data });
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to generate report. Please try again.' });
-    }
+router.get("/profile", isAuthenticated, async (req, res) => {
+  res.redirect("/profile");
 });
-
-router.get('/profile', isAuthenticated, async (req, res) => {
-    res.redirect('/profile');
-});
-
 
 module.exports = router;

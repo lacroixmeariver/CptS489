@@ -1,4 +1,4 @@
-const {db, dbPromise} = require('../config/db');
+const { db, dbPromise } = require("../config/db");
 
 function getCustomerByUserID(UserID) {
   return new Promise((resolve, reject) => {

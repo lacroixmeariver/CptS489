@@ -4,6 +4,13 @@
      ================================================================ -->
 
 <!-- ── Active Delivery Card ── -->
+ <% if (!order || driverStatus === 'Offline') { %>
+  <div class="section-card text-center py-5">
+    <i class="bi bi-emoji-frown-fill" style="font-size:2rem;color:#ccc;"></i>
+    <p style="color:#aaa;margin-top:12px;font-family:'Poppins',sans-serif;">No active orders right now.</p>
+  </div>
+<% } else { %>
+    <span id="current-order-id" data-order-id="<%= order.OrderID %>" style="display:none;"></span>
 <div class="section-card">
     <div class="d-flex align-items-center justify-content-between mb-3">
         <h2 class="section-title mb-0"><i class="bi bi-bicycle me-2"></i>Current Delivery</h2>
@@ -17,29 +24,32 @@
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
         <div>
             <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.05rem;">
-                Grandma Maria's Kitchen
+               <%= order.MerchantName %>
             </div>
             <div style="font-family:'Open Sans',sans-serif;font-size:0.85rem;color:#888;margin-top:2px;">
-                Order #2087 &nbsp;·&nbsp; 3 items
+                Order <%= order.OrderID %>
             </div>
             <div class="mt-2" style="font-family:'Open Sans',sans-serif;font-size:0.85rem;">
                 <i class="bi bi-geo-alt me-1 text-muted"></i>
-                <strong>Pickup:</strong> 412 Maple Ave, Pullman WA
+                <strong>Pickup:</strong> <%= order.MerchantAddress %>
             </div>
             <div class="mt-1" style="font-family:'Open Sans',sans-serif;font-size:0.85rem;">
                 <i class="bi bi-house me-1 text-muted"></i>
-                <strong>Dropoff:</strong> 742 Evergreen Terrace, Pullman WA
+                <strong>Dropoff:</strong> <%= order.DeliveryAddress %>
             </div>
         </div>
         <div class="text-end">
-            <div class="stat-num" style="font-size:1.35rem;">$6.50</div>
+            <div class="stat-num" style="font-size:1.35rem;">$<%= driver.BasePay.toFixed(2) %></div>
             <div style="font-family:'Open Sans',sans-serif;font-size:0.8rem;color:#888;">Your Earnings</div>
             <div
                 style="font-family:'Open Sans',sans-serif;font-size:0.78rem;color:var(--sage-green-secondary);margin-top:2px;">
-                +$3.00 tip included
+                <% if (order.DriverTip > 0) { %>
+                    <div ...>+$<%= order.DriverTip.toFixed(2) %> tip included</div>
+                <% } %>
             </div>
         </div>
     </div>
+   
 
     <!-- Progress tracker -->
     <div class="order-progress mb-4">
@@ -64,7 +74,7 @@
             <div class="step-label">Delivered</div>
         </div>
     </div>
-
+    
     <!-- Status update buttons -->
     <div>
         <h6
@@ -165,16 +175,17 @@
         style="font-family:'Open Sans',sans-serif;font-size:0.88rem;border-radius:8px;"></div>
 </div>
 
+
 <!-- ── Customer Info + Chat ── -->
 <div class="section-card">
-    <h2 class="section-title"><i class="bi bi-person-fill me-2"></i>Customer</h2>
+    <h2 class="section-title"><i class="bi bi-person-fill me-2"></i><%= order.CustomerFirstName %> <%= order.CustomerLastName.charAt(0) %>.</h2>
 
     <div class="customer-card mb-4">
-        <div class="customer-avatar">S</div>
+        <div class="customer-avatar"><%= order.CustomerFirstName.charAt(0) %></div>
         <div class="flex-grow-1">
             <div style="font-family:'Poppins',sans-serif;font-weight:600;">Sarah K.</div>
             <div style="font-family:'Open Sans',sans-serif;font-size:0.82rem;color:#888;">
-                <i class="bi bi-geo-alt me-1"></i>742 Evergreen Terrace, Pullman WA
+                <i class="bi bi-geo-alt me-1"></i><%= order.CustomerAddress %>
             </div>
             <div style="font-family:'Open Sans',sans-serif;font-size:0.82rem;color:#888;margin-top:2px;">
                 <i class="bi bi-chat-left-text me-1"></i>Leave at door — thanks!
@@ -212,8 +223,10 @@
         </button>
     </div>
 </div>
-
+<% }  %>
+<script src="/socket.io/socket.io.js"></script>
 <script>
+    
     const statusConfig = {
         'arrived': { label: 'Status updated: Arrived at restaurant.', cls: 'alert-info' },
         'picked-up': { label: 'Status updated: Order picked up!', cls: 'alert-warning' },
@@ -254,6 +267,7 @@
         document.getElementById('confirm-bar').style.display = 'none';
         document.querySelectorAll('.status-action-btn').forEach(b => { b.style.opacity = ''; b.style.borderColor = ''; });
         updateStatus(key);
+        submitStatusUpdate(key);
     }
 
     /* REPORT AN ISSUE JS (commented out)

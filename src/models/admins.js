@@ -1,4 +1,4 @@
-const {db, dbPromise} = require('../config/db');
+const { db, dbPromise } = require("../config/db");
 
 // set vendor to verified
 function approveVendor(MerchantID) {
@@ -14,7 +14,7 @@ function approveVendor(MerchantID) {
   });
 }
 
-// sets vendor to rejected 
+// sets vendor to rejected
 function rejectVendor(MerchantID) {
   return new Promise((resolve, reject) => {
     db.run(

@@ -1,20 +1,20 @@
-const sqlite3 = require('sqlite3');
-const { open } = require('sqlite');
+const sqlite3 = require("sqlite3");
+const { open } = require("sqlite");
 
 // 1. Raw sqlite3 database (callback-compatible)
 const db = new sqlite3.Database(
-    './src/database/database.db',
-    sqlite3.OPEN_READWRITE,
-    (err) => {
-        if (err) console.error('SQLite callback DB error:', err.message);
-        else console.log('Connected to database (callback DB)!');
-    }
+  "./src/database/database.db",
+  sqlite3.OPEN_READWRITE,
+  (err) => {
+    if (err) console.error("SQLite callback DB error:", err.message);
+    else console.log("Connected to database (callback DB)!");
+  },
 );
 
 // 2. Promise-based database (async/await compatible)
 const dbPromise = open({
-    filename: './src/database/database.db',
-    driver: sqlite3.Database
+  filename: "./src/database/database.db",
+  driver: sqlite3.Database,
 });
 
 // Run image column migrations on startup (safe to run repeatedly)
@@ -26,6 +26,6 @@ dbPromise.then(async (database) => {
 
 // Export BOTH
 module.exports = {
-    db,         // callback API
-    dbPromise   // async/await API
+  db, // callback API
+  dbPromise, // async/await API
 };
